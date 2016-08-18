@@ -63,7 +63,7 @@ public class ImageManager{
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
         
-        //if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
+        if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
         binImage = src.clone();
         
         //61 14 太いけど確実param　GAUSSIAN
@@ -201,13 +201,13 @@ public class ImageManager{
 				bim.setRGB(nx, ny, 0xff000000 | 255 <<16 | 255 <<8 | 255);
 			}
 			bufImages.add(bim);
-//			File saves = new File(getPath(String.valueOf(i)+"_"));
-//			try {
-//				ImageIO.write(bim, "png", saves);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			File saves = new File(getPath(String.valueOf(i)+"_"));
+			try {
+				ImageIO.write(bim, "png", saves);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		System.out.println("Noise cleared");
 	}
