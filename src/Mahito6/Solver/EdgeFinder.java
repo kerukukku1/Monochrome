@@ -21,7 +21,7 @@ public class EdgeFinder {
     public static final int kMinCount = 15;       					   //ハフ変換での直線認識の閾値、この値より小さいと直線でないとみなす
     public static final double kTableConst = Math.PI / kAngleSplits;   //3.14(pi)をkAngleSplitsで割った値、単位角度的なやつ
 
-    public static final int edgeWidth = 6;   //エッジの太さ(この太さで２値画像から辺を消す)
+    public static final int edgeWidth = 5;   //エッジの太さ(この太さで２値画像から辺を消す)
     public static final int lrAddition = 15; //検出して切断したエッジを少しだけ伸ばす(15もあれば十分？)
     // �ｽﾏ撰ｿｽ
     private ArrayList<Double> sin_table, cos_table;  ///探索処理高速化のためにsin,cosは全て単位角度で前計算
