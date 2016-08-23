@@ -7,6 +7,7 @@ import java.util.List;
 import org.opencv.core.Mat;
 
 import Mahito6.Main.Constants;
+import Mahito6.Solver.BFS;
 
 
 public class Act{
@@ -16,12 +17,9 @@ public class Act{
 	private int maxX, maxY;
 	public boolean[][] memo;
 	public boolean[][] state;
-	private int[] dx;
-	private int[] dy;
 	private BufferedImage buf = null;
 	private int range;
 	private int threshold;
-	private JQueue que;
 	//row = x, col = y
 	//any[x][y]
 	public Act(Mat earth, int range, int threshold){
@@ -30,53 +28,10 @@ public class Act{
 		coords = new ArrayList<Coordinates>();
 		maxX = earth.cols();
 		maxY = earth.rows();
+		BFS.initialize(maxX, maxY);
 		this.range = range;
 		this.threshold = threshold;
 		memo = new boolean[maxX][maxY];
-		makeDXDY(range);
-		que = new JQueue(Constants.actQueueSize);
-	}
-
-	private void makeDXDY(int range){
-		dx = new int[(range*2+1)*(range*2+1)-1];
-		dy = new int[(range*2+1)*(range*2+1)-1];
-		int count = 0;
-		for(int i = -range; i <= range; i++){
-			for(int j = -range; j <= range; j++){
-				if(i == 0 && j == 0)continue;
-				dx[count] = i;
-				dy[count] = j;
-				count++;
-			}
-		}
-	}
-
-	public Coordinates findPoints(int x, int y){
-		que.clear();
-		que.push(x,y);
-		Coordinates tmpPoints = new Coordinates();
-		tmpPoints.addCord(x, y);
-		while(que.size() != 0){
-			//if(que.size() % 10 == 0)System.out.println("size:" + que.size());
-			int nowx = que.frontx();
-			int nowy = que.fronty();
-			que.pop();
-			//System.out.println(nowx + "," + nowy);
-			for(int k = 0; k < dx.length; k++){
-				int nx = nowx + dx[k];
-				int ny = nowy + dy[k];
-				if(nx < 0 || ny < 0 || nx >= maxX || ny >= maxY)continue;
-				if(memo[nx][ny] == true)continue;
-				memo[nx][ny] = true;
-//				System.out.println(nx + "," + ny);
-				if(rgbConverter(buf.getRGB(nx, ny)) == 255){
-					tmpPoints.addCord(nx, ny);
-					que.push(nx, ny);
-					//System.out.println("queque:" + que.getNow());
-				}
-			}
-		}
-		return tmpPoints;
 	}
 
     public static int rgbConverter(int c){
@@ -94,7 +49,7 @@ public class Act{
 				rgb = rgbConverter(buf.getRGB(j, i));
 				//System.out.print(rgb);
 				if(rgb == 0)continue;
-				coords.add(findPoints(j, i));
+				coords.add(BFS.findPointsForAct(j, i, maxX, maxY, this.range, memo, buf));
 			}
 			//System.out.println();
 		}

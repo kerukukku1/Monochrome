@@ -18,6 +18,7 @@ import org.opencv.imgproc.Imgproc;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
+import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
@@ -190,7 +191,8 @@ public class ImageManager{
 		int minx,miny,maxx,maxy,mat_h,mat_w,offset;
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates now = coords.get(i);
-			now.clearNoise(Constants.clearNoiseThreshold);
+			BFS.clearNoise(Constants.clearNoiseThreshold, now);
+			//now.clearNoise(Constants.clearNoiseThreshold);
 			System.out.println(now.getCount());
 			minx = now.minx;
 			miny = now.miny;
