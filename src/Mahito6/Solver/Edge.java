@@ -1,10 +1,9 @@
 package Mahito6.Solver;
 
+import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 
 public class Edge {
-	
-	private static final double gosa = 10.0;///線上にあるか判定するアルゴリズムの許容誤差
 
 	public double kx1,ky1,kx2,ky2;///直線の端点
 	public double r,theta;///直線のパラメータ(r = x*cosθ + y*sinθ)
@@ -23,7 +22,7 @@ public class Edge {
 	public boolean onLine(double x,double y){///(x,y)がこのエッジ上に存在するか判定
 		double sum = distance(x,y,kx1,ky1) + distance(x,y,kx2,ky2);
 		double sabun = Math.abs(distance - sum);
-		if(sabun < gosa)return true;///線上にあるのでOK
+		if(sabun < Constants.gosa)return true;///線上にあるのでOK
 		return false;
 	}
 	public boolean onLine(Tuple2<Double,Double> vertex){///オーバーロード

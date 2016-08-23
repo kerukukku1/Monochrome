@@ -1,6 +1,5 @@
 package Mahito6.Solver;
 
-<<<<<<< HEAD
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -8,71 +7,31 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 
 public class EdgeFinder {
-
-    // 定数
-    public static final int kAngleSplits = 4096;   					   //0~3.14(pi)をどれだけ分割するか(デフォは4096分割、除算するので2^nの数を使おう)
-    public static final int kMinCount = 15;       					   //ハフ変換での直線認識の閾値、この値より小さいと直線でないとみなす
-    public static final double kTableConst = Math.PI / kAngleSplits;   //3.14(pi)をkAngleSplitsで割った値、単位角度的なやつ
-
-    public static final int edgeWidth = 12;   //エッジの太さ(この太さで２値画像から辺を消す)
-    public static final int lrAddition = 50; //検出して切断したエッジを少しだけ伸ばす(15もあれば十分？)
-=======
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-
-import Mahito6.Main.Tuple2;
-import Mahito6.Main.Main;
-
-
-public class EdgeFinder {
-
-    // 定数
-    public static final int kAngleSplits = 512;   					   //0~3.14(pi)をどれだけ分割するか(デフォは4096分割、除算するので2^nの数を使おう)
-    public static final int kMinCount = 15;       					   //ハフ変換での直線認識の閾値、この値より小さいと直線でないとみなす
-    public static final double kTableConst = Math.PI / kAngleSplits;   //3.14(pi)をkAngleSplitsで割った値、単位角度的なやつ
-
-    public static final int edgeWidth = 5;   //エッジの太さ(この太さで２値画像から辺を消す)
-    public static final int lrAddition = 15; //検出して切断したエッジを少しだけ伸ばす(15もあれば十分？)
->>>>>>> origin/master
     // �ｽﾏ撰ｿｽ
     private ArrayList<Double> sin_table, cos_table;  ///探索処理高速化のためにsin,cosは全て単位角度で前計算
-
+    private ArrayList<Integer> cross;
 	private BufferedImage image,             ///入力画像
 							save_image,      ///tmp画像(エッジ消したりするやつ)
 							save_image_line; ///ans画像
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	private int w,h,
 				diagonal, ///対角線
 				d2;       ///対角線の２倍
 
-<<<<<<< HEAD
 	private boolean[][] binary_image;///２値情報([w][h]、false:黒  true:白)
-=======
-	private boolean[][] binary_image;///２値情報([w][h]、true:白  false:黒)
->>>>>>> origin/master
 	private ArrayList<Edge> edges;///検出したエッジを入れる(つまりans)
 
 	public EdgeFinder(BufferedImage image){///imageは２値化された画像
 		this.image = image;
 		this.w = image.getWidth();
 		this.h = image.getHeight();
+		cross = new ArrayList<Integer>();
 		init();
 	}
-<<<<<<< HEAD
 
 	public BufferedImage getResult(){
 		return save_image;
@@ -102,63 +61,18 @@ public class EdgeFinder {
 			Edge preAns = split(save_image,target.t1,target.t2);///ハフ変換で得た直線を正しい長さにスプリットする
 			drawColorLine(save_image_line,preAns,Color.RED);///とりあえずpreAnsを赤い線で描画
 
-=======
-	
-	private void init(){///色々初期化
-        save_image = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
-        save_image_line = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
-        Graphics2D g2d = (Graphics2D)save_image.getGraphics();
-        g2d.drawImage(image, 0, 0, null);
-        Graphics2D g2d2 = (Graphics2D)save_image_line.getGraphics();
-        g2d2.drawImage(image, 0, 0, null);
-
-        sin_table = new ArrayList<Double>(kAngleSplits);
-        cos_table = new ArrayList<Double>(kAngleSplits);
-        diagonal = (int)Math.sqrt(w * w + h * h) + 2;
-        d2 = diagonal * 2;
-        
-        for(int t = 0; t < kAngleSplits; t++){
-            sin_table.add(Math.sin(kTableConst * t));
-            cos_table.add(Math.cos(kTableConst * t));
-        }
-	}
-	
-	public void edgeFind() throws Exception{///これを呼ぶとエッジが検出される
-		long start = System.currentTimeMillis();
-		
-		edges = new ArrayList<Edge>();
-		//int c = 0;
-		LeastSquareMethod lsm = new LeastSquareMethod(save_image);///最小二乗法のソルバ―
-		while(true){
-			binary_image = toBinaryImage(save_image);///入力画像を配列に落とす
-			Tuple2<Double,Double> target = calcHoughLine(binary_image, false);///ハフ変換実行!(ここだけ重い)
-			if(target == null)break;
-			
-			Edge preAns = split(save_image,target.t1,target.t2);///ハフ変換で得た直線を正しい長さにスプリットする
-			drawColorLine(save_image_line,preAns,Color.RED);///とりあえずpreAnsを赤い線で描画
-			
->>>>>>> origin/master
 			Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(preAns);///preAnsを最小二乗法によって精度上げる
 			Edge ans = split(save_image,ansConverted.t1,ansConverted.t2);///正しい長さにスプリットする
 			drawColorLine(save_image_line,ans,Color.BLUE);///最小二乗法で得た線を青色で描画
 
 			edges.add(ans);
 			removeLine(save_image,ans);///抽出した線を画像から消す
-<<<<<<< HEAD
 
 //			ImageIO.write(save_image_line, "png", new File(c+".png"));///途中経過を出力
 			c++;
 		}
-		lsm.finish();///最小二乗法で抽出された白点をデバッグ
+		//lsm.finish();///最小二乗法で抽出された白点をデバッグ
 
-=======
-			
-			//ImageIO.write(save_image, "png", new File(Main.saveFile3Dir+c+".png"));///途中経過を出力
-			//c++;
-		}
-		lsm.finish();///最小二乗法で抽出された白点をデバッグ
-		
->>>>>>> origin/master
 		for(int i = 0;i < edges.size();i++){
 			for(int j = i + 1;j < edges.size();j++){
 				///全てのエッジの交点を描画する。
@@ -174,7 +88,6 @@ public class EdgeFinder {
 		System.out.println((end - start)+"ms");
 	}
 
-<<<<<<< HEAD
 	private void init(){///色々初期化
         save_image = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
         save_image_line = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
@@ -183,20 +96,17 @@ public class EdgeFinder {
         Graphics2D g2d2 = (Graphics2D)save_image_line.getGraphics();
         g2d2.drawImage(image, 0, 0, null);
 
-        sin_table = new ArrayList<Double>(kAngleSplits);
-        cos_table = new ArrayList<Double>(kAngleSplits);
+        sin_table = new ArrayList<Double>(Constants.kAngleSplits);
+        cos_table = new ArrayList<Double>(Constants.kAngleSplits);
         diagonal = (int)Math.sqrt(w * w + h * h) + 2;
         d2 = diagonal * 2;
 
-        for(int t = 0; t < kAngleSplits; t++){
-            sin_table.add(Math.sin(kTableConst * t));
-            cos_table.add(Math.cos(kTableConst * t));
+        for(int t = 0; t < Constants.kAngleSplits; t++){
+            sin_table.add(Math.sin(Constants.kTableConst * t));
+            cos_table.add(Math.cos(Constants.kTableConst * t));
         }
 	}
 
-=======
-	
->>>>>>> origin/master
 	private void drawVertex(BufferedImage image,int x,int y){
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
 		g2d.setColor(Color.YELLOW);
@@ -220,7 +130,6 @@ public class EdgeFinder {
 		double r = radius;
 		double sint = Math.sin(theta);
 		double cost = Math.cos(theta);
-<<<<<<< HEAD
 		double kx = 0.0,ky = 0.0;
 		ky = (r / sint);
 		kx = (r / cost);
@@ -232,12 +141,6 @@ public class EdgeFinder {
 		System.out.println("kx = "+kx+", ky = "+ky);
 
         boolean[] as = new boolean[100000];
-=======
-		double kx = -1,ky = -1;
-		ky = (theta < Math.PI/4)?0.0:(r / sint);
-		kx = (theta < Math.PI/4)?(r / cost):0.0;
-        boolean[] as = new boolean[10000000];
->>>>>>> origin/master
         if(sint != 0){
             for(double x = 0; x < w; x += 0.25){
                 double y = ((r - x * cost) / sint);
@@ -299,8 +202,8 @@ public class EdgeFinder {
         }
         System.out.println(left+"-"+right);
         System.out.println("");
-        left = Math.max(0, left - lrAddition);
-        right += lrAddition;
+        left = Math.max(0, left - Constants.lrAddition);
+        right += Constants.lrAddition;
         double kx1 = 0,ky1 = 0,kx2 = 0,ky2 = 0;
         if(sint != 0){
             for(double x = 0; x < w; x += 0.25){
@@ -333,8 +236,8 @@ public class EdgeFinder {
 	}
 
     private void erase(Graphics2D target,int x,int y){///x,yの周りの白点を消す(黒にする)
-    	for(int i = -edgeWidth;i <= edgeWidth;i++){
-    		for(int j = -edgeWidth;j <= edgeWidth;j++){
+    	for(int i = -Constants.edgeWidth;i <= Constants.edgeWidth;i++){
+    		for(int j = -Constants.edgeWidth;j <= Constants.edgeWidth;j++){
     			int tx = x + j;
     			int ty = y + i;
     			if(tx<0||ty<0||tx>=w||ty>=h)continue;
@@ -380,7 +283,7 @@ public class EdgeFinder {
                 g2d.drawRect(x, y, 0, 0);
             }
         }
-        if(cost != kAngleSplits / 2){
+        if(cost != Constants.kAngleSplits / 2){
             for(int y = 0; y < h; y++){
                 int x = (int)((r - y * sint) / cost);
                 if(x < 0 || x >= w) continue;
@@ -395,7 +298,7 @@ public class EdgeFinder {
         int max_count = 0;
         int t_max = 0, r_max = 0;
         for(int r = 0; r < d2; r++){
-            for(int t = 0; t < kAngleSplits; t++){
+            for(int t = 0; t < Constants.kAngleSplits; t++){
                 int cnt = counter[r][t];
                 if(max_count < cnt){
                     max_count = cnt;
@@ -404,32 +307,24 @@ public class EdgeFinder {
                 }
             }
         }
-        if(max_count < kMinCount) return null;
-        double realTheta = (double)t_max * kTableConst;
+        if(max_count < Constants.kMinCount) return null;
+        double realTheta = (double)t_max * Constants.kTableConst;
         double realR = r_max - diagonal;
         return new Tuple2<Double, Double>(realTheta, realR);
     }
 
     private int[][] getHoughLine(boolean[][] src_image){///ハフ変換の計算をするO(WH*kAngleSplits)(ここが一番計算量重い)
-        int[][] dst_image = new int[d2][kAngleSplits];
+        int[][] dst_image = new int[d2][Constants.kAngleSplits];
         for(int r = 0; r < d2; r++)
-        for(int t = 0; t < kAngleSplits; t++){
+        for(int t = 0; t < Constants.kAngleSplits; t++){
             dst_image[r][t] = 0;
         }
-<<<<<<< HEAD
 
         for(int y = 0; y < h; y++)
         for(int x = 0; x < w; x++){
             if(src_image[x][y] == false) continue;///黒色ならコンティニュー
 
-=======
-        
-        for(int y = 0; y < h; y++)
-        for(int x = 0; x < w; x++){
-            if(src_image[x][y] == false) continue;///黒色ならコンティニュー
-            
->>>>>>> origin/master
-            for(int t = 0; t < kAngleSplits; t++){
+            for(int t = 0; t < Constants.kAngleSplits; t++){
                 int r = (int)(x * cos_table.get(t) + y * sin_table.get(t) + 0.5);///intにキャストするためここで誤差出る
                 int rindex = r + diagonal;///rは-diagonal~diagonalの範囲で存在するため、これで正の値にする
                 dst_image[rindex][t] += 1;
@@ -456,19 +351,5 @@ public class EdgeFinder {
         return dst_image;
     }
 
-<<<<<<< HEAD
-=======
-	
-	public BufferedImage getResult(){
-		return save_image;
-	}
-	public BufferedImage getResult_line(){
-		return save_image_line;
-	}
-	public List<Edge> getResult_edge(){
-		return edges;
-	}
-    
->>>>>>> origin/master
 }
 

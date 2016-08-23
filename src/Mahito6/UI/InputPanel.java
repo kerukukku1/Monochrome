@@ -14,13 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
-
 import Main.UI.Util.ImageManager;
 import Main.UI.Util.MyKeyListener;
 
 public class InputPanel extends JPanel implements ActionListener{
 	public int x, y;
-	public JButton loadButton, runButton;
+	public static JButton loadButton, runButton;
 	public ImageManager images;
 	public JTextField inputForm;
 	public InputPanel(int x, int y){
@@ -115,10 +114,16 @@ public class InputPanel extends JPanel implements ActionListener{
 		if(cmd.equals("Load")){
 			LoadFiles(inputForm.getText());	
 		}else if(cmd.equals("Run")){
-			long start = System.nanoTime();
-			images.getPieces();
-			long end = System.nanoTime();
-			System.out.println("AllTime:" + (end - start) / 1000000f + "ms");
+			new Thread(new Runnable(){
+				@Override
+				public void run(){
+					InputPanel.loadButton.setEnabled(false);
+					InputPanel.runButton.setEnabled(false);
+					images.getPieces();
+					InputPanel.loadButton.setEnabled(true);
+					InputPanel.runButton.setEnabled(true);
+				}
+			}).start();
 		}
 	}
 }

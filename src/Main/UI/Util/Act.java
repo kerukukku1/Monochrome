@@ -1,23 +1,14 @@
 package Main.UI.Util;
 
-<<<<<<< HEAD
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.Mat;
 
+import Mahito6.Main.Constants;
 
-=======
-import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
-import org.opencv.core.Mat;
-
->>>>>>> origin/master
 public class Act{
 	public Mat earth;
 	public Mat[] divides;
@@ -43,13 +34,9 @@ public class Act{
 		this.threshold = threshold;
 		memo = new boolean[maxX][maxY];
 		makeDXDY(range);
-		que = new JQueue(10000000);
+		que = new JQueue(Constants.actQueueSize);
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	private void makeDXDY(int range){
 		dx = new int[(range*2+1)*(range*2+1)-1];
 		dy = new int[(range*2+1)*(range*2+1)-1];
@@ -63,11 +50,7 @@ public class Act{
 			}
 		}
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	public Coordinates findPoints(int x, int y){
 		que.clear();
 		que.push(x,y);
@@ -95,25 +78,16 @@ public class Act{
 		}
 		return tmpPoints;
 	}
-<<<<<<< HEAD
 
     public static int rgbConverter(int c){
         return c>>8&0xff;
     }
 
-=======
-	
-    public static int rgbConverter(int c){
-        return c>>8&0xff;
-    }
-	
->>>>>>> origin/master
 	public List<Coordinates> divideImages(){
-		int offset = 100; //スキャン端の大きな影を省く為のオフセット
 		System.out.println(maxX + "," + maxY);
 		int rgb;
-		for(int i = offset; i < maxY-offset; i++){
-			for(int j = offset; j < maxX-offset; j++){
+		for(int i = Constants.divideImageOffset; i < maxY-Constants.divideImageOffset; i++){
+			for(int j = Constants.divideImageOffset; j < maxX-Constants.divideImageOffset; j++){
 				//System.out.println(j + "," + i);
 				if(memo[j][i] == true)continue;
 				memo[j][i] = true;
@@ -124,11 +98,7 @@ public class Act{
 			}
 			//System.out.println();
 		}
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> origin/master
 		for(int i = 0; i < coords.size(); i++){
 			if(coords.get(i).size() < threshold){
 				coords.remove(i);
@@ -139,15 +109,8 @@ public class Act{
 //		for(int i = 0; i < coords.size(); i++){
 //			System.out.println(coords.get(i).size());
 //		}
-<<<<<<< HEAD
 
 		return coords;
 	}
 
-=======
-		
-		return coords;
-	}
-	
->>>>>>> origin/master
 }

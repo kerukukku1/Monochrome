@@ -1,13 +1,8 @@
 package Main.UI.Util;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
->>>>>>> origin/master
+
+import Mahito6.Main.Constants;
 
 public class Coordinates{
 	public ArrayList<Integer> arx;
@@ -29,20 +24,13 @@ public class Coordinates{
 		maxy = 0;
 		minx = 100000;
 		miny = 100000;
-<<<<<<< HEAD
-		que = new JQueue(100000);
+		que = new JQueue(Constants.coordQueueSize);
 	}
 
-=======
-		que = new JQueue(200000);
-	}
-	
->>>>>>> origin/master
 	public void addCord(int x, int y){
 		arx.add(x);
 		ary.add(y);
 	}
-<<<<<<< HEAD
 
 	public int getX(int index){
 		return arx.get(index);
@@ -52,17 +40,6 @@ public class Coordinates{
 		return ary.get(index);
 	}
 
-=======
-	
-	public int getX(int index){
-		return arx.get(index);
-	}
-	
-	public int getY(int index){
-		return ary.get(index);
-	}
-	
->>>>>>> origin/master
 	public void calc(){
 		maxx = 0;
 		maxy = 0;
@@ -75,11 +52,7 @@ public class Coordinates{
 			miny = Math.min(miny, ary.get(i));
 		}
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	public void clearNoise(int threshold){
 		this.calc();
 		int h = maxy+1;
@@ -112,11 +85,7 @@ public class Coordinates{
 		ary = ary2;
 		this.calc();
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	private void makeDXDY(int range){
 		dx = new int[(range*2+1)*(range*2+1)-1];
 		dy = new int[(range*2+1)*(range*2+1)-1];
@@ -130,11 +99,7 @@ public class Coordinates{
 			}
 		}
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	public Coordinates findPoints(int x, int y){
 		que.clear();
 		que.push(x,y);
@@ -164,7 +129,6 @@ public class Coordinates{
 		}
 		return tmpPoints;
 	}
-<<<<<<< HEAD
 
 
 	public int size(){
@@ -179,20 +143,4 @@ public class Coordinates{
 		return funcCount;
 	}
 
-=======
-	
-	
-	public int size(){
-		return arx.size();
-	}
-	
-	public void clear(){
-		now = 0;
-	}
-	
-	public long getCount(){
-		return funcCount;
-	}
-	
->>>>>>> origin/master
 }

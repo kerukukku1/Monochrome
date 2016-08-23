@@ -1,23 +1,16 @@
 package Mahito6.Solver;
 
-<<<<<<< HEAD
 
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-=======
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
->>>>>>> origin/master
 import java.util.ArrayList;
 import java.util.List;
 
+import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 
-<<<<<<< HEAD
 public class CrossAlgorithm {///�G�b�W�����_���o����A���S���Y��
 
 	/*
@@ -26,43 +19,27 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 	 *
 	 *
 	 */
-
-	private static final double perm1 = 10.0;///���������̕����덷�̋��e�l(���̒l��蕽��������������Γ��������Ƃ݂Ȃ�)
-
-=======
-public class CrossAlgorithm {///エッジから交点抽出するアルゴリズム
-	
->>>>>>> origin/master
+	private static final double perm1 = 10.0;
 	private int w,h;
 	private List<Edge> edges;
 	private List<Tuple2<Double,Double>> answer;
 	private BufferedImage ansImage;
-<<<<<<< HEAD
+	private List<Tuple2<Integer, Integer>> crossPoints;
 
-=======
-	
->>>>>>> origin/master
 	public CrossAlgorithm(List<Edge> input,int w,int h){
 		this.edges = input;
 		this.w = w;
 		this.h = h;
+		crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	public List<Tuple2<Double,Double>> getAnswer(){
 		return answer;
 	}
 	public BufferedImage getAnswerImage(){
 		return ansImage;
 	}
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> origin/master
 	private List<Tuple2<Double,Double>>[] memo;
 	private int n;
 	public void solve(){
@@ -71,11 +48,7 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 		n = edges.size();
 		memo = new ArrayList[n];
 		for(int i = 0;i < n;i++)memo[i] = new ArrayList<Tuple2<Double,Double>>();
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> origin/master
 		for(int i = 0;i < n;i++)
 		for(int j = i+1;j < n;j++){
 			Edge e1 = edges.get(i);
@@ -85,7 +58,6 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 			memo[i].add(cp);
 			memo[j].add(cp);
 		}
-<<<<<<< HEAD
 		List<Integer> ones = new ArrayList<Integer>();///1������_�����Ȃ��G�b�W
 		for(int i = 0;i < n;i++){
 			if(memo[i].size() <= 1){///��_1�ȉ�
@@ -95,16 +67,6 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 			}else if(memo[i].size() == 2)continue;
 			///��_��3�ȏ゠�邩��2�ɂ���
 
-=======
-		
-		for(int i = 0;i < n;i++){
-			if(memo[i].size() <= 1){///交点1個以下
-				memo[i].clear();
-				continue;
-			}else if(memo[i].size() == 2)continue;
-			///交点が3個以上あるから2個にする
-			
->>>>>>> origin/master
 			List<Tuple2<Double,Double>> newList = null;
 			List<Tuple2<Double,Double>> target = memo[i];
 			double dis_max = 0.0;
@@ -113,18 +75,13 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 				Tuple2<Double,Double> c1 = target.get(j);
 				Tuple2<Double,Double> c2 = target.get(k);
 				double dis = Edge.distance(c1.t1, c1.t2, c2.t1, c2.t2);
-<<<<<<< HEAD
 				if(dis_max < dis){///�����X�V
-=======
-				if(dis_max < dis){///解を更新
->>>>>>> origin/master
 					dis_max = dis;
 					newList = new ArrayList<Tuple2<Double,Double>>();
 					newList.add(c1);
 					newList.add(c2);
 				}
 			}
-<<<<<<< HEAD
 
 			memo[i] = newList;
 		}
@@ -144,11 +101,6 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 			memo[t1].add(c2);
 			memo[t2].clear();///�Е��͏���
 		}
-=======
-			
-			memo[i] = newList;
-		}
->>>>>>> origin/master
 		int maxi = 0;
 		for(int i = 0;i < n;i++){
 			List<Tuple2<Double,Double>> tmp = new ArrayList<Tuple2<Double,Double>>();
@@ -161,20 +113,17 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 		Graphics2D g2d = (Graphics2D) ansImage.getGraphics();
 		for(int i = 0;i < answer.size();i++){
 			int next = (i + 1)%answer.size();
-<<<<<<< HEAD
 			int nnext = (i + 2)%answer.size();
-=======
->>>>>>> origin/master
 			int x = (int)answer.get(i).t1.doubleValue();
 			int y = (int)answer.get(i).t2.doubleValue();
 			g2d.setColor(Color.YELLOW);
 			g2d.fillOval(x-2, y-2, 4, 4);
+			if(Constants.isOutputDebugOval)crossPoints.add(new Tuple2<Integer, Integer>(x,y));
 			int nx = (int)answer.get(next).t1.doubleValue();
 			int ny = (int)answer.get(next).t2.doubleValue();
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine(x,y,nx,ny);
 		}
-<<<<<<< HEAD
 		double ccw0 = 0.0;
 		for(int i = 0;i < answer.size();i++){
 			int next = (i + 1)%answer.size();
@@ -208,25 +157,12 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 		if(memo[index].size() == 0)return 0;
 		Tuple2<Double,Double> c1 = memo[index].get(0);
 		memo[index].remove(c1);///�폜
-=======
-		g2d.dispose();
-	}
-	
-	private int saiki(int index,List<Tuple2<Double,Double>> tmp){
-		if(memo[index].size() == 0)return 0;
-		Tuple2<Double,Double> c1 = memo[index].get(0);
-		memo[index].remove(c1);///削除
->>>>>>> origin/master
 		int next = -1;
 		for(int i = 0;i < n;i++){
 			for(Tuple2<Double,Double> t : memo[i]){
 				if(t == c1){
 					next = i;
-<<<<<<< HEAD
 					memo[i].remove(c1);///�ړ��悩����폜
-=======
-					memo[i].remove(c1);///移動先からも削除
->>>>>>> origin/master
 					break;
 				}
 			}
@@ -239,7 +175,6 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 		return sum;
 	}
 
-<<<<<<< HEAD
 	private double ccw(double x1,double y1,double x2,double y2,double x3,double y3){
 		return cross(x2 - x1, y2 - y1, x3 - x2, y3 - y2);
 	}
@@ -264,7 +199,8 @@ public class CrossAlgorithm {///エッジから交点抽出するアルゴリズ
 		return deg;
 	}
 
+	public List<Tuple2<Integer, Integer>> getCrossPoints(){
+		return crossPoints;
+	}
 
-=======
->>>>>>> origin/master
 }
