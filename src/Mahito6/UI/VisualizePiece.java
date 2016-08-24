@@ -20,7 +20,7 @@ public class VisualizePiece extends JPanel{
     private Polygon polygon;
     private JLabel earth;
     
-    private static double scale = 0.35;
+    private static double scale = 1.0;
 	public VisualizePiece(){
 		nowPiece = 0;
 		setUtil();
@@ -73,6 +73,8 @@ public class VisualizePiece extends JPanel{
 		g.setPaint(new Color(183,156,139));
 		g.fillPolygon(polygon);
 	    this.repaint();
+		String nowState = "(" + String.valueOf(nowPiece+1) + "/" + String.valueOf(vertex.size()) + ")";
+		MainFrame.changeTitle(nowState);
 	}
 	
 	public void Back(){

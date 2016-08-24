@@ -32,11 +32,13 @@ public class ImageManager{
 	private List<BufferedImage> bufImages;
 	private List< List<Tuple2<Double, Double>> > vertex;
 	private BufferedImage confirm;
+	private List<List<Double>> allAngles;
 
 	public ImageManager(){
 		coords = new ArrayList<Coordinates>();
 		bufImages = new ArrayList<BufferedImage>();
 		vertex = new ArrayList<List <Tuple2<Double, Double> > >();
+		allAngles = new ArrayList<List<Double>>();
 	}
 
 	private void runAdaptiveThreshold(){
@@ -159,10 +161,12 @@ public class ImageManager{
 		//BufferedImage result = solver.getResult();
 		BufferedImage result2 = solver.getResult_line();
 		BufferedImage result3 = solver2.getAnswerImage();
-		File line_save = new File(getPath(String.valueOf(index)+"_ans_"));
-		File ans_save = new File(getPath(String.valueOf(index)+"_line_"));
-		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
-		System.out.println(pathStr);
+		File line_save = new File(getPath(String.valueOf(index)+"_line_"));
+		File ans_save = new File(getPath(String.valueOf(index)+"_ans_"));
+		
+		allAngles.add(solver2.getAngles());
+//		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
+//		System.out.println(pathStr);
 		try {
 			//ImageIO.write(result, "png", saveFile);
 			ImageIO.write(result2, "png", line_save);
@@ -241,7 +245,6 @@ public class ImageManager{
                 data[i + 2] = blue;
             }
         }
-
         BufferedImage img = new BufferedImage(mat.cols(), mat.rows(), type);
         img.getRaster().setDataElements(0, 0, mat.cols(), mat.rows(), data);
         return img;

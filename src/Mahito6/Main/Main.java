@@ -21,10 +21,10 @@ import Mahito6.Solver.EdgeFinder;
 import Mahito6.UI.MainFrame;
 
 public class Main {
-	private MainFrame mainFrame;
+	private static MainFrame mainFrame;
 	
 	public Main(){
-		mainFrame = new MainFrame("Monochrome");
+		mainFrame = new MainFrame(Constants.uiTitle);
 	}
 	
 	public static void main(String[] args){

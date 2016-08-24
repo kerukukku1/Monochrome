@@ -12,13 +12,15 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
+import Mahito6.Main.Constants;
+import Mahito6.Main.Main;
 import Main.UI.Util.MyKeyListener;
 
 public class MainFrame extends JFrame{
 	public static final int frame_height = 600;
 	public static final int frame_width = 700;
 	
-	private MainFrame mine;
+	private static MainFrame mine;
 	private MainPanel mainPanel;
 	private String title;
 	
@@ -44,6 +46,10 @@ public class MainFrame extends JFrame{
 	private void setMainPanel(){
 		mainPanel = new MainPanel();
 		this.add(mainPanel);
+	}
+	
+	public static void changeTitle(String title){
+		MainFrame.mine.setTitle(Constants.uiTitle + title);
 	}
 
 }

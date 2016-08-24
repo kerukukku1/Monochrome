@@ -25,12 +25,14 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 	private List<Tuple2<Double,Double>> answer;
 	private BufferedImage ansImage;
 	private List<Tuple2<Integer, Integer>> crossPoints;
-
+	private List<Double> angles;
+	
 	public CrossAlgorithm(List<Edge> input,int w,int h){
 		this.edges = input;
 		this.w = w;
 		this.h = h;
 		crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
+		angles = new ArrayList<Double>();
 	}
 
 	public List<Tuple2<Double,Double>> getAnswer(){
@@ -59,32 +61,18 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 			memo[j].add(cp);
 		}
 		List<Integer> ones = new ArrayList<Integer>();///1������_�����Ȃ��G�b�W
+		
 		for(int i = 0;i < n;i++){
-			if(memo[i].size() <= 1){///��_1�ȉ�
-				if(memo[i].size() == 1){ones.add(i);continue;}
-				memo[i].clear();
-				continue;
-			}else if(memo[i].size() == 2)continue;
-			///��_��3�ȏ゠�邩��2�ɂ���
-
-			List<Tuple2<Double,Double>> newList = null;
-			List<Tuple2<Double,Double>> target = memo[i];
-			double dis_max = 0.0;
-			for(int j = 0;j < target.size();j++)
-			for(int k = j+1;k < target.size();k++){
-				Tuple2<Double,Double> c1 = target.get(j);
-				Tuple2<Double,Double> c2 = target.get(k);
-				double dis = Edge.distance(c1.t1, c1.t2, c2.t1, c2.t2);
-				if(dis_max < dis){///�����X�V
-					dis_max = dis;
-					newList = new ArrayList<Tuple2<Double,Double>>();
-					newList.add(c1);
-					newList.add(c2);
+			if(memo[i].size() <= 1){///交点1以下
+				if(memo[i].size() == 1){
+					ones.add(i);
+					continue;
 				}
-			}
-
-			memo[i] = newList;
+				memo[i].clear();
+			} 
 		}
+		
+		//交点1個のやつらがちょんぎれてる奴らを繋ぐ場合の処理
 		for(int i = 0;i < ones.size();i++)
 		for(int j = i + 1;j < ones.size();j++){
 			int t1 = ones.get(i);
@@ -101,6 +89,44 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 			memo[t1].add(c2);
 			memo[t2].clear();///�Е��͏���
 		}
+		
+		for(int i = 0;i < n;i++){
+			if(memo[i].size() <= 1){///交点1以下
+				if(memo[i].size() == 1){
+					Tuple2<Double, Double> tmp = memo[i].get(0);
+					for(int j = 0; j < n; j++){
+						memo[j].remove(tmp);
+					}
+					continue;
+				}
+				memo[i].clear();
+			} 
+		}
+		
+		for(int i = 0;i < n;i++){
+			if(memo[i].size() <= 2){
+				continue;
+			}
+			///交点3以上なので2個に
+			List<Tuple2<Double,Double>> newList = null;
+			List<Tuple2<Double,Double>> target = memo[i];
+			double dis_max = 0.0;
+			for(int j = 0;j < target.size();j++)
+			for(int k = j+1;k < target.size();k++){
+				Tuple2<Double,Double> c1 = target.get(j);
+				Tuple2<Double,Double> c2 = target.get(k);
+				double dis = Edge.distance(c1.t1, c1.t2, c2.t1, c2.t2);
+				if(dis_max < dis){//解更新
+					dis_max = dis;
+					newList = new ArrayList<Tuple2<Double,Double>>();
+					newList.add(c1);
+					newList.add(c2);
+				}
+			}
+
+			memo[i] = newList;
+		}
+
 		int maxi = 0;
 		for(int i = 0;i < n;i++){
 			List<Tuple2<Double,Double>> tmp = new ArrayList<Tuple2<Double,Double>>();
@@ -147,6 +173,8 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 			result *= 100;
 			result = (int)result;
 			result /= 100;
+			//result = 角度
+			angles.add(result);
 			g2d.setColor(Color.WHITE);
 			g2d.drawString(String.valueOf(result), (int)nx, (int)ny);
 		}
@@ -201,6 +229,10 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 
 	public List<Tuple2<Integer, Integer>> getCrossPoints(){
 		return crossPoints;
+	}
+	
+	public List<Double> getAngles(){
+		return angles;
 	}
 
 }
