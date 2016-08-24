@@ -59,6 +59,7 @@ public class EdgeFinder {
 			if(target == null)break;
 
 			Edge preAns = split(save_image,target.t1,target.t2);///ハフ変換で得た直線を正しい長さにスプリットする
+			if(preAns == null)break;
 			drawColorLine(save_image_line,preAns,Color.RED);///とりあえずpreAnsを赤い線で描画
 
 			Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(preAns);///preAnsを最小二乗法によって精度上げる
@@ -67,6 +68,7 @@ public class EdgeFinder {
 				break;
 			}
 			Edge ans = split(save_image,ansConverted.t1,ansConverted.t2);///正しい長さにスプリットする
+			if(ans == null)break;
 			drawColorLine(save_image_line,ans,Color.BLUE);///最小二乗法で得た線を青色で描画
 
 			edges.add(ans);
@@ -206,6 +208,9 @@ public class EdgeFinder {
         }
         System.out.println(left+"-"+right);
         System.out.println("");
+        if(left == right){
+        	return null;
+        }
         left = Math.max(0, left - Constants.lrAddition);
         right += Constants.lrAddition;
         double kx1 = 0,ky1 = 0,kx2 = 0,ky2 = 0;
