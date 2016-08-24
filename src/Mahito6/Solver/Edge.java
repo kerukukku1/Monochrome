@@ -18,6 +18,13 @@ public class Edge {
 		this.ky2 = ky2;
 		this.distance = distance(kx1,ky1,kx2,ky2);
 	}
+	
+	public Edge getExtensionEdge(double value){///線分の端点をvalueだけ伸ばしたエッジを返す
+		LinerMethod lm = new LinerMethod(new Point(kx1,ky1),new Point(kx2,ky2),1);
+		Point newL = lm.getPointFromLength(-value);
+		Point newR = lm.getPointFromLength(distance + value);
+		return new Edge(r,theta,newL.x,newL.y,newR.x,newR.y);
+	}
 
 	public boolean onLine(double x,double y){///(x,y)がこのエッジ上に存在するか判定
 		double sum = distance(x,y,kx1,ky1) + distance(x,y,kx2,ky2);

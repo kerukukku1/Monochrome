@@ -28,6 +28,36 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
-		new Main();
+//		new Main();
+		debug();
+	}
+	
+	private static File debugImage = new File("D:/dropbox/Dropbox/Program/PUROKON2016/t-pc/jikken/31_piece600dpi.JPG");
+	public static void debug(){///EdgeFinderのデバッグ用
+		BufferedImage tarImage = null;
+		try {
+			tarImage = ImageIO.read(debugImage);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		EdgeFinder finder = new EdgeFinder(tarImage);
+		try {
+			finder.edgeFind();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		BufferedImage ans = finder.getResult_line();
+		try {
+			ImageIO.write(ans, "png", new File("ans.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		CrossAlgorithm crossAlgorithm = new CrossAlgorithm(finder.getResult_edge(), tarImage.getWidth(), tarImage.getHeight());
+		crossAlgorithm.solve();
+		if(crossAlgorithm.isErrorCross()){
+			System.out.println("cross error!!");
+		}
 	}
 }

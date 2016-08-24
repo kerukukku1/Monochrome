@@ -44,6 +44,12 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 
 	private List<Tuple2<Double,Double>>[] memo;
 	private int n;
+	private int first;
+	private boolean isErrorCross = true;
+	
+	public boolean isErrorCross(){
+		return isErrorCross;
+	}
 	public void solve(){
 		answer = new ArrayList<Tuple2<Double,Double>>();
 		ansImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
@@ -130,6 +136,7 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 		int maxi = 0;
 		for(int i = 0;i < n;i++){
 			List<Tuple2<Double,Double>> tmp = new ArrayList<Tuple2<Double,Double>>();
+			first = i;
 			int len = saiki(i,tmp);
 			if(maxi < len){
 				maxi = len;
@@ -184,9 +191,10 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 	private int saiki(int index,List<Tuple2<Double,Double>> tmp){
 		if(memo[index].size() == 0)return 0;
 		Tuple2<Double,Double> c1 = memo[index].get(0);
-		memo[index].remove(c1);///�폜
+//		memo[index].remove(c1);///�폜
 		int next = -1;
 		for(int i = 0;i < n;i++){
+			if(i == index)continue;
 			for(Tuple2<Double,Double> t : memo[i]){
 				if(t == c1){
 					next = i;
@@ -199,6 +207,11 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 		if(next != -1){
 			tmp.add(c1);
 			sum += saiki(next,tmp) + 1;
+		}else{
+			if(index == first){
+				///始点と終点共有
+				isErrorCross = false;
+			}
 		}
 		return sum;
 	}

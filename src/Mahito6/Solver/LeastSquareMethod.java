@@ -54,18 +54,25 @@ public class LeastSquareMethod {
 	}
 
 	public Tuple2<Double,Double> detectAndConvert(Edge preAns){///最小二乗法によって線を修正する。
+		Edge edge = preAns;
+		System.out.println("DISTANCE:"+edge.distance);
+		if(edge.distance > Constants.LongEdge){
+			///線分を短くすることで端点が含まれることを回避する
+			edge = edge.getExtensionEdge(-Constants.ShorteningLength);
+		}
+		
 		int w = sourceImage.getWidth();
 		int h = sourceImage.getHeight();
-        double sint = Math.sin(preAns.theta);
-        double cost = Math.cos(preAns.theta);
-        double r = preAns.r;
-        System.out.println(preAns.theta+","+r+","+sint+","+cost);
+        double sint = Math.sin(edge.theta);
+        double cost = Math.cos(edge.theta);
+        double r = edge.r;
+        System.out.println(edge.theta+","+r+","+sint+","+cost);
         Set<Long> set = new HashSet<Long>();
         if(sint != 0){
             for(int x = 0; x < w; x++){
                 int y = (int)((r - x * cost) / sint);
                 if(y < 0 || y >= h) continue;
-                if(!preAns.onLine(x, y))continue;
+                if(!edge.onLine(x, y))continue;
 
             	for(int i = -Constants.MethodWidth;i <= Constants.MethodWidth;i++){
             		for(int j = -Constants.MethodWidth;j <= Constants.MethodWidth;j++){
@@ -85,7 +92,7 @@ public class LeastSquareMethod {
             for(int y = 0; y < h; y++){
                 int x = (int)((r - y * sint) / cost);
                 if(x < 0 || x >= w) continue;
-                if(!preAns.onLine(x, y))continue;
+                if(!edge.onLine(x, y))continue;
 
             	for(int i = -Constants.MethodWidth;i <= Constants.MethodWidth;i++){
             		for(int j = -Constants.MethodWidth;j <= Constants.MethodWidth;j++){
@@ -102,6 +109,10 @@ public class LeastSquareMethod {
             }
         }
         System.out.println("nn = "+set.size());
+        if(set.size() == 0){
+        	System.out.println("ERROR!!!!");
+        	return null;
+        }
         ArrayList<Long> conv = new ArrayList<Long>(set);
         ArrayList<Tuple2<Integer,Integer>> next = new ArrayList<Tuple2<Integer,Integer>>();
         ArrayList<Tuple2<Integer,Integer>> nextRotated = new ArrayList<Tuple2<Integer,Integer>>();

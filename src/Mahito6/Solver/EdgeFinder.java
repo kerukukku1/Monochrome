@@ -62,6 +62,10 @@ public class EdgeFinder {
 			drawColorLine(save_image_line,preAns,Color.RED);///とりあえずpreAnsを赤い線で描画
 
 			Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(preAns);///preAnsを最小二乗法によって精度上げる
+			if(ansConverted == null){
+				///最小二乗法 or split失敗により強制終了、無限ループ回避用
+				break;
+			}
 			Edge ans = split(save_image,ansConverted.t1,ansConverted.t2);///正しい長さにスプリットする
 			drawColorLine(save_image_line,ans,Color.BLUE);///最小二乗法で得た線を青色で描画
 
