@@ -7,14 +7,25 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.ScrollPane;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.TransferHandler;
+import javax.swing.TransferHandler.TransferSupport;
 
 import Mahito6.Main.Tuple2;
+import Mahito6.Solver.DiffPiece;
 
 public class VisualizePanel extends JPanel{
 	
@@ -23,13 +34,16 @@ public class VisualizePanel extends JPanel{
     private Polygon polygon;
     private JLabel earth;
     private List< List<Tuple2<Double, Double>> > vertex;
+    private List<String> textData;
     private double scale = 1.0;
+    private DiffPiece diff;
     
     public VisualizePanel(List< List<Tuple2<Double, Double>> > vertex){
     	this.vertex = vertex;
 		nowPiece = 0;
 		setUtil();
 		paintPiece(nowPiece);
+		this.setTransferHandler(new DropFileHandler());
     }
 	
 	private void setUtil(){
@@ -43,9 +57,6 @@ public class VisualizePanel extends JPanel{
 		earth = new JLabel(new ImageIcon(gPiece));
 		earth.setBounds(0, 0, screenSize.width, screenSize.height);
 		this.add(earth);
-	
-		ScrollPane Sc = new ScrollPane(ScrollPane.SCROLLBARS_ALWAYS);
-		this.add(Sc);
 	}
 	
 	public void paintPiece(int index){
@@ -132,6 +143,57 @@ public class VisualizePanel extends JPanel{
 		System.out.println("Next");
 		nowPiece = (nowPiece+1)%vertex.size();
 		paintPiece(nowPiece);
+	}
+	
+	
+	private class DropFileHandler extends TransferHandler {
+		@Override
+		public boolean canImport(TransferSupport support) {
+			if (!support.isDrop()) {
+		        return false;
+		    }
+ 
+			if (!support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+		        return false;
+		    }
+ 
+			return true;
+		}
+ 
+		@Override
+		public boolean importData(TransferSupport support) {
+			if (!canImport(support)) {
+		        return false;
+		    }
+ 
+			Transferable t = support.getTransferable();
+			try {
+				List<File> files = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+				File f = files.get(0);
+				try {
+					textData = readTxt(f);
+					diff = new DiffPiece(textData);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (UnsupportedFlavorException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
+		}
+	}
+	
+	public static List<String> readTxt(File file) throws Exception{
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		List<String> in = new ArrayList<String>();
+		String str = br.readLine();
+		while(str != null){in.add(str);str = br.readLine();}
+		br.close();
+		return in;
 	}
 
 }

@@ -28,11 +28,11 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
-//		new Main();
-		debug();
+		new Main();
+//		debug();
 	}
 	
-	private static File debugImage = new File("D:/dropbox/Dropbox/Program/PUROKON2016/t-pc/jikken/31_piece600dpi.JPG");
+	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/public/08_23_SCAN/t/2_div1.png");
 	public static void debug(){///EdgeFinderのデバッグ用
 		BufferedImage tarImage = null;
 		try {

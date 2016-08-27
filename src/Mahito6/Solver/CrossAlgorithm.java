@@ -25,14 +25,12 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 	private List<Tuple2<Double,Double>> answer;
 	private BufferedImage ansImage;
 	private List<Tuple2<Integer, Integer>> crossPoints;
-	private List<Double> angles;
 	
 	public CrossAlgorithm(List<Edge> input,int w,int h){
 		this.edges = input;
 		this.w = w;
 		this.h = h;
 		crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
-		angles = new ArrayList<Double>();
 	}
 
 	public List<Tuple2<Double,Double>> getAnswer(){
@@ -143,10 +141,11 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 				answer = tmp;
 			}
 		}
+		
 		Graphics2D g2d = (Graphics2D) ansImage.getGraphics();
 		for(int i = 0;i < answer.size();i++){
 			int next = (i + 1)%answer.size();
-			int nnext = (i + 2)%answer.size();
+			//int nnext = (i + 2)%answer.size();
 			int x = (int)answer.get(i).t1.doubleValue();
 			int y = (int)answer.get(i).t2.doubleValue();
 			g2d.setColor(Color.YELLOW);
@@ -180,8 +179,6 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 			result *= 100;
 			result = (int)result;
 			result /= 100;
-			//result = è§’åº¦
-			angles.add(result);
 			g2d.setColor(Color.WHITE);
 			g2d.drawString(String.valueOf(result), (int)nx, (int)ny);
 		}
@@ -243,9 +240,4 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 	public List<Tuple2<Integer, Integer>> getCrossPoints(){
 		return crossPoints;
 	}
-	
-	public List<Double> getAngles(){
-		return angles;
-	}
-
 }

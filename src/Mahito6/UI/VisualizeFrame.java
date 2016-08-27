@@ -37,10 +37,9 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private void launchUI() {
 		this.setTitle(title);
 		this.setResizable(false);
-		this.setSize(600, 600);
 		setVisualizePanel();
 		//パネルサイズに合わせる
-		//pack();
+		pack();
 	}
 	
 	private void setVisualizePanel(){
@@ -64,11 +63,11 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 			System.out.println("Right");
 			visPanel.Next();
-			//pack();
+			pack();
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 			System.out.println("LEFT");
 			visPanel.Back();
-			//pack();
+			pack();
 		}
 	}
 	@Override

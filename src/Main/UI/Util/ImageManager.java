@@ -23,6 +23,7 @@ import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
 import Mahito6.UI.MainPanel;
+import Mahito6.UI.VisualizeFrame;
 
 public class ImageManager{
 
@@ -32,13 +33,13 @@ public class ImageManager{
 	private List<BufferedImage> bufImages;
 	private List< List<Tuple2<Double, Double>> > vertex;
 	private BufferedImage confirm;
-	private List<List<Double>> allAngles;
+	public static List<String> data;
 
 	public ImageManager(){
 		coords = new ArrayList<Coordinates>();
 		bufImages = new ArrayList<BufferedImage>();
 		vertex = new ArrayList<List <Tuple2<Double, Double> > >();
-		allAngles = new ArrayList<List<Double>>();
+		data = new ArrayList<String>();
 	}
 
 	private void runAdaptiveThreshold(){
@@ -93,6 +94,7 @@ public class ImageManager{
 	public void getPieces(){
 		long start = 0;
 		long end = 0;
+		System.out.println("K=" + Constants.dividePixelLookingForDist);
 		System.out.println("Get Piece");
 		System.out.println("runAdaptiveThreshold");
 		start = System.nanoTime();
@@ -133,7 +135,7 @@ public class ImageManager{
 			e.printStackTrace();
 		}
 
-		MainPanel.vPiece.setVertex(vertex);
+		VisualizeFrame visualizer = new VisualizeFrame(vertex);
 	}
 
 	public void pieceSolve(BufferedImage image, int index){
@@ -163,8 +165,6 @@ public class ImageManager{
 		BufferedImage result3 = solver2.getAnswerImage();
 		File line_save = new File(getPath(String.valueOf(index)+"_line_"));
 		File ans_save = new File(getPath(String.valueOf(index)+"_ans_"));
-		
-		allAngles.add(solver2.getAngles());
 //		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
 //		System.out.println(pathStr);
 		try {
@@ -219,13 +219,13 @@ public class ImageManager{
 				bim.setRGB(nx, ny, 0xff000000 | 255 <<16 | 255 <<8 | 255);
 			}
 			bufImages.add(bim);
-//			File saves = new File(getPath(String.valueOf(i)+"_"));
-//			try {
-//				ImageIO.write(bim, "png", saves);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			File saves = new File(getPath(String.valueOf(i)+"_"));
+			try {
+				if(Constants.debugImage)ImageIO.write(bim, "png", saves);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		System.out.println("Noise cleared");
 	}
@@ -258,12 +258,18 @@ public class ImageManager{
 	}
 
 	private void outputData(){
+		data.add("0");
 		System.out.println(vertex.size());
+		data.add(String.valueOf(vertex.size()));
 		for(int i = 0; i < vertex.size(); i++){
 			List< Tuple2<Double, Double> > now = vertex.get(i);
 			System.out.println(now.size());
+			data.add(String.valueOf(now.size()));
 			for(int j = 0; j < now.size(); j++){
 				System.out.println(now.get(j).t1 + " " + now.get(j).t2);
+				String x = String.valueOf(now.get(j).t1);
+				String y = String.valueOf(now.get(j).t2);
+				data.add(x+" "+y);
 			}
 		}
 	}

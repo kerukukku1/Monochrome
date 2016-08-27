@@ -13,7 +13,7 @@ import javax.swing.event.ChangeListener;
 
 import Mahito6.Main.Constants;
 
-public class UtilityPanel extends JPanel implements ActionListener, ChangeListener{
+public class UtilityPanel extends JPanel implements ChangeListener{
 	public ButtonGroup switType = new ButtonGroup();
 	private JRadioButton piece;
 	private JRadioButton frame;
@@ -30,18 +30,6 @@ public class UtilityPanel extends JPanel implements ActionListener, ChangeListen
 	}
 	
 	private void launchItems(){
-		JButton next = new JButton("Next");
-		JButton back = new JButton("Back");
-		
-		next.setBounds(10, MainFrame.frame_height-90, 80, 30);
-		back.setBounds(90, MainFrame.frame_height-90, 80, 30);
-		
-		next.addActionListener(this);
-		back.addActionListener(this);
-		
-		this.add(next);
-		this.add(back);
-		
 		piece = new JRadioButton("Piece");
 		frame = new JRadioButton("Frame");
 
@@ -50,6 +38,9 @@ public class UtilityPanel extends JPanel implements ActionListener, ChangeListen
 		
 		piece.setForeground(Color.red);
 		frame.setForeground(Color.red);
+		
+		piece.addChangeListener(this);
+		frame.addChangeListener(this);
 		
 		piece.setSelected(true);
 		
@@ -61,26 +52,20 @@ public class UtilityPanel extends JPanel implements ActionListener, ChangeListen
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getActionCommand() == "Next"){
-			MainPanel.vPiece.Next();
-		}else if(e.getActionCommand() == "Back"){
-			MainPanel.vPiece.Back();
-		}
-	}
-
-	@Override
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
 		if(piece.isSelected()){
 			Constants.clearNoiseThreshold = 200;
 			Constants.edgeWidth = 6;
-			Constants.lrAddition = 15;
+			Constants.lrAddition = 30;
+			Constants.dividePixelLookingForDist = 20;
+			Constants.modeWaku = false;
 		}else{
 			Constants.clearNoiseThreshold = 1200;
 			Constants.edgeWidth = 12;
 			Constants.lrAddition = 50;
+			Constants.dividePixelLookingForDist = 3;
+			Constants.modeWaku = true;
 		}
 	}
 }

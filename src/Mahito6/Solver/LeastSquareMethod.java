@@ -69,6 +69,7 @@ public class LeastSquareMethod {
         System.out.println(edge.theta+","+r+","+sint+","+cost);
         Set<Long> set = new HashSet<Long>();
         if(sint != 0){
+        	System.out.println("ROOT,sint: " +edge.theta+","+r+","+sint+","+cost);
             for(int x = 0; x < w; x++){
                 int y = (int)((r - x * cost) / sint);
                 if(y < 0 || y >= h) continue;
@@ -89,6 +90,7 @@ public class LeastSquareMethod {
             }
         }
         if(cost != 0){
+        	System.out.println("ROOT,cost: " +edge.theta+","+r+","+sint+","+cost);
             for(int y = 0; y < h; y++){
                 int x = (int)((r - y * sint) / cost);
                 if(x < 0 || x >= w) continue;
