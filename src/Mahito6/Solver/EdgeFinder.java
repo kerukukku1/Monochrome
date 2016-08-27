@@ -24,6 +24,7 @@ public class EdgeFinder {
 
 	private boolean[][] binary_image;///２値情報([w][h]、false:黒  true:白)
 	private ArrayList<Edge> edges;///検出したエッジを入れる(つまりans)
+	private int[][] dst_image;
 
 	public EdgeFinder(BufferedImage image){///imageは２値化された画像
 		this.image = image;
@@ -53,9 +54,7 @@ public class EdgeFinder {
 		int c = 0;
 		LeastSquareMethod lsm = new LeastSquareMethod(save_image);///最小二乗法のソルバ―
 		while(true){
-
-			binary_image = toBinaryImage(save_image);///入力画像を配列に落とす
-			Tuple2<Double,Double> target = calcHoughLine(binary_image, false);///ハフ変換実行!(ここだけ重い)
+			Tuple2<Double,Double> target = calcHoughLine(false);///ハフ変換実行!(ここだけ重い)
 			if(target == null)break;
 
 			Edge preAns = split(save_image,target.t1,target.t2);///ハフ変換で得た直線を正しい長さにスプリットする
@@ -111,6 +110,12 @@ public class EdgeFinder {
             sin_table.add(Math.sin(Constants.kTableConst * t));
             cos_table.add(Math.cos(Constants.kTableConst * t));
         }
+        dst_image = new int[d2][Constants.kAngleSplits];
+        for(int r = 0; r < d2; r++)
+        for(int t = 0; t < Constants.kAngleSplits; t++){
+            dst_image[r][t] = 0;
+        }
+        calcHoughTable(toBinaryImage(save_image));///最初に表を完成させる。
 	}
 
 	private void drawVertex(BufferedImage image,int x,int y){
@@ -244,12 +249,16 @@ public class EdgeFinder {
         return new Edge(r,theta,kx1,ky1,kx2,ky2);
 	}
 
-    private void erase(Graphics2D target,int x,int y){///x,yの周りの白点を消す(黒にする)
+    private void erase(Graphics2D target,int x,int y,
+    		           List<Tuple2<Integer, Integer>> decPoints,BufferedImage image){///x,yの周りの白点を消す(黒にする)
     	for(int i = -Constants.edgeWidth;i <= Constants.edgeWidth;i++){
     		for(int j = -Constants.edgeWidth;j <= Constants.edgeWidth;j++){
     			int tx = x + j;
     			int ty = y + i;
     			if(tx<0||ty<0||tx>=w||ty>=h)continue;
+    			if(image.getRGB(tx, ty) == -1){///白点？
+    				decPoints.add(new Tuple2<Integer, Integer>(tx,ty));
+    			}
     			target.drawRect(tx, ty, 0, 0);
     		}
     	}
@@ -261,12 +270,13 @@ public class EdgeFinder {
         double sint = Math.sin(edge.theta);
         double cost = Math.cos(edge.theta);
         double r = edge.r;
+        List<Tuple2<Integer, Integer>> decPoints = new ArrayList<Tuple2<Integer, Integer>>();
         if(sint != 0){
             for(int x = 0; x < w; x++){
                 int y = (int)((r - x * cost) / sint);
                 if(y < 0 || y >= h) continue;
                 if(!edge.onLine(x, y))continue;
-                erase(g2d,x,y);
+                erase(g2d,x,y,decPoints,image);
             }
         }
         if(cost != 0){
@@ -274,9 +284,10 @@ public class EdgeFinder {
                 int x = (int)((r - y * sint) / cost);
                 if(x < 0 || x >= w) continue;
                 if(!edge.onLine(x, y))continue;
-                erase(g2d,x,y);
+                erase(g2d,x,y,decPoints,image);
             }
         }
+        decreaseHoughTable(decPoints);
     }
     private void drawColorLine(BufferedImage image, Edge edge, Color color){///画像に線を描画
         Graphics2D g2d = (Graphics2D)image.getGraphics();
@@ -302,8 +313,8 @@ public class EdgeFinder {
         }
     }
 
-    private Tuple2<Double,Double> calcHoughLine(boolean[][] src_image, boolean save_flg){///ハフ変換で最も評価値の高い直線を返す
-        int[][] counter = getHoughLine(src_image);
+    private Tuple2<Double,Double> calcHoughLine(boolean save_flg){///ハフ変換で最も評価値の高い直線を返す
+        int[][] counter = dst_image;
         int max_count = 0;
         int t_max = 0, r_max = 0;
         for(int r = 0; r < d2; r++){
@@ -322,13 +333,7 @@ public class EdgeFinder {
         return new Tuple2<Double, Double>(realTheta, realR);
     }
 
-    private int[][] getHoughLine(boolean[][] src_image){///ハフ変換の計算をするO(WH*kAngleSplits)(ここが一番計算量重い)
-        int[][] dst_image = new int[d2][Constants.kAngleSplits];
-        for(int r = 0; r < d2; r++)
-        for(int t = 0; t < Constants.kAngleSplits; t++){
-            dst_image[r][t] = 0;
-        }
-
+    private void calcHoughTable(boolean[][] src_image){///ハフ変換の計算をするO(WH*kAngleSplits)(ここが一番計算量重い)
         for(int y = 0; y < h; y++)
         for(int x = 0; x < w; x++){
             if(src_image[x][y] == false) continue;///黒色ならコンティニュー
@@ -339,7 +344,17 @@ public class EdgeFinder {
                 dst_image[rindex][t] += 1;
             }
         }
-        return dst_image;
+    }
+    private void decreaseHoughTable(List<Tuple2<Integer, Integer>> decPoints){
+    	for(Tuple2<Integer, Integer> tuple2 : decPoints){
+    		int x = tuple2.t1;
+    		int y = tuple2.t2;
+            for(int t = 0; t < Constants.kAngleSplits; t++){
+                int r = (int)(x * cos_table.get(t) + y * sin_table.get(t) + 0.5);///intにキャストするためここで誤差出る
+                int rindex = r + diagonal;///rは-diagonal~diagonalの範囲で存在するため、これで正の値にする
+                dst_image[rindex][t] -= 1;
+            }
+    	}
     }
 
     private boolean[][] toBinaryImage(BufferedImage src_image){///画像src_imageから黒白の情報を抜き出す
