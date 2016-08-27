@@ -60,7 +60,6 @@ public class EdgeFinder {
 			Edge preAns = split(save_image,target.t1,target.t2);///ハフ変換で得た直線を正しい長さにスプリットする
 			if(preAns == null)break;
 			drawColorLine(save_image_line,preAns,Color.RED);///とりあえずpreAnsを赤い線で描画
-
 			Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(preAns);///preAnsを最小二乗法によって精度上げる
 			if(ansConverted == null){
 				///最小二乗法 or split失敗により強制終了、無限ループ回避用
@@ -110,13 +109,17 @@ public class EdgeFinder {
             sin_table.add(Math.sin(Constants.kTableConst * t));
             cos_table.add(Math.cos(Constants.kTableConst * t));
         }
+        long s = System.currentTimeMillis();
         dst_image = new int[d2][Constants.kAngleSplits];
         for(int r = 0; r < d2; r++)
         for(int t = 0; t < Constants.kAngleSplits; t++){
             dst_image[r][t] = 0;
         }
         calcHoughTable(toBinaryImage(save_image));///最初に表を完成させる。
+        System.out.println((System.currentTimeMillis() - s) + "miliii");
 	}
+	
+	public long timeSum = 0;
 
 	private void drawVertex(BufferedImage image,int x,int y){
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
@@ -259,9 +262,13 @@ public class EdgeFinder {
     			if(image.getRGB(tx, ty) == -1){///白点？
     				decPoints.add(new Tuple2<Integer, Integer>(tx,ty));
     			}
-    			target.drawRect(tx, ty, 0, 0);
+//    			long s = System.currentTimeMillis();
+//    			target.drawLine(tx, ty, tx, ty);
+//    			timeSum += (System.currentTimeMillis() - s);
     		}
     	}
+    	int ewidth = Constants.edgeWidth;
+    	target.fillRect(x - ewidth, y - ewidth, ewidth * 2 + 1, ewidth * 2 + 1);
     }
 
     private void removeLine(BufferedImage image, Edge edge){///検出したエッジを画像から消し去る
