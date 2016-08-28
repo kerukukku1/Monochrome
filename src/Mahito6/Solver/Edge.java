@@ -16,6 +16,13 @@ public class Edge {
 		this.ky1 = ky1;
 		this.kx2 = kx2;
 		this.ky2 = ky2;
+		if(kx1 > kx2){
+			///入れ替える
+			this.kx1 = kx2;
+			this.ky1 = ky2;
+			this.kx2 = kx1;
+			this.ky2 = ky1;
+		}
 		this.distance = distance(kx1,ky1,kx2,ky2);
 	}
 	

@@ -45,7 +45,18 @@ public class EdgeFinder {
 	}
 
 
-
+	private void addAnswerEdge(Edge edge){
+		for(Edge tar : edges){
+			double td = Math.abs(edge.theta - tar.theta);
+			if(td > 0.05)continue;
+			double dis1 = Math.sqrt(Math.pow(edge.kx1 - tar.kx1, 2.0) + Math.pow(edge.ky1 - tar.ky1, 2.0));
+			double dis2 = Math.sqrt(Math.pow(edge.kx2 - tar.kx2, 2.0) + Math.pow(edge.ky2 - tar.ky2, 2.0));
+			double mini = Math.min(dis1, dis2);
+			if(mini > 40)continue;
+			return;
+		}
+		edges.add(edge);
+	}
 
 	public void edgeFind() throws Exception{///これを呼ぶとエッジが検出される
 		long start = System.currentTimeMillis();
@@ -69,7 +80,7 @@ public class EdgeFinder {
 			if(ans == null)break;
 			drawColorLine(save_image_line,ans,Color.BLUE);///最小二乗法で得た線を青色で描画
 
-			edges.add(ans);
+			addAnswerEdge(ans);
 			removeLine(save_image,ans);///抽出した線を画像から消す
 
 //			ImageIO.write(save_image_line, "png", new File(c+".png"));///途中経過を出力
