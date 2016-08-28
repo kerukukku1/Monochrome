@@ -57,13 +57,13 @@ public class UtilityPanel extends JPanel implements ChangeListener{
 		if(piece.isSelected()){
 			Constants.clearNoiseThreshold = 200;
 			Constants.edgeWidth = 6;
-			Constants.lrAddition = 30;
+			Constants.lrAddition = 50;
 			Constants.dividePixelLookingForDist = 20;
 			Constants.modeWaku = false;
 		}else{
 			Constants.clearNoiseThreshold = 1200;
 			Constants.edgeWidth = 12;
-			Constants.lrAddition = 50;
+			Constants.lrAddition = 100;
 			Constants.dividePixelLookingForDist = 3;
 			Constants.modeWaku = true;
 		}

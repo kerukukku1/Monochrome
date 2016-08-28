@@ -48,7 +48,7 @@ public class ImageManager{
         Mat src = Highgui.imread(path, 0);
         //枠のときの速度上げ専
 
-        if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+        //if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
@@ -60,8 +60,12 @@ public class ImageManager{
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 71, 21);
         //有力
-        if(!Constants.modeWaku)Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
-        //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
+        if(!Constants.modeWaku){
+//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
+//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 17, 8);
+        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
+//            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
+        }
 
         //枠専用
         if(Constants.modeWaku){
@@ -121,7 +125,7 @@ public class ImageManager{
 			pieceSolve(bufImages.get(i), i);
 		}
 		end = System.nanoTime();
-		System.out.println((end - start) / 1000000f + "ms");
+		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
 
 		outputData();
 
@@ -150,7 +154,7 @@ public class ImageManager{
 		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());///���o�����S�ẴG�b�W�����_�����߂�\���o�\
 		solver2.solve();
 		List<Tuple2<Double,Double>> ans = solver2.getAnswer();///�S�Ă̒��_���擾
-		System.out.println("--------------answer--------------");
+		System.out.println("--------------NO." +index+" answer--------------");
 		List<String> tmpOut = new ArrayList<String>();
 		System.out.println(ans.size());
 		tmpOut.add(String.valueOf(ans.size()));

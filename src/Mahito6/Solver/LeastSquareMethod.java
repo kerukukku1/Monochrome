@@ -55,7 +55,7 @@ public class LeastSquareMethod {
 
 	public Tuple2<Double,Double> detectAndConvert(Edge preAns){///最小二乗法によって線を修正する。
 		Edge edge = preAns;
-		System.out.println("DISTANCE:"+edge.distance);
+		if(Constants.outputStream)System.out.println("DISTANCE:"+edge.distance);
 		if(edge.distance > Constants.LongEdge){
 			///線分を短くすることで端点が含まれることを回避する
 			edge = edge.getExtensionEdge(-Constants.ShorteningLength);
@@ -66,10 +66,10 @@ public class LeastSquareMethod {
         double sint = Math.sin(edge.theta);
         double cost = Math.cos(edge.theta);
         double r = edge.r;
-        System.out.println(edge.theta+","+r+","+sint+","+cost);
+        if(Constants.outputStream)System.out.println(edge.theta+","+r+","+sint+","+cost);
         Set<Long> set = new HashSet<Long>();
         if(sint != 0){
-        	System.out.println("ROOT,sint: " +edge.theta+","+r+","+sint+","+cost);
+        	//System.out.println("ROOT,sint: " +edge.theta+","+r+","+sint+","+cost);
             for(int x = 0; x < w; x++){
                 int y = (int)((r - x * cost) / sint);
                 if(y < 0 || y >= h) continue;
@@ -90,7 +90,7 @@ public class LeastSquareMethod {
             }
         }
         if(cost != 0){
-        	System.out.println("ROOT,cost: " +edge.theta+","+r+","+sint+","+cost);
+//        	System.out.println("ROOT,cost: " +edge.theta+","+r+","+sint+","+cost);
             for(int y = 0; y < h; y++){
                 int x = (int)((r - y * sint) / cost);
                 if(x < 0 || x >= w) continue;
@@ -110,7 +110,7 @@ public class LeastSquareMethod {
 
             }
         }
-        System.out.println("nn = "+set.size());
+        if(Constants.outputStream)System.out.println("nn = "+set.size());
         if(set.size() == 0){
         	System.out.println("ERROR!!!!");
         	return null;
@@ -134,7 +134,7 @@ public class LeastSquareMethod {
         Tuple2<Double,Double> ans2 = solve(nextRotated);
         double v1 = calcSumR(ans1,next);
         double v2 = calcSumR(ans2,nextRotated);
-        System.out.println(v1+","+v2);
+        if(Constants.outputStream)System.out.println(v1+","+v2);
         if(v1 <= v2)return ans1;
 
         double t1 = ans2.t1,r1 = ans2.t2;
@@ -183,8 +183,8 @@ public class LeastSquareMethod {
 			fin_a = upper_a / lower_a;
 		}
 		fin_b = ybar - (fin_a * xbar);
-		System.out.println("n = "+n);
-		System.out.println("a = "+fin_a+", b = "+fin_b);
+		if(Constants.outputStream)System.out.println("n = "+n);
+		if(Constants.outputStream)System.out.println("a = "+fin_a+", b = "+fin_b);
 
 		double x1 = 0,x2 = sourceImage.getWidth();
 		double y1 = fin_a * x1 + fin_b;

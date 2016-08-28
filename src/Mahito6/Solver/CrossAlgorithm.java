@@ -87,7 +87,7 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 			double rs = e1.r - e2.r;
 			double ts = e1.theta - e2.theta;
 			double square = Math.sqrt(Math.pow(rs, 2.0) + Math.pow(ts, 2.0));
-			System.out.println(square);
+			if(Constants.outputStream)System.out.println(square);
 			if(square > perm1)continue;
 			Tuple2<Double,Double> c2 = memo[t2].get(0);///�Е��̌�_�������Е��ɂԂ�����
 			memo[t1].add(c2);
@@ -175,7 +175,7 @@ public class CrossAlgorithm {///�G�b�W�����_���o����
 				///�݊p
 				result = 360.0 - result;
 			}
-			System.out.println(result);
+			if(Constants.outputStream)System.out.println(result);
 			result *= 100;
 			result = (int)result;
 			result /= 100;

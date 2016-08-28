@@ -152,7 +152,7 @@ public class EdgeFinder {
 		}else{
 			kx = 0.0;
 		}
-		System.out.println("kx = "+kx+", ky = "+ky);
+		if(Constants.outputStream)System.out.println("kx = "+kx+", ky = "+ky);
 
         boolean[] as = new boolean[100000];
         if(sint != 0){
@@ -187,7 +187,7 @@ public class EdgeFinder {
         		}else{
         			comp.add(new Tuple2<Integer,Integer>(length,flag?1:0));
         		}
-        		System.out.println(flag+","+length);
+        		if(Constants.outputStream)System.out.println(flag+","+length);
         		length = 1;
         		flag = !flag;
         	}
@@ -212,10 +212,10 @@ public class EdgeFinder {
         		maxi = now.t1;
         	}
         	sum += now.t1;
-        	System.out.println(now.t2+","+now.t1);
+        	if(Constants.outputStream)System.out.println(now.t2+","+now.t1);
         }
-        System.out.println(left+"-"+right);
-        System.out.println("");
+        if(Constants.outputStream)System.out.println(left+"-"+right);
+        if(Constants.outputStream)System.out.println("");
         if(left == right){
         	return null;
         }
