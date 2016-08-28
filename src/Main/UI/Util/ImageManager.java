@@ -139,7 +139,7 @@ public class ImageManager{
 			e.printStackTrace();
 		}
 
-		VisualizeFrame visualizer = new VisualizeFrame(vertex);
+		VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
 	}
 
 	public void pieceSolve(BufferedImage image, int index){

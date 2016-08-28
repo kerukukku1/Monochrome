@@ -17,15 +17,18 @@ import javax.swing.JPanel;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
+import Main.UI.Util.Coordinates;
 
 public class VisualizeFrame extends JFrame implements KeyListener{
 	private static VisualizeFrame mine;
 	private VisualizePanel visPanel;
 	private String title;
 	private List< List<Tuple2<Double, Double>> > vertex;
+	private List<Coordinates> coord;
 	
-	public VisualizeFrame(List< List<Tuple2<Double, Double>> > vertex){
+	public VisualizeFrame(List< List<Tuple2<Double, Double>> > vertex, List<Coordinates> coord){
 		this.vertex = vertex;
+		this.coord = coord;
 		this.mine = this;
 		title = "Visualize";
 		launchUI();

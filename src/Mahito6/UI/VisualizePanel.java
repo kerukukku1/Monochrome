@@ -10,6 +10,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.TransferHandler;
@@ -27,7 +30,7 @@ import javax.swing.TransferHandler.TransferSupport;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.DiffPiece;
 
-public class VisualizePanel extends JPanel{
+public class VisualizePanel extends JPanel implements MouseListener{
 	
 	private BufferedImage gPiece;
 	private int nowPiece;
@@ -36,6 +39,7 @@ public class VisualizePanel extends JPanel{
     private List< List<Tuple2<Double, Double>> > vertex;
     private List<String> textData;
     private double scale = 1.0;
+    private double[] scales;
     private DiffPiece diff;
     
     public VisualizePanel(List< List<Tuple2<Double, Double>> > vertex){
@@ -44,6 +48,7 @@ public class VisualizePanel extends JPanel{
 		setUtil();
 		paintPiece(nowPiece);
 		this.setTransferHandler(new DropFileHandler());
+		this.addMouseListener(this);
     }
 	
 	private void setUtil(){
@@ -57,6 +62,11 @@ public class VisualizePanel extends JPanel{
 		earth = new JLabel(new ImageIcon(gPiece));
 		earth.setBounds(0, 0, screenSize.width, screenSize.height);
 		this.add(earth);
+		
+		scales = new double[51];
+		for(int i = 0; i < 51; i++){
+			scales[i] = -1.0;
+		}
 	}
 	
 	public void paintPiece(int index){
@@ -90,39 +100,41 @@ public class VisualizePanel extends JPanel{
 	    double w = (double)screenSize.width;
 	    double h = (double)screenSize.height;
 	    //System.out.println("w:" + w + " h:" + h);
+	    w -= 200;
+	    h -= 200;
 	    if(maxx > w){
-	    	w -= 100;
-	    	double wscale = w/maxx;
+	    	scales[index] = w/maxx;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
 	    	for(int i = 0 ; i < data.size(); i++){
 		    	Tuple2<Double, Double> d = data.get(i);
-		    	double x = d.t1*wscale;
-		    	double y = d.t2*wscale;
+		    	double x = d.t1*scales[nowPiece];
+		    	double y = d.t2*scales[nowPiece];
 		    	maxx = (x < maxx)?maxx:x;
 		    	maxy = (y < maxy)?maxy:y;
 		    	xpoints[i] = (int)x;
 		    	ypoints[i] = (int)y;	    		
 	    	}
 	    }else if(maxy > h){
-	    	h -= 100;
-	    	double hscale = h/maxy;
+	    	scales[index] = h/maxy;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
 	    	for(int i = 0 ; i < data.size(); i++){
 		    	Tuple2<Double, Double> d = data.get(i);
-		    	double x = d.t1*hscale;
-		    	double y = d.t2*hscale;
+		    	double x = d.t1*scales[nowPiece];
+		    	double y = d.t2*scales[nowPiece];
 		    	maxx = (x < maxx)?maxx:x;
 		    	maxy = (y < maxy)?maxy:y;
 		    	xpoints[i] = (int)x;
 		    	ypoints[i] = (int)y;	    		
 	    	}
+	    }else{
+	    	scales[index] = 1.0;
 	    }
 	    
-		this.setPreferredSize(new Dimension((int)(maxx+20), (int)(maxy+20)));
+		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
 		g.setColor(Color.black);
-		g.clearRect(0, 0, (int)(maxx+20), (int)(maxy+20));
+		g.clearRect(0, 0, (int)(maxx+100), (int)(maxy+100));
 		polygon = new Polygon(xpoints, ypoints, xpoints.length);
 		g.setColor(Color.YELLOW);
 		g.drawPolygon(polygon);
@@ -194,6 +206,38 @@ public class VisualizePanel extends JPanel{
 		while(str != null){in.add(str);str = br.readLine();}
 		br.close();
 		return in;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(e.getX()+","+e.getY());
+		System.out.println(scales[nowPiece]);
+		CorrectDialog dia = new CorrectDialog((int)e.getX(), (int)e.getY(), 150, vertex.get(nowPiece), scales[nowPiece]);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

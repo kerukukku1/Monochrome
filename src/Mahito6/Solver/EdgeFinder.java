@@ -52,7 +52,7 @@ public class EdgeFinder {
 			double dis1 = Math.sqrt(Math.pow(edge.kx1 - tar.kx1, 2.0) + Math.pow(edge.ky1 - tar.ky1, 2.0));
 			double dis2 = Math.sqrt(Math.pow(edge.kx2 - tar.kx2, 2.0) + Math.pow(edge.ky2 - tar.ky2, 2.0));
 			double mini = Math.min(dis1, dis2);
-			if(mini > 40)continue;
+			if(mini > Constants.doubleLineDetect)continue;
 			return;
 		}
 		edges.add(edge);
@@ -115,7 +115,6 @@ public class EdgeFinder {
         cos_table = new ArrayList<Double>(Constants.kAngleSplits);
         diagonal = (int)Math.sqrt(w * w + h * h) + 2;
         d2 = diagonal * 2;
-
         for(int t = 0; t < Constants.kAngleSplits; t++){
             sin_table.add(Math.sin(Constants.kTableConst * t));
             cos_table.add(Math.cos(Constants.kTableConst * t));
