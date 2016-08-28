@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.WindowConstants;
 
 import Mahito6.Main.Tuple2;
 
@@ -42,6 +43,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		makeDXDY(this.range);
 		paintBackground();
 		this.addKeyListener(this);
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 	
 	private void setUtil(){

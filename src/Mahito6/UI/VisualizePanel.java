@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -226,7 +227,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 			int ny = now.t2;
 			System.out.println(nx + "," + ny);
 			g.setColor(Color.RED);
-			g.fillRect(nx, ny, 3, 3);
+			g.fillOval(nx-3, ny-3, 6, 6);
 		}
 		this.repaint();
 	}
