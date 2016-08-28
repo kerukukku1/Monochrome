@@ -41,6 +41,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
     private double scale = 1.0;
     private double[] scales;
     private DiffPiece diff;
+    private CorrectDialog dia = null;
     
     public VisualizePanel(List< List<Tuple2<Double, Double>> > vertex){
     	this.vertex = vertex;
@@ -48,7 +49,6 @@ public class VisualizePanel extends JPanel implements MouseListener{
 		setUtil();
 		paintPiece(nowPiece);
 		this.setTransferHandler(new DropFileHandler());
-		this.addMouseListener(this);
     }
 	
 	private void setUtil(){
@@ -61,6 +61,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 		gPiece = new BufferedImage(screenSize.width, screenSize.height, BufferedImage.TYPE_INT_ARGB);
 		earth = new JLabel(new ImageIcon(gPiece));
 		earth.setBounds(0, 0, screenSize.width, screenSize.height);
+		earth.addMouseListener(this);
 		this.add(earth);
 		
 		scales = new double[51];
@@ -213,7 +214,21 @@ public class VisualizePanel extends JPanel implements MouseListener{
 		// TODO Auto-generated method stub
 		System.out.println(e.getX()+","+e.getY());
 		System.out.println(scales[nowPiece]);
-		CorrectDialog dia = new CorrectDialog((int)e.getX(), (int)e.getY(), 150, vertex.get(nowPiece), scales[nowPiece]);
+		dia = new CorrectDialog((int)e.getX(), (int)e.getY(), 150, vertex.get(nowPiece), scales[nowPiece], this);
+		VisualizeFrame.setVisibleFrame(false);
+	}
+	
+	public void paintPlots(List<Tuple2<Integer, Integer>> plots){
+		Graphics2D g = (Graphics2D)gPiece.getGraphics();
+		for(int i = 0; i < plots.size(); i++){
+			Tuple2<Integer, Integer> now = plots.get(i);
+			int nx = now.t1;
+			int ny = now.t2;
+			System.out.println(nx + "," + ny);
+			g.setColor(Color.RED);
+			g.fillRect(nx, ny, 3, 3);
+		}
+		this.repaint();
 	}
 
 	@Override

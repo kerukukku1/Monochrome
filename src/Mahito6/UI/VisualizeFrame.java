@@ -53,6 +53,10 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	public static void changeTitle(String title){
 		VisualizeFrame.mine.setTitle("Visualizer" + title);
 	}
+	
+	public static void setVisibleFrame(boolean flag){
+		VisualizeFrame.mine.setVisible(flag);
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {

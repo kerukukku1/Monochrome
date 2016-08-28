@@ -48,6 +48,7 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 	public boolean isErrorCross(){
 		return isErrorCross;
 	}
+	
 	public void solve(){
 		answer = new ArrayList<Tuple2<Double,Double>>();
 		ansImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);

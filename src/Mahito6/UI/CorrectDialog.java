@@ -5,9 +5,12 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -16,25 +19,29 @@ import javax.swing.JLabel;
 
 import Mahito6.Main.Tuple2;
 
-public class CorrectDialog extends JDialog implements MouseListener{
+public class CorrectDialog extends JDialog implements MouseListener, KeyListener{
 	private int x, y, range;
 	private static int[] dx;
 	private static int[] dy;
+	private List<Tuple2<Integer, Integer>> plots;
 	private BufferedImage img;
 	private JLabel earth;
     private List<Tuple2<Double, Double>> vertex;
     private double scale;
+    private VisualizePanel parent = null;
     
-	public CorrectDialog(int x, int y, int range, List<Tuple2<Double, Double>> vertex, double scale){
+	public CorrectDialog(int x, int y, int range, List<Tuple2<Double, Double>> vertex, double scale, VisualizePanel parent){
 		this.x = x;
 		this.y = y;
+		this.parent = parent;
 		this.vertex = vertex;
 		this.range = range;
 		this.scale = scale;
+		plots = new ArrayList<Tuple2<Integer, Integer>>();
 		setUtil();
 		makeDXDY(this.range);
 		paintBackground();
-		this.addMouseListener(this);
+		this.addKeyListener(this);
 	}
 	
 	private void setUtil(){
@@ -45,6 +52,7 @@ public class CorrectDialog extends JDialog implements MouseListener{
 		img = new BufferedImage(range*2, range*2, BufferedImage.TYPE_INT_ARGB);
 		earth = new JLabel(new ImageIcon(img));
 		earth.setBounds(0, 0, range*2, range*2);
+		earth.addMouseListener(this);
 		this.add(earth);
 	}
 	
@@ -76,7 +84,7 @@ public class CorrectDialog extends JDialog implements MouseListener{
 	    	Tuple2<Double, Double> d = data.get(i);
 	    	double tx = d.t1 + (range) - this.x/scale;
 	    	double ty = d.t2 + (range) - this.y/scale;
-	    	System.out.println(tx + "," + ty);
+	    	//System.out.println(tx + "," + ty);
 	    	maxx = (tx < maxx)?maxx:tx;
 	    	maxy = (ty < maxy)?maxy:ty;
 	    	xpoints[i] = (int)tx;
@@ -89,16 +97,21 @@ public class CorrectDialog extends JDialog implements MouseListener{
 		g.drawPolygon(polygon);
 	    this.repaint();
 	}
+	
+	public List<Tuple2<Integer, Integer>> getPlots(){
+		return plots;
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		Graphics2D g = (Graphics2D)img.getGraphics();
 		g.setColor(Color.red);
-		g.fillOval((int)e.getX()-2 - 4, (int)e.getY()-27 - 4, 8, 8);
+		g.fillOval((int)e.getX() - 2, (int)e.getY() - 2, 4, 4);
+		int nx = (int)e.getX() - range + (int)((double)this.x/scale);
+		int ny = (int)e.getY() - range + (int)((double)this.y/scale);
+		plots.add(new Tuple2<Integer, Integer>((int)((double)nx*scale), (int)((double)ny*scale)));
 		this.repaint();
-		System.out.println("Clicked");
-		System.out.println(e.getX() + "," + e.getY());
 	}
 
 	@Override
@@ -121,6 +134,30 @@ public class CorrectDialog extends JDialog implements MouseListener{
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getKeyCode() == KeyEvent.VK_ENTER){
+			parent.paintPlots(plots);
+			this.dispose();
+			VisualizeFrame.setVisibleFrame(true);
+		}else{
+			
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
