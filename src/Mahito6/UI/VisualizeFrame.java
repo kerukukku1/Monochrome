@@ -46,7 +46,7 @@ public class VisualizeFrame extends JFrame{
 	}
 	
 	private void setVisualizePanel(){
-		visPanel = new VisualizePanel(vertex);
+		visPanel = new VisualizePanel(vertex, coord);
 		this.add(visPanel);
 	}
 	

@@ -68,5 +68,12 @@ public class Coordinates{
 	public boolean isError(){
 		return error;
 	}
-
+	
+	public int getVisX(int index){
+		return arx.get(index) - minx;
+	}
+	
+	public int getVisY(int index){
+		return ary.get(index) - miny;
+	}
 }

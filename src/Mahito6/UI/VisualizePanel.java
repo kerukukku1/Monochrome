@@ -28,8 +28,10 @@ import javax.swing.JPanel;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
 
+import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.DiffPiece;
+import Main.UI.Util.Coordinates;
 
 public class VisualizePanel extends JPanel implements MouseListener{
 	
@@ -41,9 +43,11 @@ public class VisualizePanel extends JPanel implements MouseListener{
     private double scale = 1.0;
     private DiffPiece diff;
     private CorrectDialog dia = null;
+    private Coordinates coord;
     
-    public VisualizePanel(List<Tuple2<Double, Double>> vertex){
+    public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord){
     	this.vertex = vertex;
+    	this.coord = coord;
 		setUtil();
 		paintPiece();
 		this.setTransferHandler(new DropFileHandler());
@@ -125,10 +129,18 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	    }else{
 	    	scale = 1.0;
 	    }
-	    
+
 		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
 		g.setColor(Color.black);
 		g.clearRect(0, 0, (int)(maxx+100), (int)(maxy+100));
+	    
+	    g.setColor(Color.WHITE);
+	    for(int i = 0; i < coord.size(); i++){
+	    	double x = (coord.getVisX(i)+Constants.imagePositionOffset/2)*scale;
+	    	double y = (coord.getVisY(i)+Constants.imagePositionOffset/2)*scale;
+	    	g.fillRect((int)x, (int)y, 1, 1);
+	    }
+	    this.repaint();
 		polygon = new Polygon(xpoints, ypoints, xpoints.length);
 		g.setColor(Color.YELLOW);
 		g.drawPolygon(polygon);
