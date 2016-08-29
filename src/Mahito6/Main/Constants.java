@@ -21,6 +21,7 @@ public class Constants{
 	public static final String uiTitle = "Monochrome";
 	public static final boolean debugImage = true;
 	public static final boolean outputStream = false;
+	public static final int VisualizeOffset = 50;
 	
 	public static final double LongEdge = 300.0;///線分がこれより長ければ端点を縮める
 	public static final double ShorteningLength = 60.0;///LongEdgeを縮める長さ

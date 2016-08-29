@@ -203,7 +203,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 			int ny = now.t2;
 			System.out.println(nx + "," + ny);
 			g.setColor(Color.RED);
-			g.fillOval(nx-3, ny-3, 6, 6);
+			g.fillOval(nx-4, ny-4, 8, 8);
 		}
 		this.repaint();
 	}

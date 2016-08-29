@@ -1,5 +1,6 @@
 package Mahito6.UI;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -96,6 +97,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	    
 	    Polygon polygon = new Polygon(xpoints, ypoints, xpoints.length);
 		g.setColor(Color.YELLOW);
+		BasicStroke wideStroke = new BasicStroke(4.0f);
+		g.setStroke(wideStroke);
 		g.drawPolygon(polygon);
 	    this.repaint();
 	}
@@ -109,7 +112,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		// TODO Auto-generated method stub
 		Graphics2D g = (Graphics2D)img.getGraphics();
 		g.setColor(Color.red);
-		g.fillOval((int)e.getX() - 2, (int)e.getY() - 2, 4, 4);
+		g.fillOval((int)e.getX() - 4, (int)e.getY() - 4, 8, 8);
 		int nx = (int)e.getX() - range + (int)((double)this.x/scale);
 		int ny = (int)e.getY() - range + (int)((double)this.y/scale);
 		plots.add(new Tuple2<Integer, Integer>((int)((double)nx*scale), (int)((double)ny*scale)));
