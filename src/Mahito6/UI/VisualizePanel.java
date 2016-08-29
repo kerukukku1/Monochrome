@@ -34,21 +34,18 @@ import Mahito6.Solver.DiffPiece;
 public class VisualizePanel extends JPanel implements MouseListener{
 	
 	private BufferedImage gPiece;
-	private int nowPiece;
     private Polygon polygon;
     private JLabel earth;
-    private List< List<Tuple2<Double, Double>> > vertex;
+    private List<Tuple2<Double, Double>> vertex;
     private List<String> textData;
     private double scale = 1.0;
-    private double[] scales;
     private DiffPiece diff;
     private CorrectDialog dia = null;
     
-    public VisualizePanel(List< List<Tuple2<Double, Double>> > vertex){
+    public VisualizePanel(List<Tuple2<Double, Double>> vertex){
     	this.vertex = vertex;
-		nowPiece = 0;
 		setUtil();
-		paintPiece(nowPiece);
+		paintPiece();
 		this.setTransferHandler(new DropFileHandler());
     }
 	
@@ -64,14 +61,9 @@ public class VisualizePanel extends JPanel implements MouseListener{
 		earth.setBounds(0, 0, screenSize.width, screenSize.height);
 		earth.addMouseListener(this);
 		this.add(earth);
-		
-		scales = new double[51];
-		for(int i = 0; i < 51; i++){
-			scales[i] = -1.0;
-		}
 	}
 	
-	public void paintPiece(int index){
+	public void paintPiece(){
 		if(vertex.isEmpty()){
 			System.out.println("Vertex is not set.");
 			return;
@@ -82,7 +74,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 //	    g.setStroke(normalStroke);
 //		g.setPaint(Color.BLACK);
 		
-	    List<Tuple2<Double,Double>> data = vertex.get(index);
+	    List<Tuple2<Double,Double>> data = vertex;
 	    double maxx = 0.0;
 	    double maxy = 0.0;
 	    int[] xpoints = new int[data.size()];
@@ -93,8 +85,8 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	    	double y = d.t2;
 	    	maxx = (x < maxx)?maxx:x;
 	    	maxy = (y < maxy)?maxy:y;
-	    	xpoints[i] = (int)(x*scale);
-	    	ypoints[i] = (int)(y*scale);
+	    	xpoints[i] = (int)x;
+	    	ypoints[i] = (int)y;
 	    	System.out.println(xpoints[i] + "," + ypoints[i]);
 	    }
 	    
@@ -105,33 +97,33 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	    w -= 200;
 	    h -= 200;
 	    if(maxx > w){
-	    	scales[index] = w/maxx;
+	    	scale = w/maxx;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
 	    	for(int i = 0 ; i < data.size(); i++){
 		    	Tuple2<Double, Double> d = data.get(i);
-		    	double x = d.t1*scales[nowPiece];
-		    	double y = d.t2*scales[nowPiece];
+		    	double x = d.t1*scale;
+		    	double y = d.t2*scale;
 		    	maxx = (x < maxx)?maxx:x;
 		    	maxy = (y < maxy)?maxy:y;
 		    	xpoints[i] = (int)x;
 		    	ypoints[i] = (int)y;	    		
 	    	}
 	    }else if(maxy > h){
-	    	scales[index] = h/maxy;
+	    	scale = h/maxy;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
 	    	for(int i = 0 ; i < data.size(); i++){
 		    	Tuple2<Double, Double> d = data.get(i);
-		    	double x = d.t1*scales[nowPiece];
-		    	double y = d.t2*scales[nowPiece];
+		    	double x = d.t1*scale;
+		    	double y = d.t2*scale;
 		    	maxx = (x < maxx)?maxx:x;
 		    	maxy = (y < maxy)?maxy:y;
 		    	xpoints[i] = (int)x;
 		    	ypoints[i] = (int)y;	    		
 	    	}
 	    }else{
-	    	scales[index] = 1.0;
+	    	scale = 1.0;
 	    }
 	    
 		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
@@ -143,22 +135,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 		//g.setPaint(new Color(183,156,139));
 		//g.fillPolygon(polygon);
 	    this.repaint();
-		String nowState = "(" + String.valueOf(nowPiece+1) + "/" + String.valueOf(vertex.size()) + ")";
-		VisualizeFrame.changeTitle(nowState);
 	}
-	
-	public void Back(){
-		System.out.println("Back");
-		nowPiece = (nowPiece + vertex.size() -1)%vertex.size();
-		paintPiece(nowPiece);
-	}
-	
-	public void Next(){
-		System.out.println("Next");
-		nowPiece = (nowPiece+1)%vertex.size();
-		paintPiece(nowPiece);
-	}
-	
 	
 	private class DropFileHandler extends TransferHandler {
 		@Override
@@ -214,8 +191,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		System.out.println(e.getX()+","+e.getY());
-		System.out.println(scales[nowPiece]);
-		dia = new CorrectDialog((int)e.getX(), (int)e.getY(), 150, vertex.get(nowPiece), scales[nowPiece], this);
+		dia = new CorrectDialog((int)e.getX(), (int)e.getY(), 150, vertex, scale, this);
 		VisualizeFrame.setVisibleFrame(false);
 	}
 	

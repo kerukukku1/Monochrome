@@ -22,27 +22,25 @@ public class PieceListView extends JFrame{
 	private List< List<Tuple2<Double, Double>> > vertex;
 	private JPanel paint;
 	private JPanel earth;
-	private List<PieceViewPanel> views;
 	private JScrollPane sp;
+	private List<Coordinates> coords;
 	
-	public PieceListView(List< List<Tuple2<Double, Double>> > vertex){
+	public PieceListView(List< List<Tuple2<Double, Double>> > vertex, List<Coordinates> coords){
+		this.coords = coords;
 		this.vertex = vertex;
 		title = "ListViewer";
 		launchUI();
 		this.requestFocusInWindow();
 		this.setVisible(true);
-	    test();
+		paintPiecePanel();
 	}
 	
-	private void test(){
-		views = new ArrayList<PieceViewPanel>();
-		int size = 19;
-		for(int i = 0; i < size; i++){
-			PieceViewPanel p = new PieceViewPanel((i%4)*240+5,(i/4)*194+5,235,190);
+	private void paintPiecePanel(){
+		for(int i = 0; i < vertex.size(); i++){
+			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i, vertex.get(i), coords.get(i));
 			paint.add(p);
-			views.add(p);
 		}
-		paint.setPreferredSize(new Dimension(960, 199+194*(size/4)));
+		paint.setPreferredSize(new Dimension(830, 265+255*(vertex.size()/4)));
 		this.revalidate();
 		this.repaint();
 	}
@@ -50,12 +48,12 @@ public class PieceListView extends JFrame{
 	private void launchUI() {
 		this.setTitle(title);
 		this.setResizable(false);
-		this.setSize(1000, 600);
+		this.setSize(850, 520);
 		earth = new JPanel();
 		paint = new JPanel();
 		paint.setLayout(null);
 	    JScrollPane scrollpane = new JScrollPane();
-	    scrollpane.setPreferredSize(new Dimension(980, 490));
+	    scrollpane.setPreferredSize(new Dimension(850, 520));
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);

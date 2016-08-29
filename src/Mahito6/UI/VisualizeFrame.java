@@ -20,14 +20,14 @@ import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 import Main.UI.Util.Coordinates;
 
-public class VisualizeFrame extends JFrame implements KeyListener{
+public class VisualizeFrame extends JFrame{
 	private static VisualizeFrame mine;
 	private VisualizePanel visPanel;
 	private String title;
-	private List< List<Tuple2<Double, Double>> > vertex;
-	private List<Coordinates> coord;
+	private List<Tuple2<Double, Double>> vertex;
+	private Coordinates coord;
 	
-	public VisualizeFrame(List< List<Tuple2<Double, Double>> > vertex, List<Coordinates> coord){
+	public VisualizeFrame(List<Tuple2<Double, Double>> vertex, Coordinates coord){
 		this.vertex = vertex;
 		this.coord = coord;
 		this.mine = this;
@@ -35,7 +35,6 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		launchUI();
 		this.requestFocusInWindow();
 		this.setVisible(true);
-		this.addKeyListener(this);
 	}
 	
 	private void launchUI() {
@@ -57,30 +56,5 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	public static void setVisibleFrame(boolean flag){
 		VisualizeFrame.mine.setVisible(flag);
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-			System.out.println("Right");
-			visPanel.Next();
-			pack();
-		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			System.out.println("LEFT");
-			visPanel.Back();
-			pack();
-		}
-	}
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }

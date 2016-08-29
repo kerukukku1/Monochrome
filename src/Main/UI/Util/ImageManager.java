@@ -23,6 +23,7 @@ import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
 import Mahito6.UI.MainPanel;
+import Mahito6.UI.PieceListView;
 import Mahito6.UI.VisualizeFrame;
 
 public class ImageManager{
@@ -139,7 +140,8 @@ public class ImageManager{
 			e.printStackTrace();
 		}
 
-		VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
+		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
+		PieceListView view = new PieceListView(vertex, coords);
 	}
 
 	public void pieceSolve(BufferedImage image, int index){

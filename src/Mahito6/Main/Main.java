@@ -32,8 +32,8 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
-//		new Main();
-		debug();
+		new Main();
+//		debug();
 	}
 	
 	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/m-pc/test.JPG");
@@ -76,6 +76,6 @@ public class Main {
 		List< List<Tuple2<Double, Double>> > vertex = new ArrayList<List<Tuple2<Double, Double>>>();
 		vertex.add(tmplist);
 		//VisualizeFrame vis = new VisualizeFrame(vertex, null);
-		PieceListView view = new PieceListView(vertex);
+		PieceListView view = new PieceListView(vertex, null);
 	}
 }
