@@ -166,6 +166,8 @@ public class ImageManager{
 			tmplist.add(t);
 		}
 		vertex.add(tmplist);
+		coords.get(index).setError(solver2.isErrorCross());
+		
 		//BufferedImage result = solver.getResult();
 		BufferedImage result2 = solver.getResult_line();
 		BufferedImage result3 = solver2.getAnswerImage();

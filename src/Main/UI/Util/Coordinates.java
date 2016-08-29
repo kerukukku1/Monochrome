@@ -11,6 +11,8 @@ public class Coordinates{
 	public ArrayList<Double> ansy;
 	public int now, maxx, maxy, minx, miny;
 	private long funcCount = 0;
+	private boolean error = false;
+	
 	public Coordinates(){
 		arx = new ArrayList<Integer>();
 		ary = new ArrayList<Integer>();
@@ -57,6 +59,14 @@ public class Coordinates{
 
 	public long getCount(){
 		return funcCount;
+	}
+	
+	public void setError(boolean error){
+		this.error = error;
+	}
+	
+	public boolean isError(){
+		return error;
 	}
 
 }

@@ -20,7 +20,7 @@ import Main.UI.Util.Coordinates;
 
 public class PieceViewPanel extends JPanel implements MouseListener{
 	private int x, y, width, height, index;
-	private JLabel paintArea, pieceIndex, pieceVertex, pieceType;
+	private JLabel paintArea, pieceIndex, pieceVertex, pieceType, errorType;
 	private BufferedImage image;
 	private List<Tuple2<Double, Double>> vertex;
 	private Polygon polygon;
@@ -65,6 +65,13 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		paintArea.setBounds(0, 50, 200, 200);
 		paintArea.addMouseListener(this);
 		this.add(paintArea);
+		
+		errorType = new JLabel();
+		errorType.setOpaque(true);
+		errorType.setBounds(150, 0, 50, 50);
+		Color c = coord.isError() ? Color.RED : Color.GREEN;
+		errorType.setBackground(c);
+		this.add(errorType);
 	}
 	
 	private void paintPiece(){

@@ -40,7 +40,7 @@ public class PieceListView extends JFrame{
 			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i, vertex.get(i), coords.get(i));
 			paint.add(p);
 		}
-		paint.setPreferredSize(new Dimension(830, 265+255*(vertex.size()/4)));
+		paint.setPreferredSize(new Dimension(830, 275+255*(vertex.size()/4)));
 		this.revalidate();
 		this.repaint();
 	}
