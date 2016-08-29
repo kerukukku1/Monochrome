@@ -21,6 +21,7 @@ import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
 import Mahito6.UI.MainFrame;
+import Mahito6.UI.PieceListView;
 import Mahito6.UI.VisualizeFrame;
 
 public class Main {
@@ -74,6 +75,7 @@ public class Main {
 		}
 		List< List<Tuple2<Double, Double>> > vertex = new ArrayList<List<Tuple2<Double, Double>>>();
 		vertex.add(tmplist);
-		VisualizeFrame vis = new VisualizeFrame(vertex, null);
+		//VisualizeFrame vis = new VisualizeFrame(vertex, null);
+		PieceListView view = new PieceListView(vertex);
 	}
 }
