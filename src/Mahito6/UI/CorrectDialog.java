@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -23,6 +24,7 @@ import javax.swing.WindowConstants;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
+import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
 
 public class CorrectDialog extends JDialog implements MouseListener, KeyListener, MouseMotionListener{
@@ -148,18 +150,54 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		viewPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
-		int nx = (int)e.getX() - range + (int)((double)this.x/scale);
-		int ny = (int)e.getY() - range + (int)((double)this.y/scale);
-		plots.add(new Tuple2<Integer, Integer>((int)((double)nx*scale), (int)((double)ny*scale)));
-		
-		Graphics2D g = (Graphics2D)img.getGraphics();
-		g.setColor(Color.red);
-		for(int i = 0; i < plots.size(); i++){
-			g.fillOval(viewPlots.get(i).t1 - 4, viewPlots.get(i).t2 - 4, 8, 8);
+		boolean isOk = true;
+		int rmIndex = 0;
+		int nowx = e.getX();
+		int nowy = e.getY();
+		for(int i = 0; i < viewPlots.size(); i++){
+			Tuple2<Integer, Integer> t = viewPlots.get(i);
+			int vx = t.t1;
+			int vy = t.t2;
+			double dist = Edge.distance(nowx, nowy, vx, vy);
+			if(dist <= 5.0){
+				isOk = false;
+				rmIndex = i;
+				break;
+			}
 		}
-		g.drawImage(img, null, 0, 0);
-		drawBackground();
+		//Right Click
+		if(e.getButton() == MouseEvent.BUTTON3){
+			if(isOk)return;
+			viewPlots.remove(rmIndex);
+			plots.remove(rmIndex);
+			drawBackground();
+			Graphics2D g = (Graphics2D)paint.getGraphics();
+			g.setColor(Color.red);
+			for(int i = 0; i < viewPlots.size(); i++){
+				Tuple2<Integer, Integer> t = viewPlots.get(i);
+				int vx = t.t1;
+				int vy = t.t2;
+				double dist = Edge.distance(nowx, nowy, vx, vy);
+				g.setColor(Color.GREEN);
+				if(dist <= 5.0)g.setColor(Color.RED);
+				g.fillOval(vx-4, vy-4, 8, 8);
+			}
+		//Left Click
+		}else{
+			if(!isOk)return;
+			viewPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
+			int nx = (int)e.getX() - range + (int)((double)this.x/scale);
+			int ny = (int)e.getY() - range + (int)((double)this.y/scale);
+			plots.add(new Tuple2<Integer, Integer>((int)((double)nx*scale), (int)((double)ny*scale)));
+			
+			drawBackground();
+			Graphics2D g = (Graphics2D)paint.getGraphics();
+			g.setColor(Color.GREEN);
+			for(int i = 0; i < viewPlots.size(); i++){
+				g.fillOval(viewPlots.get(i).t1 - 4, viewPlots.get(i).t2 - 4, 8, 8);
+			}
+
+		}
 		this.repaint();
 	}
 
@@ -177,9 +215,9 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getKeyCode() == KeyEvent.VK_ENTER){
-			parent.paintPlots(plots);
 			this.dispose();
 			VisualizeFrame.setVisibleFrame(true);
+			parent.paintPlots(plots);
 		}else{
 			
 		}
@@ -196,11 +234,26 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		int y = e.getY();
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
-		g.setColor(Color.RED);
+		g.setColor(Color.red);
+		int nowx = e.getX();
+		int nowy = e.getY();
+		for(int i = 0; i < viewPlots.size(); i++){
+			Tuple2<Integer, Integer> t = viewPlots.get(i);
+			int vx = t.t1;
+			int vy = t.t2;
+			double dist = Edge.distance(nowx, nowy, vx, vy);
+			g.setColor(Color.GREEN);
+			if(dist <= 5.0)g.setColor(Color.RED);
+			g.fillOval(vx-4, vy-4, 8, 8);
+		}
+		g.setColor(Color.BLUE);
 		g.drawOval(x-4, y-4, 8, 8);
-		g.drawOval(x-8, y-8, 16, 16);
-	    g.drawLine(0, y, range*2, y);
-	    g.drawLine(x, 0, x, range*2);
+		g.drawOval(x-7, y-7, 14, 14);
+		
+	    g.drawLine(0, y, x-4, y);
+	    g.drawLine(x+4, y, range*2, y);
+	    g.drawLine(x, 0, x, y-4);
+	    g.drawLine(x, y+4, x, range*2);
 	    this.repaint();
 	}
 }
