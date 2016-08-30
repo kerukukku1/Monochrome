@@ -21,6 +21,4 @@ public class Point {
 	public static Point getCopy(Point p){
 		return new Point(p);
 	}
-	
-	
 }

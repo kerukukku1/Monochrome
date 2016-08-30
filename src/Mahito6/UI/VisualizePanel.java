@@ -1,5 +1,6 @@
 package Mahito6.UI;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,6 +13,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,9 +35,10 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.DiffPiece;
 import Main.UI.Util.Coordinates;
 
-public class VisualizePanel extends JPanel implements MouseListener{
+public class VisualizePanel extends JPanel implements MouseListener, MouseMotionListener{
 	
 	private BufferedImage gPiece;
+	private BufferedImage paint;
     private Polygon polygon;
     private JLabel earth;
     private List<Tuple2<Double, Double>> vertex;
@@ -44,6 +47,10 @@ public class VisualizePanel extends JPanel implements MouseListener{
     private DiffPiece diff;
     private CorrectDialog dia = null;
     private Coordinates coord;
+    private double maxx, maxy;
+    private int[] xpoints;
+    private int[] ypoints;
+    private int range = 150;
     
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord){
     	this.vertex = vertex;
@@ -61,9 +68,11 @@ public class VisualizePanel extends JPanel implements MouseListener{
 
 	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		gPiece = new BufferedImage(screenSize.width, screenSize.height, BufferedImage.TYPE_INT_ARGB);
-		earth = new JLabel(new ImageIcon(gPiece));
+		paint = new BufferedImage(screenSize.width, screenSize.height, BufferedImage.TYPE_INT_ARGB);
+		earth = new JLabel(new ImageIcon(paint));
 		earth.setBounds(0, 0, screenSize.width, screenSize.height);
 		earth.addMouseListener(this);
+		earth.addMouseMotionListener(this);
 		this.add(earth);
 	}
 	
@@ -79,8 +88,8 @@ public class VisualizePanel extends JPanel implements MouseListener{
 //		g.setPaint(Color.BLACK);
 		
 	    List<Tuple2<Double,Double>> data = vertex;
-	    int[] xpoints = new int[data.size()];
-	    int[] ypoints = new int[data.size()];
+	    xpoints = new int[data.size()];
+	    ypoints = new int[data.size()];
 	    for(int i = 0; i < data.size(); i++){
 	    	Tuple2<Double, Double> d = data.get(i);
 	    	double x = d.t1;
@@ -96,8 +105,8 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	    //System.out.println("w:" + w + " h:" + h);
 	    w -= 200;
 	    h -= 200;
-	    double maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
-	    double maxy = coord.maxy - coord.miny + Constants.imagePositionOffset/2;
+	    maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
+	    maxy = coord.maxy - coord.miny + Constants.imagePositionOffset/2;
 	    if(maxy < maxx && maxx > w){
 	    	scale = w/maxx;
 	    	maxx = 0.0;
@@ -131,20 +140,29 @@ public class VisualizePanel extends JPanel implements MouseListener{
 		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
 		g.setColor(Color.black);
 		g.clearRect(0, 0, (int)(maxx+100), (int)(maxy+100));
-	    
+	    BasicStroke normalStroke = new BasicStroke(3.0f);
+	    g.setStroke(normalStroke);
+		polygon = new Polygon(xpoints, ypoints, xpoints.length);
+		g.setColor(Color.YELLOW);
+		g.drawPolygon(polygon);
+		
+        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f);
+        // アルファ値をセット（以後の描画は半透明になる）
 	    g.setColor(Color.WHITE);
+        g.setComposite(composite);
 	    for(int i = 0; i < coord.size(); i++){
 	    	double x = (coord.getVisX(i)+Constants.imagePositionOffset/2)*scale;
 	    	double y = (coord.getVisY(i)+Constants.imagePositionOffset/2)*scale;
 	    	g.fillRect((int)x, (int)y, 1, 1);
 	    }
-	    this.repaint();
-		polygon = new Polygon(xpoints, ypoints, xpoints.length);
-		g.setColor(Color.YELLOW);
-		g.drawPolygon(polygon);
-		//g.setPaint(new Color(183,156,139));
-		//g.fillPolygon(polygon);
-	    this.repaint();
+	    g.drawImage(gPiece, null, 0, 0);
+	    drawBackground();
+	}
+	
+	private void drawBackground(){
+		Graphics2D g = (Graphics2D)paint.getGraphics();
+		g.drawImage(gPiece, 0, 0, earth);
+		this.repaint();
 	}
 	
 	private class DropFileHandler extends TransferHandler {
@@ -201,7 +219,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		System.out.println(e.getX()+","+e.getY());
-		dia = new CorrectDialog((int)e.getX(), (int)e.getY(), 150, vertex, scale, this);
+		dia = new CorrectDialog((int)e.getX(), (int)e.getY(), range, vertex, coord, scale, this);
 		VisualizeFrame.setVisibleFrame(false);
 	}
 	
@@ -240,6 +258,28 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		drawBackground();
+		Graphics2D g = (Graphics2D)paint.getGraphics();
+		g.setColor(Color.GREEN.brighter());
+		int x = e.getX();
+		int y = e.getY();
+		g.drawRect(x-range, y-range, range*2, range*2);
+//		g.drawLine(x-range, y-range, x-range, y+range);
+//		g.drawLine(x-range, y-range, x+range, y-range);
+//		g.drawLine(x+range, y+range, x+range, y-range);
+//		g.drawLine(x+range, y+range, x-range, y+range);
+		this.repaint();
 	}
 
 }
