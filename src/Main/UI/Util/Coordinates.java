@@ -7,8 +7,6 @@ import Mahito6.Main.Constants;
 public class Coordinates{
 	public ArrayList<Integer> arx;
 	public ArrayList<Integer> ary;
-	public ArrayList<Double> ansx;
-	public ArrayList<Double> ansy;
 	public int now, maxx, maxy, minx, miny;
 	private long funcCount = 0;
 	private boolean error = false;

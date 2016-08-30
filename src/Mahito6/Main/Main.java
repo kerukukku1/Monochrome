@@ -17,6 +17,7 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
@@ -32,6 +33,8 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
+		//queue先に確保
+		BFS.initQueue();
 		new Main();
 //		debug();
 	}

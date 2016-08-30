@@ -11,7 +11,6 @@ import Mahito6.Solver.BFS;
 
 
 public class Act{
-	public Mat earth;
 	public Mat[] divides;
 	public List<Coordinates> coords;
 	private int maxX, maxY;
@@ -22,12 +21,11 @@ public class Act{
 	private int threshold;
 	//row = x, col = y
 	//any[x][y]
-	public Act(Mat earth, int range, int threshold){
-		this.earth = earth;
-		buf = ImageManager.MatToBufferedImageBGR(earth);
+	public Act(BufferedImage buf, int range, int threshold){
+		this.buf = buf;
 		coords = new ArrayList<Coordinates>();
-		maxX = earth.cols();
-		maxY = earth.rows();
+		maxX = buf.getWidth();
+		maxY = buf.getHeight();
 		BFS.initialize(maxX, maxY);
 		this.range = range;
 		this.threshold = threshold;
@@ -49,22 +47,19 @@ public class Act{
 				rgb = rgbConverter(buf.getRGB(j, i));
 				//System.out.print(rgb);
 				if(rgb == 0)continue;
-				coords.add(BFS.findPointsForAct(j, i, maxX, maxY, this.range, memo, buf));
+				Coordinates c = BFS.findPointsForAct(j, i, maxX, maxY, this.range, memo, buf);
+				if(c.size() < threshold)continue;
+				coords.add(c);
 			}
 			//System.out.println();
 		}
-
-		for(int i = 0; i < coords.size(); i++){
-			if(coords.get(i).size() < threshold){
-				coords.remove(i);
-				i--;
-			}
-		}
-
+//
 //		for(int i = 0; i < coords.size(); i++){
-//			System.out.println(coords.get(i).size());
+//			if(coords.get(i).size() < threshold){
+//				coords.remove(i);
+//				i--;
+//			}
 //		}
-
 		return coords;
 	}
 

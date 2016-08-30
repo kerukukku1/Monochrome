@@ -33,7 +33,7 @@ public class ImageManager{
 	private List<Coordinates> coords;
 	private List<BufferedImage> bufImages;
 	private List< List<Tuple2<Double, Double>> > vertex;
-	private BufferedImage confirm;
+	private BufferedImage confirm, bufBinImage;
 	public static List<String> data;
 
 	public ImageManager(){
@@ -72,6 +72,8 @@ public class ImageManager{
         if(Constants.modeWaku){
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
         }
+        
+        bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
@@ -109,7 +111,7 @@ public class ImageManager{
 
 		System.out.println("Divide Images");
 		start = System.nanoTime();
-		Act act = new Act(binImage, Constants.dividePixelLookingForDist, Constants.divideImageGarbageThreshold);
+		Act act = new Act(bufBinImage, Constants.dividePixelLookingForDist, Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
 		end = System.nanoTime();
 		System.out.println((end - start) / 1000000f + "ms");

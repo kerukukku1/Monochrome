@@ -17,9 +17,12 @@ public class BFS{
 	public BFS(){}
 	
 	public static void initialize(int maxx, int maxy){
-		que = new JQueue(Constants.queueSize);
 		noizeMemo = new boolean[maxx][maxy];
 		noizeState = new boolean[maxx][maxy];
+	}
+	
+	public static void initQueue(){
+		que = new JQueue(Constants.queueSize);
 	}
 	
 	public static void makeDXDY(int range){
@@ -111,13 +114,11 @@ public class BFS{
 			int y = coord.getY(i);
 			if(noizeMemo[x][y])continue;
 			noizeMemo[x][y] = true;
-			if(noizeState[x][y]){
-				Coordinates tc = BFS.findPointsForCoord(x,y,coord.maxx,coord.maxy,noizeMemo,noizeState);
-				if(tc.size() > threshold){
-					for(int k = 0; k < tc.size(); k++){
-						arx2.add(tc.getX(k));
-						ary2.add(tc.getY(k));
-					}
+			Coordinates tc = BFS.findPointsForCoord(x,y,coord.maxx,coord.maxy,noizeMemo,noizeState);
+			if(tc.size() > threshold){
+				for(int k = 0; k < tc.size(); k++){
+					arx2.add(tc.getX(k));
+					ary2.add(tc.getY(k));
 				}
 			}
 		}
