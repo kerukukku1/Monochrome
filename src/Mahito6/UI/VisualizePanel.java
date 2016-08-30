@@ -79,16 +79,12 @@ public class VisualizePanel extends JPanel implements MouseListener{
 //		g.setPaint(Color.BLACK);
 		
 	    List<Tuple2<Double,Double>> data = vertex;
-	    double maxx = 0.0;
-	    double maxy = 0.0;
 	    int[] xpoints = new int[data.size()];
 	    int[] ypoints = new int[data.size()];
 	    for(int i = 0; i < data.size(); i++){
 	    	Tuple2<Double, Double> d = data.get(i);
 	    	double x = d.t1;
 	    	double y = d.t2;
-	    	maxx = (x < maxx)?maxx:x;
-	    	maxy = (y < maxy)?maxy:y;
 	    	xpoints[i] = (int)x;
 	    	ypoints[i] = (int)y;
 	    	System.out.println(xpoints[i] + "," + ypoints[i]);
@@ -100,7 +96,9 @@ public class VisualizePanel extends JPanel implements MouseListener{
 	    //System.out.println("w:" + w + " h:" + h);
 	    w -= 200;
 	    h -= 200;
-	    if(maxx > w){
+	    double maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
+	    double maxy = coord.maxy - coord.miny + Constants.imagePositionOffset/2;
+	    if(maxy < maxx && maxx > w){
 	    	scale = w/maxx;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
@@ -113,7 +111,7 @@ public class VisualizePanel extends JPanel implements MouseListener{
 		    	xpoints[i] = (int)x;
 		    	ypoints[i] = (int)y;	    		
 	    	}
-	    }else if(maxy > h){
+	    }else if(maxx < maxy && maxy > h){
 	    	scale = h/maxy;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
