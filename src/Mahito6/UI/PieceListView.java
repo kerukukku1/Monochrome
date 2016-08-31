@@ -26,7 +26,6 @@ public class PieceListView extends JFrame{
 	private JPanel earth;
 	private JScrollPane sp;
 	private List<Coordinates> coords;
-<<<<<<< HEAD
 	public ImageManager database;
 	private List<PieceViewPanel> pieceViews;
 	private List<List<Edge>> allEdges;
@@ -36,12 +35,6 @@ public class PieceListView extends JFrame{
 		this.coords = database.getCoord();
 		this.vertex = database.getVertex();
 		this.allEdges = database.getEdges();
-	private ImageManager database;
-	
-	public PieceListView(List< List<Tuple2<Double, Double>> > vertex, List<Coordinates> coords, ImageManager database){
-		this.database = database;
-		this.coords = coords;
-		this.vertex = vertex;
 		title = "ListViewer";
 		launchUI();
 		this.requestFocusInWindow();

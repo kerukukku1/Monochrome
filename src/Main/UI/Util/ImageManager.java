@@ -145,11 +145,7 @@ public class ImageManager{
 		}
 
 		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
-<<<<<<< HEAD
 		PieceListView view = new PieceListView(this);
-=======
-		PieceListView view = new PieceListView(vertex, coords, this);
->>>>>>> 5844b332e3beecbe6b9e5c7d63ef7ade94f8032a
 	}
 
 	public void pieceSolve(BufferedImage image, int index){
