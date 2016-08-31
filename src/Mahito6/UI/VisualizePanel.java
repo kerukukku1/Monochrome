@@ -60,10 +60,15 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private Line2D viewLine;
     private Tuple2<Integer, Integer> clickP = null;
     private int range = 150;
+<<<<<<< HEAD
     private HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean> lineMap;
     private BasicStroke miniStroke;
     private BasicStroke maxiStroke;
     private Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>> _hash;
+=======
+    private BasicStroke miniStroke;
+    private BasicStroke maxiStroke;
+>>>>>>> 5844b332e3beecbe6b9e5c7d63ef7ade94f8032a
     
     
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord){
@@ -96,8 +101,11 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     	isSelect = false;
     	miniStroke = new BasicStroke(1.0f);
         maxiStroke = new BasicStroke(3.0f);
+<<<<<<< HEAD
         
         lineMap = new HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean>();
+=======
+>>>>>>> 5844b332e3beecbe6b9e5c7d63ef7ade94f8032a
 	}
 	
 	public void paintPiece(){
@@ -236,6 +244,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    g.setStroke(miniStroke);
 	}
 	
+<<<<<<< HEAD
 	private boolean isVerifyLine(int nx, int ny, int cx, int cy){
 		if(nx==cx && ny==cy)return false;
 		Tuple2<Integer, Integer> nt = new Tuple2<Integer, Integer>(nx,ny);
@@ -249,6 +258,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return true;
 	}
 	
+=======
+>>>>>>> 5844b332e3beecbe6b9e5c7d63ef7ade94f8032a
 	public List<Tuple2<Double, Double>> getVertex(){
 		return vertex;
 	}
@@ -269,6 +280,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return viewPlots;
 	}
 	
+<<<<<<< HEAD
 	public List<Line2D> getLines(){
 		List<Line2D> ret = new ArrayList<Line2D>();
 		for(int i = 0; i < lines.size(); i++){
@@ -282,6 +294,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return ret;
 	}
 	
+=======
+>>>>>>> 5844b332e3beecbe6b9e5c7d63ef7ade94f8032a
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -307,10 +321,15 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			int ny = nowOn.t2;
 			int cx = clickP.t1;
 			int cy = clickP.t2;
+<<<<<<< HEAD
 			
 			//有効なラインか確認(重複確認含)
 			if(!isVerifyLine(nx,ny,cx,cy))return;
 			
+=======
+			//同一点なら無視
+			if(nx==cx && ny==cy)return;
+>>>>>>> 5844b332e3beecbe6b9e5c7d63ef7ade94f8032a
 			Graphics2D g = (Graphics2D)paint.getGraphics();
 			g.setColor(Constants.newLineColor);
 			Line2D line = new Line2D.Double(nx, ny, cx, cy);
