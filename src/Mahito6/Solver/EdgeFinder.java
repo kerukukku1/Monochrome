@@ -150,7 +150,7 @@ public class EdgeFinder {
 		return false;
 	}
 
-	private Edge split(BufferedImage image,double theta,double radius){///直線を正しい長さにする(オーダー軽いけど実装難しい)
+	public Edge split(BufferedImage image,double theta,double radius){///直線を正しい長さにする(オーダー軽いけど実装難しい)
 		double r = radius;
 		double sint = Math.sin(theta);
 		double cost = Math.cos(theta);

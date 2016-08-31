@@ -111,6 +111,9 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 				Line2D l = lines.get(i);
 				edges.add(makeEdge(calcHoughParam(l), l));
 			}
+			System.out.println("additional edges:" + edges.size());
+			System.out.println("parent edges:" + parent.getEdges().size());
+			
 			//追加エッジを更新
 			parent.updateEdges(edges);
 			//追加エッジを考慮して頂点を検出し更新

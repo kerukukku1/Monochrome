@@ -38,6 +38,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.x = x;
 		this.y = y;
 		this.index = index;
+		this.edges = edges;
 		this.vertex = parent.database.getVertex().get(index);
 		this.coord = parent.database.getCoord().get(index);
 		this.edges = parent.getEdges(index);
@@ -81,8 +82,6 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		Color c = coord.isError() ? Color.RED : Color.GREEN;
 		errorType.setBackground(c);
 		this.add(errorType);
-		
-		edges = new ArrayList<Edge>();
 	}
 	
 	public void paintPiece(){
@@ -123,10 +122,12 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	    this.repaint();
 	}
 	
-	public void updateEdges(List<Edge> edges){
-		for(int i = 0; i < edges.size(); i++){
-			this.edges.add(edges.get(i));
+	public void updateEdges(List<Edge> updateEdges){
+		System.out.println("before:" + edges.size());
+		for(int i = 0; i < updateEdges.size(); i++){
+			edges.add(updateEdges.get(i));
 		}
+		System.out.println("after:" + this.edges.size());
 	}
 	
 	public void updateVertex(){
@@ -139,6 +140,10 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 			System.out.println(t.t1+","+t.t2);
 			vertex.add(t);
 		}
+	}
+	
+	public List<Edge> getEdges(){
+		return edges;
 	}
 
 	@Override
