@@ -42,16 +42,16 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
     private int[] ypoints;
     private int[] xpoints;
     
-	public CorrectDialog(int x, int y, int range, List<Tuple2<Double, Double>> vertex, Coordinates coord, double scale, VisualizePanel parent){
+	public CorrectDialog(int x, int y, int range, VisualizePanel parent){
 		this.x = x;
 		this.y = y;
 		this.parent = parent;
-		this.vertex = vertex;
-		this.coord = coord;
+		this.vertex = parent.getVertex();
+		this.coord = parent.getCoordinates();
 		this.range = range;
-		this.scale = scale;
-		plots = new ArrayList<Tuple2<Integer, Integer>>();
-		viewPlots = new ArrayList<Tuple2<Integer, Integer>>();
+		this.scale = parent.getScale();
+		plots = parent.getPlots();
+		viewPlots = this.decodeViewPlots(parent.getViewPlots());
 		setUtil();
 		makeDXDY(this.range);
 		paintBackground();
@@ -147,10 +147,28 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		return plots;
 	}
 	
+	private List<Tuple2<Integer, Integer>> encodeViewPlots(List<Tuple2<Integer, Integer>> tmp){
+		List<Tuple2<Integer, Integer>> enc = new ArrayList<Tuple2<Integer, Integer>>();
+		for(int i = 0; i < tmp.size(); i++){
+			Tuple2<Integer, Integer> t = tmp.get(i);
+			enc.add(new Tuple2<Integer, Integer>(t.t1+(int)((double)this.x/scale), t.t2+(int)((double)this.y/scale)));
+		}
+		return enc;
+	}
+	
+	private List<Tuple2<Integer, Integer>> decodeViewPlots(List<Tuple2<Integer, Integer>> tmp){
+		List<Tuple2<Integer, Integer>> dec = new ArrayList<Tuple2<Integer, Integer>>();
+		for(int i = 0; i < tmp.size(); i++){
+			Tuple2<Integer, Integer> t = tmp.get(i);
+			dec.add(new Tuple2<Integer, Integer>(t.t1-(int)((double)this.x/scale), t.t2-(int)((double)this.y/scale)));
+		}
+		return dec;
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		boolean isOk = true;
+		boolean isOn = true;
 		int rmIndex = 0;
 		int nowx = e.getX();
 		int nowy = e.getY();
@@ -160,14 +178,14 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			int vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			if(dist <= 5.0){
-				isOk = false;
+				isOn = false;
 				rmIndex = i;
 				break;
 			}
 		}
 		//Right Click
 		if(e.getButton() == MouseEvent.BUTTON3){
-			if(isOk)return;
+			if(isOn)return;
 			viewPlots.remove(rmIndex);
 			plots.remove(rmIndex);
 			drawBackground();
@@ -183,48 +201,31 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			}
 		//Left Click
 		}else{
-			if(!isOk)return;
+			if(!isOn)return;
 			viewPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
 			int nx = (int)e.getX() - range + (int)((double)this.x/scale);
 			int ny = (int)e.getY() - range + (int)((double)this.y/scale);
 			plots.add(new Tuple2<Integer, Integer>((int)((double)nx*scale), (int)((double)ny*scale)));
-			
 			drawBackground();
 			Graphics2D g = (Graphics2D)paint.getGraphics();
 			g.setColor(Constants.plotColor);
 			for(int i = 0; i < viewPlots.size(); i++){
 				g.fillOval(viewPlots.get(i).t1 - 4, viewPlots.get(i).t2 - 4, 8, 8);
 			}
-
 		}
 		this.repaint();
 	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {}
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-	@Override
-	public void mouseExited(MouseEvent e) {}
-	@Override
-	public void keyTyped(KeyEvent e) {}
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getKeyCode() == KeyEvent.VK_ENTER){
 			this.dispose();
+			parent.setPlots(plots);
+			parent.saveViewPlots(this.encodeViewPlots(viewPlots));
 			VisualizeFrame.setVisibleFrame(true);
-			parent.paintPlots(plots);
-		}else{
-			
 		}
 	}
-	@Override
-	public void keyReleased(KeyEvent e) {}
-	@Override
-	public void mouseDragged(MouseEvent e) {}
+
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -254,4 +255,19 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	    g.drawLine(x, y+Constants.targetOvalRadius, x, range*2);
 	    this.repaint();
 	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {}
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mouseExited(MouseEvent e) {}
+	@Override
+	public void keyTyped(KeyEvent e) {}
+	@Override
+	public void keyReleased(KeyEvent e) {}
+	@Override
+	public void mouseDragged(MouseEvent e) {}
 }

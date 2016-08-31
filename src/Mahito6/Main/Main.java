@@ -76,9 +76,9 @@ public class Main {
 			System.out.println(t.t1+","+t.t2);
 			tmplist.add(t);
 		}
-		List< List<Tuple2<Double, Double>> > vertex = new ArrayList<List<Tuple2<Double, Double>>>();
-		vertex.add(tmplist);
-		//VisualizeFrame vis = new VisualizeFrame(vertex, null);
-		PieceListView view = new PieceListView(vertex, null);
+//		List< List<Tuple2<Double, Double>> > vertex = new ArrayList<List<Tuple2<Double, Double>>>();
+//		vertex.add(tmplist);
+//		//VisualizeFrame vis = new VisualizeFrame(vertex, null);
+//		PieceListView view = new PieceListView(vertex, null, null);
 	}
 }

@@ -15,6 +15,7 @@ import javax.swing.JViewport;
 
 import Mahito6.Main.Tuple2;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.ImageManager;
 
 public class PieceListView extends JFrame{
 	private VisualizePanel visPanel;
@@ -24,8 +25,10 @@ public class PieceListView extends JFrame{
 	private JPanel earth;
 	private JScrollPane sp;
 	private List<Coordinates> coords;
+	private ImageManager database;
 	
-	public PieceListView(List< List<Tuple2<Double, Double>> > vertex, List<Coordinates> coords){
+	public PieceListView(List< List<Tuple2<Double, Double>> > vertex, List<Coordinates> coords, ImageManager database){
+		this.database = database;
 		this.coords = coords;
 		this.vertex = vertex;
 		title = "ListViewer";
@@ -40,7 +43,7 @@ public class PieceListView extends JFrame{
 			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i, vertex.get(i), coords.get(i));
 			paint.add(p);
 		}
-		paint.setPreferredSize(new Dimension(830, 275+255*(vertex.size()/4)));
+		paint.setPreferredSize(new Dimension(830, 295+255*(vertex.size()/4)));
 		this.revalidate();
 		this.repaint();
 	}
@@ -57,6 +60,7 @@ public class PieceListView extends JFrame{
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);
+	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
 	    earth.add(scrollpane);
 	    this.add(earth);
 	}
