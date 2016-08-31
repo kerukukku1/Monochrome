@@ -138,17 +138,17 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    }
 
 		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
-		g.setColor(Color.black);
+		g.setColor(Constants.backgroundColor);
 		g.clearRect(0, 0, (int)(maxx+100), (int)(maxy+100));
 	    BasicStroke normalStroke = new BasicStroke(3.0f);
 	    g.setStroke(normalStroke);
 		polygon = new Polygon(xpoints, ypoints, xpoints.length);
-		g.setColor(Color.YELLOW);
+		g.setColor(Constants.polyColor);
 		g.drawPolygon(polygon);
 		
         AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f);
         // アルファ値をセット（以後の描画は半透明になる）
-	    g.setColor(Color.WHITE);
+	    g.setColor(Constants.coordColor);
         g.setComposite(composite);
 	    for(int i = 0; i < coord.size(); i++){
 	    	double x = (coord.getVisX(i)+Constants.imagePositionOffset/2)*scale;
@@ -230,7 +230,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			int nx = now.t1;
 			int ny = now.t2;
 			System.out.println(nx + "," + ny);
-			g.setColor(Color.GREEN);
+			g.setColor(Constants.plotColor);
 			g.fillOval(nx-4, ny-4, 8, 8);
 		}
 		this.repaint();
@@ -271,7 +271,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		// TODO Auto-generated method stub
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
-		g.setColor(Color.GREEN.brighter());
+		g.setColor(Constants.rangeRectColor);
 		int x = e.getX();
 		int y = e.getY();
 		g.drawRect(x-range, y-range, range*2, range*2);

@@ -99,7 +99,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	
 	private void paintBackground(){
 		Graphics2D g = (Graphics2D)img.getGraphics();
-		g.setColor(Color.black);
+		g.setColor(Constants.backgroundColor);
 		g.clearRect(0, 0, range*2, range*2);
 		
 	    List<Tuple2<Double,Double>> data = this.vertex;
@@ -120,12 +120,12 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	    }
 	    
 	    Polygon polygon = new Polygon(xpoints, ypoints, xpoints.length);
-		g.setColor(Color.YELLOW);
+		g.setColor(Constants.polyColor);
 		BasicStroke wideStroke = new BasicStroke(4.0f);
 		g.setStroke(wideStroke);
 		g.drawPolygon(polygon);
 		
-		g.setColor(Color.WHITE);
+		g.setColor(Constants.coordColor);
 	    for(int i = 0; i < coord.size(); i++){
 	    	double nowx = (coord.getVisX(i) + Constants.imagePositionOffset/2) +range - this.x/scale;
 	    	double nowy = (coord.getVisY(i) + Constants.imagePositionOffset/2) +range - this.y/scale;
@@ -172,15 +172,14 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			plots.remove(rmIndex);
 			drawBackground();
 			Graphics2D g = (Graphics2D)paint.getGraphics();
-			g.setColor(Color.red);
 			for(int i = 0; i < viewPlots.size(); i++){
 				Tuple2<Integer, Integer> t = viewPlots.get(i);
 				int vx = t.t1;
 				int vy = t.t2;
 				double dist = Edge.distance(nowx, nowy, vx, vy);
-				g.setColor(Color.GREEN);
-				if(dist <= 5.0)g.setColor(Color.RED);
-				g.fillOval(vx-4, vy-4, 8, 8);
+				g.setColor(Constants.plotColor);
+				if(dist <= 5.0)g.setColor(Constants.onPlotColor);
+				g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 			}
 		//Left Click
 		}else{
@@ -192,7 +191,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			
 			drawBackground();
 			Graphics2D g = (Graphics2D)paint.getGraphics();
-			g.setColor(Color.GREEN);
+			g.setColor(Constants.plotColor);
 			for(int i = 0; i < viewPlots.size(); i++){
 				g.fillOval(viewPlots.get(i).t1 - 4, viewPlots.get(i).t2 - 4, 8, 8);
 			}
@@ -234,7 +233,6 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		int y = e.getY();
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
-		g.setColor(Color.red);
 		int nowx = e.getX();
 		int nowy = e.getY();
 		for(int i = 0; i < viewPlots.size(); i++){
@@ -242,18 +240,18 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			int vx = t.t1;
 			int vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
-			g.setColor(Color.GREEN);
-			if(dist <= 5.0)g.setColor(Color.RED);
-			g.fillOval(vx-4, vy-4, 8, 8);
+			g.setColor(Constants.plotColor);
+			if(dist <= 5.0)g.setColor(Constants.onPlotColor);
+			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
 		g.setColor(Color.BLUE);
-		g.drawOval(x-4, y-4, 8, 8);
-		g.drawOval(x-7, y-7, 14, 14);
+		g.drawOval(x-Constants.targetOvalRadius, y-Constants.targetOvalRadius, Constants.targetOvalRadius*2, Constants.targetOvalRadius*2);
+		g.drawOval(x-Constants.targetOvalRadius*2+1, y-Constants.targetOvalRadius*2+1, (Constants.targetOvalRadius*2-1)*2, (Constants.targetOvalRadius*2-1)*2);
 		
-	    g.drawLine(0, y, x-4, y);
-	    g.drawLine(x+4, y, range*2, y);
-	    g.drawLine(x, 0, x, y-4);
-	    g.drawLine(x, y+4, x, range*2);
+	    g.drawLine(0, y, x-Constants.targetOvalRadius, y);
+	    g.drawLine(x+Constants.targetOvalRadius, y, range*2, y);
+	    g.drawLine(x, 0, x, y-Constants.targetOvalRadius);
+	    g.drawLine(x, y+Constants.targetOvalRadius, x, range*2);
 	    this.repaint();
 	}
 }

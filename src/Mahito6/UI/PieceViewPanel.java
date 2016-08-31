@@ -76,7 +76,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	
 	private void paintPiece(){
 		Graphics2D g = (Graphics2D)image.getGraphics();
-		g.setColor(Color.BLACK);
+		g.setColor(Constants.backgroundColor);
 		g.clearRect(0, 0, 200, 200);		
 	    List<Tuple2<Double,Double>> data = vertex;
 	    double maxx = 0.0;
@@ -107,7 +107,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
     	}
 
 		polygon = new Polygon(xpoints, ypoints, xpoints.length);
-		g.setColor(Color.YELLOW);
+		g.setColor(Constants.polyColor);
 		g.drawPolygon(polygon);
 	    this.repaint();
 	}

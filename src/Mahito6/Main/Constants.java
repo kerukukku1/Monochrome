@@ -1,5 +1,7 @@
 package Mahito6.Main;
 
+import java.awt.Color;
+
 public class Constants{
 	public static final double gosa = 10.0;///線上にあるか判定するアルゴリズムの許容誤差
     public static final int kAngleSplits = 1024;   					   //0~3.14(pi)をどれだけ分割するか(デフォは4096分割、除算するので2^nの数を使おう)
@@ -21,7 +23,17 @@ public class Constants{
 	public static final String uiTitle = "Monochrome";
 	public static final boolean debugImage = true;
 	public static final boolean outputStream = false;
-	public static final int VisualizeOffset = 50;
+	
+	public static final Color polyColor = Color.YELLOW;
+	public static final Color plotColor = Color.GREEN;
+	public static final Color onPlotColor = Color.RED;
+	public static final Color coordColor = Color.WHITE;
+	public static final Color targetColor = Color.BLUE;
+	public static final Color backgroundColor = Color.BLACK;
+	public static final Color rangeRectColor = Color.GREEN.brighter();
+	
+	public static final int targetOvalRadius = 4;
+	public static final int plotOvalRadius = 4;
 	
 	public static final double LongEdge = 300.0;///線分がこれより長ければ端点を縮める
 	public static final double ShorteningLength = 60.0;///LongEdgeを縮める長さ
