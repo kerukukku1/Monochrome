@@ -31,6 +31,7 @@ public class Constants{
 	public static final Color targetColor = Color.BLUE;
 	public static final Color backgroundColor = Color.BLACK;
 	public static final Color rangeRectColor = Color.GREEN.brighter();
+	public static final Color newLineColor = Color.RED.brighter().brighter();
 	
 	public static final int targetOvalRadius = 4;
 	public static final int plotOvalRadius = 4;
