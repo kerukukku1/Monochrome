@@ -218,7 +218,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode() == KeyEvent.VK_ENTER){
+		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
 			this.dispose();
 			parent.setPlots(plots);
 			parent.saveViewPlots(this.encodeViewPlots(viewPlots));

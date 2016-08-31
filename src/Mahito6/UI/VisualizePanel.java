@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -59,8 +60,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private Line2D viewLine;
     private Tuple2<Integer, Integer> clickP = null;
     private int range = 150;
+    private HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean> lineMap;
     private BasicStroke miniStroke;
     private BasicStroke maxiStroke;
+    private Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>> _hash;
     
     
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord){
@@ -93,6 +96,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     	isSelect = false;
     	miniStroke = new BasicStroke(1.0f);
         maxiStroke = new BasicStroke(3.0f);
+        
+        lineMap = new HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean>();
 	}
 	
 	public void paintPiece(){
@@ -231,6 +236,19 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    g.setStroke(miniStroke);
 	}
 	
+	private boolean isVerifyLine(int nx, int ny, int cx, int cy){
+		if(nx==cx && ny==cy)return false;
+		Tuple2<Integer, Integer> nt = new Tuple2<Integer, Integer>(nx,ny);
+		Tuple2<Integer, Integer> ct = new Tuple2<Integer, Integer>(cx,cy);
+		_hash = new Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>>(nt, ct);
+		if(lineMap.containsKey(_hash))return false;
+		lineMap.put(_hash, true);
+		_hash = new Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>>(ct, nt);
+		if(lineMap.containsKey(_hash))return false;
+		lineMap.put(_hash, true);
+		return true;
+	}
+	
 	public List<Tuple2<Double, Double>> getVertex(){
 		return vertex;
 	}
@@ -249,6 +267,19 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	
 	public List<Tuple2<Integer, Integer>> getViewPlots(){
 		return viewPlots;
+	}
+	
+	public List<Line2D> getLines(){
+		List<Line2D> ret = new ArrayList<Line2D>();
+		for(int i = 0; i < lines.size(); i++){
+			Line2D line = lines.get(i);
+			double x1 = line.getX1() / scale;
+			double y1 = line.getY1() / scale;
+			double x2 = line.getX2() / scale;
+			double y2 = line.getY2() / scale;
+			ret.add(new Line2D.Double(x1,y1,x2,y2));
+		}
+		return ret;
 	}
 	
 	@Override
@@ -276,8 +307,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			int ny = nowOn.t2;
 			int cx = clickP.t1;
 			int cy = clickP.t2;
-			//同一点なら無視
-			if(nx==cx && ny==cy)return;
+			
+			//有効なラインか確認(重複確認含)
+			if(!isVerifyLine(nx,ny,cx,cy))return;
+			
 			Graphics2D g = (Graphics2D)paint.getGraphics();
 			g.setColor(Constants.newLineColor);
 			Line2D line = new Line2D.Double(nx, ny, cx, cy);

@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -16,23 +17,31 @@ import javax.swing.JPanel;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
+import Mahito6.Solver.CrossAlgorithm;
+import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
 
 public class PieceViewPanel extends JPanel implements MouseListener{
 	private int x, y, width, height, index;
 	private JLabel paintArea, pieceIndex, pieceVertex, pieceType, errorType;
-	private BufferedImage image;
+	private BufferedImage gPiece, image;
 	private List<Tuple2<Double, Double>> vertex;
 	private Polygon polygon;
 	private Coordinates coord;
-	public PieceViewPanel(int x, int y, int width, int height, int index, List<Tuple2<Double, Double>> vertex, Coordinates coord){
+	private VisualizeFrame vis = null;
+	private List<Edge> edges;
+	private PieceListView parent;
+	
+	public PieceViewPanel(int x, int y, int width, int height, int index, PieceListView parent){
 		this.width = width;
 		this.height = height;
 		this.x = x;
 		this.y = y;
 		this.index = index;
-		this.vertex = vertex;
-		this.coord = coord;
+		this.vertex = parent.database.getVertex().get(index);
+		this.coord = parent.database.getCoord().get(index);
+		this.edges = parent.getEdges(index);
+		this.image = parent.database.getImages().get(index);
 		setUtil();
 		launchItems();
 		paintPiece();
@@ -60,8 +69,8 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.add(pieceType);
 		
 		
-		image = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-		paintArea = new JLabel(new ImageIcon(image));
+		gPiece = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+		paintArea = new JLabel(new ImageIcon(gPiece));
 		paintArea.setBounds(0, 50, 200, 200);
 		paintArea.addMouseListener(this);
 		this.add(paintArea);
@@ -72,10 +81,12 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		Color c = coord.isError() ? Color.RED : Color.GREEN;
 		errorType.setBackground(c);
 		this.add(errorType);
+		
+		edges = new ArrayList<Edge>();
 	}
 	
-	private void paintPiece(){
-		Graphics2D g = (Graphics2D)image.getGraphics();
+	public void paintPiece(){
+		Graphics2D g = (Graphics2D)gPiece.getGraphics();
 		g.setColor(Constants.backgroundColor);
 		g.clearRect(0, 0, 200, 200);		
 	    List<Tuple2<Double,Double>> data = vertex;
@@ -111,11 +122,29 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		g.drawPolygon(polygon);
 	    this.repaint();
 	}
+	
+	public void updateEdges(List<Edge> edges){
+		for(int i = 0; i < edges.size(); i++){
+			this.edges.add(edges.get(i));
+		}
+	}
+	
+	public void updateVertex(){
+		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
+		solver2.solve();
+		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
+		System.out.println("--------------NO." +index+" answer updated--------------");
+		List<Tuple2<Double, Double> > vertex = new ArrayList< Tuple2<Double, Double> >();
+		for(Tuple2<Double,Double> t : ans){
+			System.out.println(t.t1+","+t.t2);
+			vertex.add(t);
+		}
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		VisualizeFrame vis = new VisualizeFrame(vertex, coord);
+		vis = new VisualizeFrame(vertex, coord, this);
 	}
 
 	@Override

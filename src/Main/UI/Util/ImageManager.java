@@ -35,12 +35,14 @@ public class ImageManager{
 	private List< List<Tuple2<Double, Double>> > vertex;
 	private BufferedImage confirm, bufBinImage;
 	public static List<String> data;
+	public List<List<Edge>> allEdges;
 
 	public ImageManager(){
 		coords = new ArrayList<Coordinates>();
 		bufImages = new ArrayList<BufferedImage>();
 		vertex = new ArrayList<List <Tuple2<Double, Double> > >();
 		data = new ArrayList<String>();
+		allEdges = new ArrayList<List<Edge>>();
 	}
 
 	private void runAdaptiveThreshold(){
@@ -143,7 +145,7 @@ public class ImageManager{
 		}
 
 		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
-		PieceListView view = new PieceListView(vertex, coords, this);
+		PieceListView view = new PieceListView(this);
 	}
 
 	public void pieceSolve(BufferedImage image, int index){
@@ -155,6 +157,7 @@ public class ImageManager{
 			return;
 		}
 		List<Edge> edges = solver.getResult_edge();
+		allEdges.add(edges);
 		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());///���o�����S�ẴG�b�W�����_�����߂�\���o�\
 		solver2.solve();
 		List<Tuple2<Double,Double>> ans = solver2.getAnswer();///�S�Ă̒��_���擾
@@ -283,4 +286,21 @@ public class ImageManager{
 			}
 		}
 	}
+	
+	public List< List<Tuple2<Double, Double>> > getVertex(){
+		return vertex;
+	}
+	
+	public List< List<Edge>> getEdges(){
+		return allEdges;
+	}
+	
+	public List<Coordinates> getCoord(){
+		return coords;
+	}
+	
+	public List<BufferedImage> getImages(){
+		return bufImages;
+	}
+	
 }

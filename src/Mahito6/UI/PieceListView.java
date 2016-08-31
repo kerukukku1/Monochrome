@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JViewport;
 
 import Mahito6.Main.Tuple2;
+import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
 import Main.UI.Util.ImageManager;
 
@@ -25,12 +26,15 @@ public class PieceListView extends JFrame{
 	private JPanel earth;
 	private JScrollPane sp;
 	private List<Coordinates> coords;
-	private ImageManager database;
+	public ImageManager database;
+	private List<PieceViewPanel> pieceViews;
+	private List<List<Edge>> allEdges;
 	
-	public PieceListView(List< List<Tuple2<Double, Double>> > vertex, List<Coordinates> coords, ImageManager database){
+	public PieceListView(ImageManager database){
 		this.database = database;
-		this.coords = coords;
-		this.vertex = vertex;
+		this.coords = database.getCoord();
+		this.vertex = database.getVertex();
+		this.allEdges = database.getEdges();
 		title = "ListViewer";
 		launchUI();
 		this.requestFocusInWindow();
@@ -40,12 +44,17 @@ public class PieceListView extends JFrame{
 	
 	private void paintPiecePanel(){
 		for(int i = 0; i < vertex.size(); i++){
-			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i, vertex.get(i), coords.get(i));
+			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i, this);
+			pieceViews.add(p);
 			paint.add(p);
 		}
 		paint.setPreferredSize(new Dimension(830, 295+255*(vertex.size()/4)));
 		this.revalidate();
 		this.repaint();
+	}
+	
+	public List<Edge> getEdges(int index){
+		return allEdges.get(index);
 	}
 	
 	private void launchUI() {
@@ -63,5 +72,7 @@ public class PieceListView extends JFrame{
 	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
 	    earth.add(scrollpane);
 	    this.add(earth);
+	    
+	    pieceViews = new ArrayList<PieceViewPanel>();
 	}
 }
