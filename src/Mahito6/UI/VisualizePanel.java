@@ -80,7 +80,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		
 		//頂点データをスケールに合わせてプロットに変換。このときint型に丸め込まれる
 		scalePlots = this.convertVertexToScalePlots(vertex);
-		//線をスケールを合わせて描画。このときint型に丸め込まれる。
+		//線をスケールを合わせて描画。これはdoubleのまま保持される。
 		scaleLines = this.encodeScaleLines(lines);
 		//スケールを合わせていないプロット
 		plots = this.convertVertexToPlots(vertex);
@@ -242,8 +242,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	private List<Tuple2<Double, Double>> convertVertexToPlots(List<Tuple2<Double, Double>> vertex){
 		List<Tuple2<Double, Double>> ret = new ArrayList<Tuple2<Double, Double>>();
 		for(Tuple2<Double, Double> v : vertex){
-			double nowx = v.t1 * scale;
-			double nowy = v.t2 * scale;
+			double nowx = v.t1;
+			double nowy = v.t2;
 			ret.add(new Tuple2<Double, Double>(nowx, nowy));
 		}
 		return ret;
@@ -335,18 +335,16 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	
 	//正規のスケールに直す
 	public List<Line2D> getLines(){
-		//元々検出されてたLineをまず代入
-		List<Line2D> ret = lines;
-		
+		return lines;
+	}
+	
+	private Line2D converToLine(Line2D line){
 		//自分で引いた線をスケールを直して追加
-		for(Line2D line : scaleLines){
-			double x1 = line.getX1() / scale;
-			double y1 = line.getY1() / scale;
-			double x2 = line.getX2() / scale;
-			double y2 = line.getY2() / scale;
-			ret.add(new Line2D.Double(x1,y1,x2,y2));
-		}
-		return ret;
+		double x1 = line.getX1() / scale;
+		double y1 = line.getY1() / scale;
+		double x2 = line.getX2() / scale;
+		double y2 = line.getY2() / scale;
+		return new Line2D.Double(x1,y1,x2,y2);
 	}
 	
 	@Override
@@ -386,6 +384,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			clickP = null;
 			isSelect = false;
 			scaleLines.add(line);
+			lines.add(converToLine(line));
 			paintLine(nowx, nowy);
 		}else{
 			//点の上の時

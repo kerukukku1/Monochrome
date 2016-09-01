@@ -115,22 +115,17 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
-			List<Line2D> tmp = visPanel.getLines();
-			for(int i = 0; i < tmp.size(); i++){
-				Line2D l = tmp.get(i);
-				lines.add(l);
-			}
-			
+			System.out.println("Save");
+			lines = visPanel.getLines();
 			for(int i = 0; i < lines.size(); i++){
 				Line2D l = lines.get(i);
 				edges.add(makeEdge(calcHoughParam(l), l));
 			}
-			System.out.println("additional edges:" + edges.size());
-			System.out.println("parent edges:" + parent.getEdges().size());
+			System.out.println("edges:" + edges.size());
 			
-			//追加エッジを更新
+			//エッジを更新
 			parent.updateEdges(edges);
-			//追加エッジを考慮して頂点を検出し更新
+			//エッジを考慮して頂点を検出し更新
 			parent.updateVertex();
 			parent.paintPiece();
 			this.dispose();

@@ -162,7 +162,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		List<Tuple2<Integer, Integer>> dec = new ArrayList<Tuple2<Integer, Integer>>();
 		for(int i = 0; i < tmp.size(); i++){
 			Tuple2<Integer, Integer> t = tmp.get(i);
-			dec.add(new Tuple2<Integer, Integer>(t.t1-(int)((double)this.x/scale)+range, t.t2-(int)((double)this.y/scale)+range));
+			dec.add(new Tuple2<Integer, Integer>((int)((double)t.t1/scale)-(int)((double)this.x/scale)+range, (int)((double)t.t2/scale)-(int)((double)this.y/scale)+range));
 		}
 		return dec;
 	}
@@ -205,9 +205,9 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		}else{
 			if(!isOn)return;
 			focusPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
-			int nx = (int)e.getX() - range + (int)((double)this.x/scale);
-			int ny = (int)e.getY() - range + (int)((double)this.y/scale);
-			plots.add(new Tuple2<Double, Double>((double)nx*scale, (double)ny*scale));
+			double nx = (double)e.getX() - range + (double)this.x/scale;
+			double ny = (double)e.getY() - range + (double)this.y/scale;
+			plots.add(new Tuple2<Double, Double>((double)nx, (double)ny));
 			drawBackground();
 			Graphics2D g = (Graphics2D)paint.getGraphics();
 			g.setColor(Constants.plotColor);

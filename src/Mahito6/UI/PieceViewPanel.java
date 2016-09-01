@@ -126,35 +126,22 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	
 	public void updateEdges(List<Edge> updateEdges){
 		System.out.println("before:" + edges.size());
-		BufferedImage save_image = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = (Graphics2D)save_image.getGraphics();
-		g.drawImage(image, 0, 0, null);
-		EdgeFinder ef = new EdgeFinder(save_image);
-		LeastSquareMethod lsm = new LeastSquareMethod(save_image);
-		for(int i = 0; i < updateEdges.size(); i++){
-			Edge e = updateEdges.get(i);
-			Tuple2<Double, Double> target = new Tuple2<Double, Double>(e.theta, e.r);
-			Edge preAns = ef.split(save_image,target.t1,target.t2);
-			if(preAns == null)continue;
-			Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(preAns);
-			if(ansConverted == null)continue;
-			Edge ans = ef.split(save_image,ansConverted.t1,ansConverted.t2);
-			if(ans == null)continue;
-			edges.add(ans);
-		}
+		edges = updateEdges;
 		System.out.println("after:" + this.edges.size());
 	}
 	
+	//頂点検出。おそらく線が交差までしてないので検出してない可能性アリ
 	public void updateVertex(){
 		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
 		solver2.solve();
 		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
-		System.out.println("--------------NO." +index+" answer updated--------------");
+		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
 		List<Tuple2<Double, Double> > vertex = new ArrayList< Tuple2<Double, Double> >();
 		for(Tuple2<Double,Double> t : ans){
 			System.out.println(t.t1+","+t.t2);
 			vertex.add(t);
 		}
+		errorType.setBackground(Color.ORANGE);
 	}
 	
 	public List<Edge> getEdges(){
