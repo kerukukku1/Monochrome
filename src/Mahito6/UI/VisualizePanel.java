@@ -56,8 +56,6 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private List<Tuple2<Double, Double>> plots;
     private double maxx, maxy;
     private boolean isSelect = false;
-    private int[] xpoints;
-    private int[] ypoints;
     private Line2D scaleLine;
     private List<Line2D> scaleLines;
     private List<Line2D> lines;
@@ -87,6 +85,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		scaleLine = new Line2D.Double();
     	isSelect = false;
 	    drawLines();
+	    paintPlots();
     }
 	
 	private void setUtil(){
@@ -124,20 +123,20 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //	    BasicStroke normalStroke = new BasicStroke(5.0f);
 //	    g.setStroke(normalStroke);
 //		g.setPaint(Color.BLACK);
-	    	    
-		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
+		
 		g.setColor(Constants.backgroundColor);
 		g.clearRect(0, 0, (int)(maxx+100), (int)(maxy+100));
+		
 //	    g.setStroke(maxiStroke);
 //		polygon = new Polygon(xpoints, ypoints, xpoints.length);
 //		g.setColor(Constants.polyColor.brighter());
 //		g.drawPolygon(polygon);
 //	    g.setStroke(miniStroke);
 
-        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f);
-        // アルファ値をセット（以後の描画は半透明になる）
+//        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f);
+//        // アルファ値をセット（以後の描画は半透明になる）
+//        g.setComposite(composite);
 	    g.setColor(Constants.coordColor);
-        g.setComposite(composite);
 	    for(int i = 0; i < coord.size(); i++){
 	    	double x = (coord.getVisX(i)+Constants.imagePositionOffset/2)*scale;
 	    	double y = (coord.getVisY(i)+Constants.imagePositionOffset/2)*scale;
@@ -271,17 +270,13 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	
 	private void calcScale(){
 	    List<Tuple2<Double,Double>> data = vertex;
-	    xpoints = new int[data.size()];
-	    ypoints = new int[data.size()];
-	    for(int i = 0; i < data.size(); i++){
-	    	Tuple2<Double, Double> d = data.get(i);
-	    	double x = d.t1;
-	    	double y = d.t2;
-	    	xpoints[i] = (int)x;
-	    	ypoints[i] = (int)y;
-	    	System.out.println(xpoints[i] + "," + ypoints[i]);
-	    }
 	    
+//	    for(int i = 0; i < data.size(); i++){
+//	    	Tuple2<Double, Double> d = data.get(i);
+//	    	double x = d.t1;
+//	    	double y = d.t2;
+//	    }
+//	    
 	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	    double w = (double)screenSize.width;
 	    double h = (double)screenSize.height;
@@ -290,8 +285,11 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    h -= 200;
 	    maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
 	    maxy = coord.maxy - coord.miny + Constants.imagePositionOffset/2;
+		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
+	    System.out.println(maxx + "," + maxy);
 	    if(maxy < maxx && maxx > w){
 	    	scale = w/maxx;
+	    	if(coord.isError())return;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
 	    	for(int i = 0 ; i < data.size(); i++){
@@ -299,12 +297,11 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		    	double x = d.t1*scale;
 		    	double y = d.t2*scale;
 		    	maxx = (x < maxx)?maxx:x;
-		    	maxy = (y < maxy)?maxy:y;
-		    	xpoints[i] = (int)x;
-		    	ypoints[i] = (int)y;	    		
+		    	maxy = (y < maxy)?maxy:y;   		
 	    	}
 	    }else if(maxx < maxy && maxy > h){
 	    	scale = h/maxy;
+	    	if(coord.isError())return;
 	    	maxx = 0.0;
 	    	maxy = 0.0;
 	    	for(int i = 0 ; i < data.size(); i++){
@@ -312,13 +309,13 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		    	double x = d.t1*scale;
 		    	double y = d.t2*scale;
 		    	maxx = (x < maxx)?maxx:x;
-		    	maxy = (y < maxy)?maxy:y;
-		    	xpoints[i] = (int)x;
-		    	ypoints[i] = (int)y;	    		
+		    	maxy = (y < maxy)?maxy:y;	
 	    	}
 	    }else{
 	    	scale = 1.0;
 	    }
+	    
+		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
 	}
 	
 	public List<Tuple2<Double, Double>> getVertex(){
@@ -392,40 +389,49 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 				break;
 			}
 		}
-		
-		//点選択時
-		if(isSelect){
-			if(!isOn)return;
-			int cx = clickP.t1;
-			int cy = clickP.t2;
-			int nowOnX = nowOn.t1;
-			int nowOnY = nowOn.t2;
-			
-			//有効なラインか確認(重複確認含)
-			if(!isVerifyLine(nowOnX,nowOnY,cx,cy))return;
-			
-			Graphics2D g = (Graphics2D)paint.getGraphics();
-			g.setColor(Constants.newLineColor);
-			Line2D line = new Line2D.Double(nowOnX, nowOnY, cx, cy);
-			//点の上の時
-			clickP = null;
-			isSelect = false;
-			//オフセットだけ伸ばす
-			lines.add(this.expandLine(converToLine(line)));
-			scaleLines.add(this.expandLine(line));
-			paintLine(nowx, nowy);
+		//Right Click
+		if(e.getButton() == MouseEvent.BUTTON3){
+			if(isSelect){
+				clickP = null;
+				isSelect = false;
+			}
+		//Left Click
 		}else{
-			//点の上の時
-			if(isOn){
-				isSelect = true;
+			//点選択時
+			if(isSelect){
+				if(!isOn)return;
+				int cx = clickP.t1;
+				int cy = clickP.t2;
 				int nowOnX = nowOn.t1;
 				int nowOnY = nowOn.t2;
-				clickP = new Tuple2<Integer, Integer>(nowOnX, nowOnY);
+				
+				//有効なラインか確認(重複確認含)
+				if(!isVerifyLine(nowOnX,nowOnY,cx,cy))return;
+				
+				Graphics2D g = (Graphics2D)paint.getGraphics();
+				g.setColor(Constants.newLineColor);
+				Line2D line = new Line2D.Double(nowOnX, nowOnY, cx, cy);
+				//点の上の時
+				clickP = null;
+				isSelect = false;
+				//オフセットだけ伸ばす
+				lines.add(this.expandLine(converToLine(line)));
+				scaleLines.add(this.expandLine(line));
+				paintLine(nowx, nowy);
 			}else{
-				System.out.println(e.getX()+","+e.getY());
-				dia = new CorrectDialog(nowx, nowy, range, this);
-				VisualizeFrame.setVisibleFrame(false);	
-			}	
+				//点の上の時
+				if(isOn){
+					isSelect = true;
+					int nowOnX = nowOn.t1;
+					int nowOnY = nowOn.t2;
+					clickP = new Tuple2<Integer, Integer>(nowOnX, nowOnY);
+				}else{
+					System.out.println(e.getX()+","+e.getY());
+					dia = new CorrectDialog(nowx, nowy, range, this);
+					VisualizeFrame.setVisibleFrame(false);	
+				}	
+			}
+			
 		}
 	}
 
@@ -464,9 +470,9 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		// TODO Auto-generated method stub
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
-		g.setColor(Constants.rangeRectColor);
 		int nowx = e.getX();
 		int nowy = e.getY();
+		paintLine(nowx, nowy);
 		boolean isOn = false;
 		for(int i = 0; i < scalePlots.size(); i++){
 			Tuple2<Integer, Integer> t = scalePlots.get(i);
@@ -480,8 +486,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			}
 			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
-		
-		paintLine(nowx, nowy);
+
 		
 		//点に乗っている場合には範囲方形は描画しない。
 		if(isOn){
