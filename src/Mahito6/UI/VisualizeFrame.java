@@ -37,7 +37,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		this.vertex = vertex;
 		this.coord = coord;
 		this.parent = parent;
-		this.mine = this;
+		VisualizeFrame.mine = this;
 		title = "Visualize";
 		launchUI();
 		this.requestFocusInWindow();
@@ -48,16 +48,26 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private void launchUI() {
 		this.setTitle(title);
 		this.setResizable(false);
-		setVisualizePanel();
-		
-		lines = new ArrayList<Line2D>();
+		lines = makeLine2D(vertex);
 		edges = new ArrayList<Edge>();
+		
+		setVisualizePanel();
 		//パネルサイズに合わせる
 		pack();
 	}
 	
+	private List<Line2D> makeLine2D(List<Tuple2<Double, Double>> source){
+		List<Line2D> ret = new ArrayList<Line2D>();
+		for(int i = 0; i < source.size(); i++){
+			Tuple2<Double, Double> nt1 = source.get(i);
+			Tuple2<Double, Double> nt2 = source.get((i+1)%source.size());
+			ret.add(new Line2D.Double(nt1.t1, nt1.t2, nt2.t1, nt2.t2));
+		}
+		return ret;
+	}
+	
 	private void setVisualizePanel(){
-		visPanel = new VisualizePanel(vertex, coord);
+		visPanel = new VisualizePanel(vertex, coord, lines);
 		this.add(visPanel);
 	}
 	
@@ -105,7 +115,11 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
-			lines = visPanel.getLines();
+			List<Line2D> tmp = visPanel.getLines();
+			for(int i = 0; i < tmp.size(); i++){
+				Line2D l = tmp.get(i);
+				lines.add(l);
+			}
 			
 			for(int i = 0; i < lines.size(); i++){
 				Line2D l = lines.get(i);

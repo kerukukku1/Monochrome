@@ -19,6 +19,8 @@ import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
+import Mahito6.Solver.EdgeFinder;
+import Mahito6.Solver.LeastSquareMethod;
 import Main.UI.Util.Coordinates;
 
 public class PieceViewPanel extends JPanel implements MouseListener{
@@ -38,7 +40,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.x = x;
 		this.y = y;
 		this.index = index;
-		this.edges = edges;
+		this.parent = parent;
 		this.vertex = parent.database.getVertex().get(index);
 		this.coord = parent.database.getCoord().get(index);
 		this.edges = parent.getEdges(index);
@@ -124,8 +126,21 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	
 	public void updateEdges(List<Edge> updateEdges){
 		System.out.println("before:" + edges.size());
+		BufferedImage save_image = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = (Graphics2D)save_image.getGraphics();
+		g.drawImage(image, 0, 0, null);
+		EdgeFinder ef = new EdgeFinder(save_image);
+		LeastSquareMethod lsm = new LeastSquareMethod(save_image);
 		for(int i = 0; i < updateEdges.size(); i++){
-			edges.add(updateEdges.get(i));
+			Edge e = updateEdges.get(i);
+			Tuple2<Double, Double> target = new Tuple2<Double, Double>(e.theta, e.r);
+			Edge preAns = ef.split(save_image,target.t1,target.t2);
+			if(preAns == null)continue;
+			Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(preAns);
+			if(ansConverted == null)continue;
+			Edge ans = ef.split(save_image,ansConverted.t1,ansConverted.t2);
+			if(ans == null)continue;
+			edges.add(ans);
 		}
 		System.out.println("after:" + this.edges.size());
 	}

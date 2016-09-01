@@ -31,8 +31,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	private int x, y, range;
 	private static int[] dx;
 	private static int[] dy;
-	private List<Tuple2<Integer, Integer>> plots;
-	private List<Tuple2<Integer, Integer>> viewPlots;
+	private List<Tuple2<Double, Double>> plots;
+	private List<Tuple2<Integer, Integer>> focusPlots;
 	private BufferedImage img, paint;
 	private JLabel earth;
     private List<Tuple2<Double, Double>> vertex;
@@ -51,10 +51,12 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.range = range;
 		this.scale = parent.getScale();
 		plots = parent.getPlots();
-		viewPlots = this.decodeViewPlots(parent.getViewPlots());
+		focusPlots = this.convertScaleToFocusPlots(parent.getScalePlots());
 		setUtil();
 		makeDXDY(this.range);
 		paintBackground();
+		
+		//閉じるで閉められない
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 	
@@ -143,11 +145,11 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.repaint();
 	}
 	
-	public List<Tuple2<Integer, Integer>> getPlots(){
+	public List<Tuple2<Double, Double>> getPlos(){
 		return plots;
 	}
 	
-	private List<Tuple2<Integer, Integer>> encodeViewPlots(List<Tuple2<Integer, Integer>> tmp){
+	private List<Tuple2<Integer, Integer>> convertFocusToScalePlots(List<Tuple2<Integer, Integer>> tmp){
 		List<Tuple2<Integer, Integer>> enc = new ArrayList<Tuple2<Integer, Integer>>();
 		for(int i = 0; i < tmp.size(); i++){
 			Tuple2<Integer, Integer> t = tmp.get(i);
@@ -156,11 +158,11 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		return enc;
 	}
 	
-	private List<Tuple2<Integer, Integer>> decodeViewPlots(List<Tuple2<Integer, Integer>> tmp){
+	private List<Tuple2<Integer, Integer>> convertScaleToFocusPlots(List<Tuple2<Integer, Integer>> tmp){
 		List<Tuple2<Integer, Integer>> dec = new ArrayList<Tuple2<Integer, Integer>>();
 		for(int i = 0; i < tmp.size(); i++){
 			Tuple2<Integer, Integer> t = tmp.get(i);
-			dec.add(new Tuple2<Integer, Integer>(t.t1-(int)((double)this.x/scale), t.t2-(int)((double)this.y/scale)));
+			dec.add(new Tuple2<Integer, Integer>(t.t1-(int)((double)this.x/scale)+range, t.t2-(int)((double)this.y/scale)+range));
 		}
 		return dec;
 	}
@@ -172,8 +174,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		int rmIndex = 0;
 		int nowx = e.getX();
 		int nowy = e.getY();
-		for(int i = 0; i < viewPlots.size(); i++){
-			Tuple2<Integer, Integer> t = viewPlots.get(i);
+		for(int i = 0; i < focusPlots.size(); i++){
+			Tuple2<Integer, Integer> t = focusPlots.get(i);
 			int vx = t.t1;
 			int vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
@@ -186,12 +188,12 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		//Right Click
 		if(e.getButton() == MouseEvent.BUTTON3){
 			if(isOn)return;
-			viewPlots.remove(rmIndex);
+			focusPlots.remove(rmIndex);
 			plots.remove(rmIndex);
 			drawBackground();
 			Graphics2D g = (Graphics2D)paint.getGraphics();
-			for(int i = 0; i < viewPlots.size(); i++){
-				Tuple2<Integer, Integer> t = viewPlots.get(i);
+			for(int i = 0; i < focusPlots.size(); i++){
+				Tuple2<Integer, Integer> t = focusPlots.get(i);
 				int vx = t.t1;
 				int vy = t.t2;
 				double dist = Edge.distance(nowx, nowy, vx, vy);
@@ -202,15 +204,15 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		//Left Click
 		}else{
 			if(!isOn)return;
-			viewPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
+			focusPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
 			int nx = (int)e.getX() - range + (int)((double)this.x/scale);
 			int ny = (int)e.getY() - range + (int)((double)this.y/scale);
-			plots.add(new Tuple2<Integer, Integer>((int)((double)nx*scale), (int)((double)ny*scale)));
+			plots.add(new Tuple2<Double, Double>((double)nx*scale, (double)ny*scale));
 			drawBackground();
 			Graphics2D g = (Graphics2D)paint.getGraphics();
 			g.setColor(Constants.plotColor);
-			for(int i = 0; i < viewPlots.size(); i++){
-				g.fillOval(viewPlots.get(i).t1 - 4, viewPlots.get(i).t2 - 4, 8, 8);
+			for(int i = 0; i < focusPlots.size(); i++){
+				g.fillOval(focusPlots.get(i).t1 - 4, focusPlots.get(i).t2 - 4, 8, 8);
 			}
 		}
 		this.repaint();
@@ -221,7 +223,6 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
 			this.dispose();
 			parent.setPlots(plots);
-			parent.saveViewPlots(this.encodeViewPlots(viewPlots));
 			VisualizeFrame.setVisibleFrame(true);
 		}
 	}
@@ -236,8 +237,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		int nowx = e.getX();
 		int nowy = e.getY();
-		for(int i = 0; i < viewPlots.size(); i++){
-			Tuple2<Integer, Integer> t = viewPlots.get(i);
+		for(int i = 0; i < focusPlots.size(); i++){
+			Tuple2<Integer, Integer> t = focusPlots.get(i);
 			int vx = t.t1;
 			int vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
