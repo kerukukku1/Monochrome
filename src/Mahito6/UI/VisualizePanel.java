@@ -81,7 +81,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		//頂点データをスケールに合わせてプロットに変換。このときint型に丸め込まれる
 		scalePlots = this.convertVertexToScalePlots(vertex);
 		//線をスケールを合わせて描画。これはdoubleのまま保持される。
-		scaleLines = this.encodeScaleLines(lines);
+		scaleLines = this.convertScaleLines(lines);
 		//スケールを合わせていないプロット
 		plots = this.convertVertexToPlots(vertex);
 		scaleLine = new Line2D.Double();
@@ -249,7 +249,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return ret;
 	}
 	
-	private List<Line2D> encodeScaleLines(List<Line2D> source){
+	private List<Line2D> convertScaleLines(List<Line2D> source){
 		List<Line2D> ret = new ArrayList<Line2D>();
 		for(Line2D line : source){
 			double nx1 = line.getX1() * scale;
@@ -259,6 +259,14 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			ret.add(new Line2D.Double(nx1,ny1,nx2,ny2));
 		}
 		return ret;
+	}
+	
+	private Line2D convertScaleLine(Line2D line){
+		double nx1 = line.getX1() * scale;
+		double ny1 = line.getY1() * scale;
+		double nx2 = line.getX2() * scale;
+		double ny2 = line.getY2() * scale;
+		return new Line2D.Double(nx1,ny1,nx2,ny2);
 	}
 	
 	private void calcScale(){
@@ -347,6 +355,25 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return new Line2D.Double(x1,y1,x2,y2);
 	}
 	
+	private Line2D expandLine(Line2D line){
+		double x1 = line.getX1();
+		double y1 = line.getY1();
+		double x2 = line.getX2();
+		double y2 = line.getY2();
+		double dist = Edge.distance(x1, y1, x2, y2);
+
+		//各軸の単位増加にオフセット分を掛けて追加分の長さを求める
+		double xInc = Math.abs((x1 - x2)/dist)*Constants.expandOffset;
+		double yInc = Math.abs((y1 - y2)/dist)*Constants.expandOffset;
+		
+		x1 += (x1>x2)?xInc:-xInc;
+		x2 += (x2>x1)?xInc:-xInc;
+		y1 += (y1>y2)?yInc:-yInc;
+		y2 += (y2>y1)?yInc:-yInc;
+		
+		return new Line2D.Double(x1,y1,x2,y2);
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -383,8 +410,9 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			//点の上の時
 			clickP = null;
 			isSelect = false;
-			scaleLines.add(line);
-			lines.add(converToLine(line));
+			//オフセットだけ伸ばす
+			lines.add(this.expandLine(converToLine(line)));
+			scaleLines.add(this.expandLine(line));
 			paintLine(nowx, nowy);
 		}else{
 			//点の上の時
