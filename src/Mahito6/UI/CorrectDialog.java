@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	private static int[] dy;
 	private List<Tuple2<Double, Double>> plots;
 	private List<Tuple2<Integer, Integer>> focusPlots;
+	private List<Line2D> lines;
+	private List<Line2D> focusLines;
 	private BufferedImage img, paint;
 	private JLabel earth;
     private List<Tuple2<Double, Double>> vertex;
@@ -50,8 +53,11 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.coord = parent.getCoordinates();
 		this.range = range;
 		this.scale = parent.getScale();
+		this.lines = parent.getLines();
+		System.out.println("Correct line size:" + lines.size());
 		plots = parent.getPlots();
 		focusPlots = this.convertScaleToFocusPlots(parent.getScalePlots());
+		focusLines = this.convertToFocusLines(lines);
 		setUtil();
 		makeDXDY(this.range);
 		paintBackground();
@@ -121,11 +127,11 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	    	//System.out.println(xpoints[i] + "," + ypoints[i]);
 	    }
 	    
-	    Polygon polygon = new Polygon(xpoints, ypoints, xpoints.length);
-		g.setColor(Constants.polyColor);
-		BasicStroke wideStroke = new BasicStroke(4.0f);
-		g.setStroke(wideStroke);
-		g.drawPolygon(polygon);
+//	    Polygon polygon = new Polygon(xpoints, ypoints, xpoints.length);
+//		g.setColor(Constants.polyColor);
+//		BasicStroke wideStroke = new BasicStroke(4.0f);
+//		g.setStroke(wideStroke);
+//		g.drawPolygon(polygon);
 		
 		g.setColor(Constants.coordColor);
 	    for(int i = 0; i < coord.size(); i++){
@@ -158,13 +164,26 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		return enc;
 	}
 	
-	private List<Tuple2<Integer, Integer>> convertScaleToFocusPlots(List<Tuple2<Integer, Integer>> tmp){
-		List<Tuple2<Integer, Integer>> dec = new ArrayList<Tuple2<Integer, Integer>>();
-		for(int i = 0; i < tmp.size(); i++){
-			Tuple2<Integer, Integer> t = tmp.get(i);
-			dec.add(new Tuple2<Integer, Integer>((int)((double)t.t1/scale)-(int)((double)this.x/scale)+range, (int)((double)t.t2/scale)-(int)((double)this.y/scale)+range));
+	private List<Tuple2<Integer, Integer>> convertScaleToFocusPlots(List<Tuple2<Integer, Integer>> source){
+		List<Tuple2<Integer, Integer>> ret = new ArrayList<Tuple2<Integer, Integer>>();
+		for(int i = 0; i < source.size(); i++){
+			Tuple2<Integer, Integer> t = source.get(i);
+			ret.add(new Tuple2<Integer, Integer>((int)((double)t.t1/scale)-(int)((double)this.x/scale)+range, (int)((double)t.t2/scale)-(int)((double)this.y/scale)+range));
 		}
-		return dec;
+		return ret;
+	}
+	
+	private List<Line2D> convertToFocusLines(List<Line2D> source){
+		List<Line2D> ret = new ArrayList<Line2D>();
+		for(int i = 0; i < source.size(); i++){
+			Line2D line = source.get(i);
+			double x1 = line.getX1() - this.x/scale + range;
+			double y1 = line.getY1() - this.y/scale + range;
+			double x2 = line.getX2() - this.x/scale + range;
+			double y2 = line.getY2() - this.y/scale + range;
+			ret.add(new Line2D.Double(x1, y1, x2, y2));
+		}
+		return ret;
 	}
 	
 	@Override
@@ -235,6 +254,18 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		int y = e.getY();
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
+		
+		//線を描画
+		BasicStroke maxiStroke = new BasicStroke(4.0f);
+		BasicStroke miniStroke = new BasicStroke(1.0f);
+		g.setStroke(maxiStroke);
+		g.setColor(Constants.newLineColor);
+		for(int i = 0; i < focusLines.size(); i++){
+			g.draw(focusLines.get(i));
+		}
+		g.setStroke(miniStroke);
+		
+		//点を描画
 		int nowx = e.getX();
 		int nowy = e.getY();
 		for(int i = 0; i < focusPlots.size(); i++){
@@ -246,14 +277,17 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			if(dist <= 5.0)g.setColor(Constants.onPlotColor);
 			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
+		
+		//カーソル円を描画
 		g.setColor(Color.BLUE);
 		g.drawOval(x-Constants.targetOvalRadius, y-Constants.targetOvalRadius, Constants.targetOvalRadius*2, Constants.targetOvalRadius*2);
 		g.drawOval(x-Constants.targetOvalRadius*2+1, y-Constants.targetOvalRadius*2+1, (Constants.targetOvalRadius*2-1)*2, (Constants.targetOvalRadius*2-1)*2);
-		
+		//カーソル線を描画
 	    g.drawLine(0, y, x-Constants.targetOvalRadius, y);
 	    g.drawLine(x+Constants.targetOvalRadius, y, range*2, y);
 	    g.drawLine(x, 0, x, y-Constants.targetOvalRadius);
 	    g.drawLine(x, y+Constants.targetOvalRadius, x, range*2);
+		
 	    this.repaint();
 	}
 	

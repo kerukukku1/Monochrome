@@ -69,7 +69,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines){
     	this.vertex = vertex;
     	this.coord = coord;
-    	this.lines = lines;
+    	this.lines = new ArrayList<Line2D>();
+    	for(int i = 0 ; i < lines.size(); i++){
+    		this.lines.add(this.expandLine(lines.get(i)));
+    	}
 		setUtil();
 		//スケールの計算。これしないとバグる
 		calcScale();
@@ -79,7 +82,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		//頂点データをスケールに合わせてプロットに変換。このときint型に丸め込まれる
 		scalePlots = this.convertVertexToScalePlots(vertex);
 		//線をスケールを合わせて描画。これはdoubleのまま保持される。
-		scaleLines = this.convertScaleLines(lines);
+		scaleLines = this.convertScaleLines(this.lines);
 		//スケールを合わせていないプロット
 		plots = this.convertVertexToPlots(vertex);
 		scaleLine = new Line2D.Double();
@@ -394,6 +397,9 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			if(isSelect){
 				clickP = null;
 				isSelect = false;
+			}else{
+				for(int i = 0; i < scaleLines.size(); i++){
+				}
 			}
 		//Left Click
 		}else{

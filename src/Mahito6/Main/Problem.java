@@ -48,7 +48,7 @@ public class Problem {
         }
         Mat dst = source.clone();
         Core.bitwise_and(binImage, binImage2, dst);
-        Highgui.imwrite("and_image.png", dst);
+//        Highgui.imwrite("and_image.png", dst);
         //枠専用
         if(Constants.modeWaku){
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
