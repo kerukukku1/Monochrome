@@ -10,7 +10,7 @@ import java.util.List;
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 
-public class EdgeFinder {
+public class EdgeFinder implements Runnable{
     // �ｽﾏ撰ｿｽ
     private ArrayList<Double> sin_table, cos_table;  ///探索処理高速化のためにsin,cosは全て単位角度で前計算
     private ArrayList<Integer> cross;
@@ -25,13 +25,15 @@ public class EdgeFinder {
 	private boolean[][] binary_image;///２値情報([w][h]、false:黒  true:白)
 	private ArrayList<Edge> edges;///検出したエッジを入れる(つまりans)
 	private int[][] dst_image;
+	
+	private boolean isFinished = false;///全ての処理が終了するとtrueになる
 
-	public EdgeFinder(BufferedImage image){///imageは２値化された画像
+	public EdgeFinder(BufferedImage image,boolean isThreading){///imageは２値化された画像
 		this.image = image;
 		this.w = image.getWidth();
 		this.h = image.getHeight();
 		cross = new ArrayList<Integer>();
-		init();
+		if(!isThreading)init();
 	}
 
 	public BufferedImage getResult(){
@@ -42,6 +44,13 @@ public class EdgeFinder {
 	}
 	public List<Edge> getResult_edge(){
 		return edges;
+	}
+	
+	private void finish(){
+		this.isFinished = true;
+	}
+	public boolean isFinished(){
+		return this.isFinished;
 	}
 
 
@@ -58,7 +67,7 @@ public class EdgeFinder {
 		edges.add(edge);
 	}
 
-	public void edgeFind() throws Exception{///これを呼ぶとエッジが検出される
+	public void edgeFind() throws Exception{///これを呼ぶとエッジが検出される(シングルスレッド用)
 		long start = System.currentTimeMillis();
 
 		edges = new ArrayList<Edge>();
@@ -101,6 +110,7 @@ public class EdgeFinder {
 		}
 		long end = System.currentTimeMillis();
 		System.out.println((end - start)+"ms");
+		finish();
 	}
 
 	private void init(){///色々初期化
@@ -395,6 +405,17 @@ public class EdgeFinder {
         }
         return dst_image;
     }
+
+	@Override
+	public void run() {
+		init();
+		try {
+			edgeFind();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finish();
+	}
 
 }
 

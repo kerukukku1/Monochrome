@@ -159,7 +159,7 @@ public class ImageManager{
 	}
 
 	public void pieceSolve(BufferedImage image, int index){
-		EdgeFinder solver = new EdgeFinder(image);///�G�b�W���o�p�\���o�\
+		EdgeFinder solver = new EdgeFinder(image,false);///�G�b�W���o�p�\���o�\
 		try {
 			solver.edgeFind();
 		} catch (Exception e1) {
