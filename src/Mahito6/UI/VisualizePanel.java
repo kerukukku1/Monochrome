@@ -276,39 +276,41 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    //System.out.println("w:" + w + " h:" + h);
 	    w -= 200;
 	    h -= 200;
+	    coord.calc();
 	    maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
 	    maxy = coord.maxy - coord.miny + Constants.imagePositionOffset/2;
-		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
 	    System.out.println(maxx + "," + maxy);
 	    if(maxy < maxx && maxx > w){
 	    	scale = w/maxx;
-	    	if(coord.isError())return;
-	    	maxx = 0.0;
-	    	maxy = 0.0;
-	    	for(int i = 0 ; i < data.size(); i++){
-		    	Tuple2<Double, Double> d = data.get(i);
-		    	double x = d.t1*scale;
-		    	double y = d.t2*scale;
-		    	maxx = (x < maxx)?maxx:x;
-		    	maxy = (y < maxy)?maxy:y;   		
-	    	}
+////	    	if(coord.isError())return;
+//	    	maxx = 0.0;
+//	    	maxy = 0.0;
+//	    	for(int i = 0 ; i < data.size(); i++){
+//		    	Tuple2<Double, Double> d = data.get(i);
+//		    	double x = d.t1;
+//		    	double y = d.t2;
+//		    	maxx = (x < maxx)?maxx:x;
+//		    	maxy = (y < maxy)?maxy:y;   		
+//	    	}
+//	    	scale = Math.min(w/maxx, scale);
 	    }else if(maxx < maxy && maxy > h){
 	    	scale = h/maxy;
-	    	if(coord.isError())return;
-	    	maxx = 0.0;
-	    	maxy = 0.0;
-	    	for(int i = 0 ; i < data.size(); i++){
-		    	Tuple2<Double, Double> d = data.get(i);
-		    	double x = d.t1*scale;
-		    	double y = d.t2*scale;
-		    	maxx = (x < maxx)?maxx:x;
-		    	maxy = (y < maxy)?maxy:y;	
-	    	}
+////	    	if(coord.isError())return;
+//	    	maxx = 0.0;
+//	    	maxy = 0.0;
+//	    	for(int i = 0 ; i < data.size(); i++){
+//		    	Tuple2<Double, Double> d = data.get(i);
+//		    	double x = d.t1;
+//		    	double y = d.t2;
+//		    	maxx = (x < maxx)?maxx:x;
+//		    	maxy = (y < maxy)?maxy:y;	
+//	    	}
+//	    	scale = Math.min(h/maxy, scale);
 	    }else{
 	    	scale = 1.0;
 	    }
 	    
-		this.setPreferredSize(new Dimension((int)(maxx+100), (int)(maxy+100)));
+		this.setPreferredSize(new Dimension((int)(maxx*scale+100), (int)(maxy*scale+100)));
 	}
 	
 	public List<Tuple2<Double, Double>> getVertex(){
