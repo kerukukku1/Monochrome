@@ -114,7 +114,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
+		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Q){
 			System.out.println("Save");
 			lines = visPanel.getLines();
 			for(int i = 0; i < lines.size(); i++){
