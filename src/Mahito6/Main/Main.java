@@ -17,6 +17,11 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
+
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
@@ -34,9 +39,10 @@ public class Main {
 	
 	public static void main(String[] args){
 		//queue先に確保
-		BFS.initQueue();
-		new Main();
+//		BFS.initQueue();
+//		new Main();
 //		debug();
+		outputImages();
 	}
 	
 	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/m-pc/test.JPG");
@@ -80,5 +86,34 @@ public class Main {
 //		vertex.add(tmplist);
 //		//VisualizeFrame vis = new VisualizeFrame(vertex, null);
 //		PieceListView view = new PieceListView(vertex, null, null);
+	}
+	
+	private static String testImagePath = "/Users/fujinomahito/Desktop/_test3/test.JPG";
+	private static void outputImages(){
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        Mat src = Highgui.imread(testImagePath, 0);
+        double span = 0.125;
+        for(int i = 0; i < 10; i++){
+        	int blockSize = 21 + (i*2);
+        	double c = blockSize - 5.0;
+        	while(true){
+        		if((int)c > blockSize + 5)break;
+        		Mat binImage = src.clone();
+            	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, blockSize, c);
+            	String head = String.valueOf(blockSize) + "_" + String.valueOf(c);
+            	Highgui.imwrite(getPath(head), binImage);
+            	c+=span;
+        		System.out.println("c:" + c + ", block:" + blockSize);
+        	}
+        }
+	}
+	
+	private static String getPath(String head){
+        File f = new File(testImagePath);
+        String filename = f.getName();
+        System.out.println(filename);
+        String newname = head + filename;
+        String newPath = f.getParent() + File.separator + newname;
+        return newPath;
 	}
 }
