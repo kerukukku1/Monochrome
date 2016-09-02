@@ -7,18 +7,34 @@ import Mahito6.Main.Constants;
 public class Coordinates{
 	public ArrayList<Integer> arx;
 	public ArrayList<Integer> ary;
-	public int now, maxx, maxy, minx, miny;
-	private long funcCount = 0;
+	public int maxx, maxy, minx, miny;
+	private long funcCount;
 	private boolean error = false;
 	
 	public Coordinates(){
 		arx = new ArrayList<Integer>();
 		ary = new ArrayList<Integer>();
-		now = 0;
 		maxx = 0;
 		maxy = 0;
 		minx = 100000;
 		miny = 100000;
+		funcCount = 0;
+	}
+	
+	public Coordinates(ArrayList<Integer> arx, ArrayList<Integer> ary){
+		this.arx = arx;
+		this.ary = ary;
+		this.calc();
+	}
+	
+	public void clear(){
+		arx = new ArrayList<Integer>();
+		ary = new ArrayList<Integer>();
+		maxx = 0;
+		maxy = 0;
+		minx = 100000;
+		miny = 100000;
+		funcCount = 0;
 	}
 
 	public void addCord(int x, int y){
@@ -51,9 +67,6 @@ public class Coordinates{
 		return arx.size();
 	}
 
-	public void clear(){
-		now = 0;
-	}
 
 	public long getCount(){
 		return funcCount;

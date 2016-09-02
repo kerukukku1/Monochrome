@@ -57,7 +57,7 @@ public class Problem {
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
-        //if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(src);
+//        if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(src);
 	}
 	
 	public void setCoordinates(List<Coordinates> coords){

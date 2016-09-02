@@ -15,7 +15,7 @@ public class Constants{
     public static final int divideImageGarbageThreshold = 2000; //分割したときの点の数がこれ以下ならゴミとして除去
     public static int dividePixelLookingForDist = 20; //分割するとき幅優先探索で回りを見る距離
     public static int clearNoiseThreshold = 200; //ノイズを除去する島の点の数の閾値 waku:1200 piece:200
-    public static final int imagePositionOffset = 500;
+    public static final int imagePositionOffset = 600;
     public static final int doubleLineDetect = 40;
 	public static final long hashkey = 100000;
 	public static final boolean isOutputDebugOval = false;

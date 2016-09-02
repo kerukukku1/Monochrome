@@ -14,6 +14,7 @@ public class BFS{
 	private static JQueue que;
 	private static boolean[][] noizeMemo;
 	private static boolean[][] noizeState;
+	private static int latchRange = 0;
 	public BFS(){}
 	
 	public static void initialize(int maxx, int maxy){
@@ -26,6 +27,8 @@ public class BFS{
 	}
 	
 	public static void makeDXDY(int range){
+		if(latchRange == range)return;
+		latchRange = range;
 		dx = new int[(range*2+1)*(range*2+1)-1];
 		dy = new int[(range*2+1)*(range*2+1)-1];
 		int count = 0;
@@ -39,10 +42,10 @@ public class BFS{
 		}
 	}
 
-	public static Coordinates findPointsForAct(int x, int y, int maxx, int maxy, int range, boolean[][] memo, BufferedImage buf){
+	public static Coordinates findPointsForAct(int x, int y, int maxx, int maxy, boolean[][] memo, BufferedImage buf){
 		que.clear();
 		que.push(x,y);
-		BFS.makeDXDY(range);
+		BFS.makeDXDY(Constants.dividePixelLookingForDist);
 		Coordinates tmpPoints = new Coordinates();
 		tmpPoints.addCord(x, y);
 		while(que.size() != 0){

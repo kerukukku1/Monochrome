@@ -86,7 +86,7 @@ public class ImageManager{
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
-        if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(src);
+//        if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(src);
 	}
 
 	private String getPath(String head){
@@ -116,13 +116,14 @@ public class ImageManager{
 		System.out.println("runAdaptiveThreshold");
 		start = System.nanoTime();
 		problem.runAdaptiveThreshold();
+		if(Constants.isOutputDebugOval)try {confirm = ImageIO.read(new File(path));} catch (IOException e1) {e1.printStackTrace();}
 		//runAdaptiveThreshold();
 		end = System.nanoTime();
 		System.out.println((end - start) / 1000000f + "ms");
 
 		System.out.println("Divide Images");
 		start = System.nanoTime();
-		Act act = new Act(problem.getBinaryBufferedImage(), Constants.dividePixelLookingForDist, Constants.divideImageGarbageThreshold);
+		Act act = new Act(problem.getBinaryBufferedImage(), Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
 		end = System.nanoTime();
 		System.out.println((end - start) / 1000000f + "ms");
@@ -231,7 +232,7 @@ public class ImageManager{
 			BufferedImage bim = new BufferedImage(mat_w+Constants.imagePositionOffset, mat_h+Constants.imagePositionOffset, BufferedImage.TYPE_INT_RGB);
 //			Mat img = new Mat(mat_h+offset, mat_w+offset, CvType.CV_8UC1);
 //			img = Mat.zeros(mat_h+offset, mat_w+offset, CvType.CV_8UC1);
-			for(int j = 0; j < now.size(); j++){
+			for(int j = 0, loop = now.size(); j < loop; j++){
 				int nowx = now.getX(j);
 				int nowy = now.getY(j);
 				//offset/2は画像を中央に入れるため。四方に黒い空間を少しつくってる。
@@ -246,7 +247,7 @@ public class ImageManager{
 				if(Constants.debugImage)ImageIO.write(bim, "png", saves);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		System.out.println("Noise cleared");

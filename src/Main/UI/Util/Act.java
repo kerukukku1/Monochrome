@@ -17,17 +17,15 @@ public class Act{
 	public boolean[][] memo;
 	public boolean[][] state;
 	private BufferedImage buf = null;
-	private int range;
 	private int threshold;
 	//row = x, col = y
 	//any[x][y]
-	public Act(BufferedImage buf, int range, int threshold){
+	public Act(BufferedImage buf, int threshold){
 		this.buf = buf;
 		coords = new ArrayList<Coordinates>();
 		maxX = buf.getWidth();
 		maxY = buf.getHeight();
 		BFS.initialize(maxX, maxY);
-		this.range = range;
 		this.threshold = threshold;
 		memo = new boolean[maxX][maxY];
 	}
@@ -39,6 +37,7 @@ public class Act{
 	public List<Coordinates> divideImages(){
 		System.out.println(maxX + "," + maxY);
 		int rgb;
+		Coordinates c = new Coordinates();
 		for(int i = Constants.divideImageOffset; i < maxY-Constants.divideImageOffset; i++){
 			for(int j = Constants.divideImageOffset; j < maxX-Constants.divideImageOffset; j++){
 				//System.out.println(j + "," + i);
@@ -47,9 +46,10 @@ public class Act{
 				rgb = rgbConverter(buf.getRGB(j, i));
 				//System.out.print(rgb);
 				if(rgb == 0)continue;
-				Coordinates c = BFS.findPointsForAct(j, i, maxX, maxY, this.range, memo, buf);
+				c.clear();
+				c = BFS.findPointsForAct(j, i, maxX, maxY, memo, buf);
 				if(c.size() < threshold)continue;
-				coords.add(c);
+				coords.add(new Coordinates(c.arx, c.ary));
 			}
 			//System.out.println();
 		}
