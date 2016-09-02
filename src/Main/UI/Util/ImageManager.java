@@ -17,6 +17,7 @@ import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.Problem;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
@@ -36,6 +37,7 @@ public class ImageManager{
 	private BufferedImage confirm, bufBinImage;
 	public static List<String> data;
 	public List<List<Edge>> allEdges;
+	public Problem problem;
 
 	public ImageManager(){
 		coords = new ArrayList<Coordinates>();
@@ -46,8 +48,6 @@ public class ImageManager{
 	}
 
 	private void runAdaptiveThreshold(){
-		System.out.println(System.getProperty("java.library.path"));
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         Mat src = Highgui.imread(path, 0);
         //枠のときの速度上げ専
 
@@ -112,15 +112,17 @@ public class ImageManager{
 		long end = 0;
 		System.out.println("K=" + Constants.dividePixelLookingForDist);
 		System.out.println("Get Piece");
+		problem = new Problem(Highgui.imread(path, 0));
 		System.out.println("runAdaptiveThreshold");
 		start = System.nanoTime();
-		runAdaptiveThreshold();
+		problem.runAdaptiveThreshold();
+		//runAdaptiveThreshold();
 		end = System.nanoTime();
 		System.out.println((end - start) / 1000000f + "ms");
 
 		System.out.println("Divide Images");
 		start = System.nanoTime();
-		Act act = new Act(bufBinImage, Constants.dividePixelLookingForDist, Constants.divideImageGarbageThreshold);
+		Act act = new Act(problem.getBinaryBufferedImage(), Constants.dividePixelLookingForDist, Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
 		end = System.nanoTime();
 		System.out.println((end - start) / 1000000f + "ms");

@@ -39,10 +39,12 @@ public class Main {
 	
 	public static void main(String[] args){
 		//queue先に確保
-//		BFS.initQueue();
-//		new Main();
+		System.out.println(System.getProperty("java.library.path"));
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		BFS.initQueue();
+		new Main();
 //		debug();
-		outputImages();
+//		outputImages();
 	}
 	
 	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/m-pc/test.JPG");
