@@ -85,7 +85,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		//線をスケールを合わせて描画。これはdoubleのまま保持される。
 		scaleLines = this.convertScaleLines(this.lines);
 		//スケールを合わせていないプロット
-		plots = this.convertVertexToPlots(vertex);
+		plots = vertex;
 		scaleLine = new Line2D.Double();
     	isSelect = false;
 	    drawLines();
@@ -237,16 +237,6 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			double nowx = v.t1 * scale;
 			double nowy = v.t2 * scale;
 			ret.add(new Tuple2<Integer, Integer>((int)nowx, (int)nowy));
-		}
-		return ret;
-	}
-	
-	private List<Tuple2<Double, Double>> convertVertexToPlots(List<Tuple2<Double, Double>> vertex){
-		List<Tuple2<Double, Double>> ret = new ArrayList<Tuple2<Double, Double>>();
-		for(Tuple2<Double, Double> v : vertex){
-			double nowx = v.t1;
-			double nowy = v.t2;
-			ret.add(new Tuple2<Double, Double>(nowx, nowy));
 		}
 		return ret;
 	}

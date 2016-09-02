@@ -48,7 +48,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private void launchUI() {
 		this.setTitle(title);
 		this.setResizable(false);
-		lines = makeLine2D(vertex);
+		lines = makeLine2D(this.vertex);
 		edges = new ArrayList<Edge>();
 		
 		setVisualizePanel();
@@ -86,12 +86,12 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		double y2 = source.getY2();
 		double theta = 0.0;
 		//too small case:
-		if(y1-y2 < 0.000001){
+		if(Math.abs(y1-y2) < 0.000001){
 			theta = Math.PI / 2;
 		}else{
 			theta = Math.atan((x2 - x1)/(y1 - y2));
 		}
-		double r = source.getX1()*Math.cos(theta) + source.getY1()*Math.sin(theta);
+		double r = x1*Math.cos(theta) + y1*Math.sin(theta);
 		return new Tuple2<Double, Double>(r, theta);
 	}
 	
