@@ -374,7 +374,6 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			Tuple2<Integer, Integer> t = focusPlots.get(i);
 			int vx = t.t1;
 			int vy = t.t2;
-			double dist = Edge.distance(nowx, nowy, vx, vy);
 			g.setColor(Constants.plotColor);
 			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
@@ -383,13 +382,13 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		
 		//カーソル円を描画
 		g.setColor(Color.BLUE);
-		g.drawOval(x-Constants.targetOvalRadius, y-Constants.targetOvalRadius, Constants.targetOvalRadius*2, Constants.targetOvalRadius*2);
-		g.drawOval(x-Constants.targetOvalRadius*2+1, y-Constants.targetOvalRadius*2+1, (Constants.targetOvalRadius*2-1)*2, (Constants.targetOvalRadius*2-1)*2);
+		g.drawOval(nowx-Constants.targetOvalRadius, nowy-Constants.targetOvalRadius, Constants.targetOvalRadius*2, Constants.targetOvalRadius*2);
+		g.drawOval(nowx-Constants.targetOvalRadius*2+1, nowy-Constants.targetOvalRadius*2+1, (Constants.targetOvalRadius*2-1)*2, (Constants.targetOvalRadius*2-1)*2);
 		//カーソル線を描画
-	    g.drawLine(0, y, x-Constants.targetOvalRadius, y);
-	    g.drawLine(x+Constants.targetOvalRadius, y, range*2, y);
-	    g.drawLine(x, 0, x, y-Constants.targetOvalRadius);
-	    g.drawLine(x, y+Constants.targetOvalRadius, x, range*2);
+	    g.drawLine(0, nowy, nowx-Constants.targetOvalRadius, nowy);
+	    g.drawLine(nowx+Constants.targetOvalRadius, nowy, range*2, nowy);
+	    g.drawLine(nowx, 0, nowx, nowy-Constants.targetOvalRadius);
+	    g.drawLine(nowx, nowy+Constants.targetOvalRadius, nowx, range*2);
 	    
 	    this.repaint();
 	    
