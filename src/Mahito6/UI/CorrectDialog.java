@@ -37,6 +37,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	private List<Line2D> lines;
 	private List<Line2D> focusLines;
 	private BufferedImage img, paint;
+	private boolean isDrag = false;
 	private JLabel earth;
     private List<Tuple2<Double, Double>> vertex;
     private Coordinates coord;
@@ -189,7 +190,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		boolean isOn = true;
+		boolean isOn = false;
 		int rmIndex = 0;
 		int nowx = e.getX();
 		int nowy = e.getY();
@@ -199,14 +200,14 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			int vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			if(dist <= 5.0){
-				isOn = false;
+				isOn = true;
 				rmIndex = i;
 				break;
 			}
 		}
 		//Right Click
 		if(e.getButton() == MouseEvent.BUTTON3){
-			if(isOn)return;
+			if(!isOn)return;
 			focusPlots.remove(rmIndex);
 			plots.remove(rmIndex);
 			drawBackground();
@@ -222,16 +223,19 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			}
 		//Left Click
 		}else{
-			if(!isOn)return;
-			focusPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
-			double nx = (double)e.getX() - range + (double)this.x/scale;
-			double ny = (double)e.getY() - range + (double)this.y/scale;
-			plots.add(new Tuple2<Double, Double>((double)nx, (double)ny));
-			drawBackground();
-			Graphics2D g = (Graphics2D)paint.getGraphics();
-			g.setColor(Constants.plotColor);
-			for(int i = 0; i < focusPlots.size(); i++){
-				g.fillOval(focusPlots.get(i).t1 - 4, focusPlots.get(i).t2 - 4, 8, 8);
+			if(isOn){
+				isDrag = true;
+			}else{
+				focusPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
+				double nx = (double)e.getX() - range + (double)this.x/scale;
+				double ny = (double)e.getY() - range + (double)this.y/scale;
+				plots.add(new Tuple2<Double, Double>((double)nx, (double)ny));
+				drawBackground();
+				Graphics2D g = (Graphics2D)paint.getGraphics();
+				g.setColor(Constants.plotColor);
+				for(int i = 0; i < focusPlots.size(); i++){
+					g.fillOval(focusPlots.get(i).t1 - 4, focusPlots.get(i).t2 - 4, 8, 8);
+				}	
 			}
 		}
 		this.repaint();
@@ -294,7 +298,10 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	@Override
 	public void mousePressed(MouseEvent e) {}
 	@Override
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {
+		isDrag = false;
+		System.out.println("Release");
+	}
 	@Override
 	public void mouseEntered(MouseEvent e) {}
 	@Override

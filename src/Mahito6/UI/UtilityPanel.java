@@ -64,7 +64,7 @@ public class UtilityPanel extends JPanel implements ChangeListener{
 		}else{
 			Constants.clearNoiseThreshold = 1200;
 			Constants.edgeWidth = 12;
-			Constants.lrAddition = 100;
+			Constants.lrAddition = 50;
 			Constants.dividePixelLookingForDist = 3;
 			Constants.modeWaku = true;
 		}

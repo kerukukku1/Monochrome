@@ -46,14 +46,13 @@ public class Problem {
         	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);	
 //            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
         }
-        Mat dst = source.clone();
-        Core.bitwise_and(binImage, binImage2, dst);
+        Core.bitwise_and(binImage, binImage2, binImage);
 //        Highgui.imwrite("and_image.png", dst);
         //枠専用
         if(Constants.modeWaku){
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
         }
-        bufBinImage = ImageManager.MatToBufferedImageBGR(dst);
+        bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
