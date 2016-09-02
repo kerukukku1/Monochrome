@@ -5,6 +5,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.ScrollPane;
 import java.awt.Toolkit;
@@ -432,6 +433,12 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 				}else{
 					System.out.println(e.getX()+","+e.getY());
 					dia = new CorrectDialog(nowx, nowy, range, this);
+					Point p = e.getLocationOnScreen();
+					p.x -= range/2;
+					if(p.x < 0)p.x = 0;
+					p.y -= range/2;
+					if(p.y < 0)p.y = 0;
+					dia.setLocation(p);
 					VisualizeFrame.setVisibleFrame(false);	
 				}	
 			}
