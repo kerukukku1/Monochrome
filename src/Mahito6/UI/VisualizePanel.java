@@ -112,7 +112,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		
 		//線の太さ初期化
     	miniStroke = new BasicStroke(1.0f);
-        maxiStroke = new BasicStroke(3.0f);
+        maxiStroke = new BasicStroke(2.0f);
         
         //既存の線か判定するテーブル(要書き換え)
         lineMap = new HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean>();
