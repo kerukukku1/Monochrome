@@ -36,7 +36,7 @@ public class Constants{
 	public static final int targetOvalRadius = 4;
 	public static final int plotOvalRadius = 4;
 	//VisualizePanelで描画した線の長さを伸ばすオフセット
-	public static final int expandOffset = 15;
+	public static final int expandOffset = 7;
 	
 	public static final double LongEdge = 300.0;///線分がこれより長ければ端点を縮める
 	public static final double ShorteningLength = 60.0;///LongEdgeを縮める長さ

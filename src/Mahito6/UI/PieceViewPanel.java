@@ -109,22 +109,20 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	    	ypoints[i] = (int)y;
 	    }
 	    
+	    g.setColor(Constants.polyColor);
 	    double scale = width/Math.max(maxx, maxy);
-    	maxx = 0.0;
-    	maxy = 0.0;
     	for(int i = 0 ; i < data.size(); i++){
-	    	Tuple2<Double, Double> d = data.get(i);
-	    	double x = (d.t1 - Constants.imagePositionOffset/3)*scale;
-	    	double y = (d.t2 - Constants.imagePositionOffset/3)*scale;
-	    	maxx = (x < maxx)?maxx:x;
-	    	maxy = (y < maxy)?maxy:y;
-	    	xpoints[i] = (int)x;
-	    	ypoints[i] = (int)y;	    		
+	    	Tuple2<Double, Double> d1 = data.get(i);
+	    	Tuple2<Double, Double> d2 = data.get((i+1)%data.size());
+	    	double x1 = (d1.t1 - Constants.imagePositionOffset/3)*scale;
+	    	double y1 = (d1.t2 - Constants.imagePositionOffset/3)*scale;
+	    	double x2 = (d2.t1 - Constants.imagePositionOffset/3)*scale;
+	    	double y2 = (d2.t2 - Constants.imagePositionOffset/3)*scale;
+	    	g.draw(new Line2D.Double(x1, y1, x2, y2));
     	}
 
-		polygon = new Polygon(xpoints, ypoints, xpoints.length);
-		g.setColor(Constants.polyColor);
-		g.drawPolygon(polygon);
+//		polygon = new Polygon(xpoints, ypoints, xpoints.length);
+//		g.drawPolygon(polygon);
 	    this.repaint();
 	}
 	
@@ -133,7 +131,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		edges = updateEdges;
 //		for(int i = 0; i < edges.size(); i++){
 //			//エッジ伸ばす
-//			edges.set(i, edges.get(i).getExtensionEdge(Constants.lrAddition));
+//			edges.set(i, edges.get(i).getExtensionEdge(40));
 //		}
 		System.out.println("after:" + this.edges.size());
 		System.out.println("distants:");
@@ -161,10 +159,10 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		solver2.solve();
 		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
 		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
-		List<Tuple2<Double, Double> > vertex = new ArrayList< Tuple2<Double, Double> >();
+		this.vertex = new ArrayList< Tuple2<Double, Double> >();
 		for(Tuple2<Double,Double> t : ans){
 			System.out.println(t.t1+","+t.t2);
-			vertex.add(t);
+			this.vertex.add(t);
 		}
 		BufferedImage result3 = solver2.getAnswerImage();
 		File ans_save = new File("ans.png");
