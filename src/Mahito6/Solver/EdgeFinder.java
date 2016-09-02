@@ -351,16 +351,20 @@ public class EdgeFinder {
     }
 
     private void calcHoughTable(boolean[][] src_image){///ハフ変換の計算をするO(WH*kAngleSplits)(ここが一番計算量重い)
-        for(int y = 0; y < h; y++)
-        for(int x = 0; x < w; x++){
+    	int count = 0;
+        
+        for(int x = 0; x < w; x++)
+        for(int y = 0; y < h; y++){
             if(src_image[x][y] == false) continue;///黒色ならコンティニュー
 
             for(int t = 0; t < Constants.kAngleSplits; t++){
                 int r = (int)(x * cos_table.get(t) + y * sin_table.get(t) + 0.5);///intにキャストするためここで誤差出る
                 int rindex = r + diagonal;///rは-diagonal~diagonalの範囲で存在するため、これで正の値にする
                 dst_image[rindex][t] += 1;
+                count++;
             }
         }
+        System.out.println("Hough Count:"+count);
     }
     private void decreaseHoughTable(List<Tuple2<Integer, Integer>> decPoints){
     	for(Tuple2<Integer, Integer> tuple2 : decPoints){
