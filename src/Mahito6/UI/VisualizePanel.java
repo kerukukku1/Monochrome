@@ -56,6 +56,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private List<Tuple2<Double, Double>> plots;
     private double maxx, maxy;
     private boolean isSelect = false;
+    private boolean isLine = false;
     private Line2D scaleLine;
     private List<Line2D> scaleLines;
     private List<Line2D> lines;
@@ -208,7 +209,6 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		g.setStroke(maxiStroke);
 		g.setColor(Constants.newLineColor);
-		drawLines();
 		//点選択中
 		if(isSelect){
 			int cx = clickP.t1;
@@ -397,8 +397,14 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			if(isSelect){
 				clickP = null;
 				isSelect = false;
-			}else{
+			}else if(isLine){
+				//乗ってる線削除
 				for(int i = 0; i < scaleLines.size(); i++){
+					if(onLine(nowx, nowy, scaleLines.get(i))){
+						lines.remove(i);
+						scaleLines.remove(i);
+						break;
+					}
 				}
 			}
 		//Left Click
@@ -440,6 +446,18 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			
 		}
 	}
+	
+	public boolean onLine(double x,double y, Line2D line){///(x,y)がこのエッジ上に存在するか判定
+		double kx1 = line.getX1();
+		double ky1 = line.getY1();
+		double kx2 = line.getX2();
+		double ky2 = line.getY2();
+		double dist = Edge.distance(kx1, ky1, kx2, ky2);
+		double sum = Edge.distance(x,y,kx1,ky1) + Edge.distance(x,y,kx2,ky2);
+		double sabun = Math.abs(dist - sum);
+		if(sabun < 1)return true;///線上にあるのでOK
+		return false;
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -478,6 +496,21 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		int nowx = e.getX();
 		int nowy = e.getY();
+		
+		g.setStroke(maxiStroke);
+		isLine = false;
+		for(int i = 0; i < scaleLines.size(); i++){
+			Line2D line = scaleLines.get(i);
+			g.setColor(Constants.newLineColor);
+			if(onLine(nowx, nowy, line)){
+				g.setColor(Color.BLUE);
+				isLine = true;
+			}
+			g.draw(scaleLines.get(i));
+		}
+		g.setStroke(miniStroke);
+		//drawLines();
+		
 		paintLine(nowx, nowy);
 		boolean isOn = false;
 		for(int i = 0; i < scalePlots.size(); i++){
