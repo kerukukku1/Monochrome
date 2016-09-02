@@ -11,7 +11,7 @@ import java.util.List;
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 
-public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Yï¿½ï¿½
+public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½Yï¿½ï¿½
 
 	/*
 	 * ï¿½ï¿½ï¿½F
@@ -26,11 +26,16 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 	private BufferedImage ansImage;
 	private List<Tuple2<Integer, Integer>> crossPoints;
 	
+	private boolean isFinished = false;
+	
 	public CrossAlgorithm(List<Edge> input,int w,int h){
 		this.edges = input;
 		this.w = w;
 		this.h = h;
 		crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
+	}
+	public boolean isFinished(){
+		return this.isFinished;
 	}
 
 	public List<Tuple2<Double,Double>> getAnswer(){
@@ -184,6 +189,7 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 			g2d.drawString(String.valueOf(result), (int)nx, (int)ny);
 		}
 		g2d.dispose();
+		finish();
 	}
 
 	private int saiki(int index,List<Tuple2<Double,Double>> tmp){
@@ -240,5 +246,15 @@ public class CrossAlgorithm {///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï
 
 	public List<Tuple2<Integer, Integer>> getCrossPoints(){
 		return crossPoints;
+	}
+	
+	private void finish(){
+		this.isFinished = true;
+	}
+
+	@Override
+	public void run() {
+		solve();
+		finish();
 	}
 }
