@@ -118,6 +118,9 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 			System.out.println("Save");
 			lines = visPanel.getLines();
 			for(int i = 0; i < lines.size(); i++){
+				lines.set(i, visPanel.expandLine(lines.get(i)));
+			}
+			for(int i = 0; i < lines.size(); i++){
 				Line2D l = lines.get(i);
 				edges.add(makeEdge(calcHoughParam(l), l));
 			}

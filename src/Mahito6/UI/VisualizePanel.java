@@ -71,10 +71,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines){
     	this.vertex = vertex;
     	this.coord = coord;
-    	this.lines = new ArrayList<Line2D>();
-    	for(int i = 0 ; i < lines.size(); i++){
-    		this.lines.add(this.expandLine(lines.get(i)));
-    	}
+    	this.lines = lines;
+//    	for(int i = 0 ; i < lines.size(); i++){
+//    		this.lines.add(this.expandLine(lines.get(i)));
+//    	}
 		setUtil();
 		//スケールの計算。これしないとバグる
 		calcScale();
@@ -121,7 +121,6 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	public void paintPiece(){
 		if(vertex.isEmpty()){
 			System.out.println("Vertex is not set.");
-			return;
 		}
 		Graphics2D g = (Graphics2D)gPiece.getGraphics();
 //
@@ -348,7 +347,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return new Line2D.Double(x1,y1,x2,y2);
 	}
 	
-	private Line2D expandLine(Line2D line){
+	public Line2D expandLine(Line2D line){
 		double x1 = line.getX1();
 		double y1 = line.getY1();
 		double x2 = line.getX2();
@@ -420,8 +419,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 				clickP = null;
 				isSelect = false;
 				//オフセットだけ伸ばす
-				lines.add(this.expandLine(converToLine(line)));
-				scaleLines.add(this.expandLine(line));
+				lines.add(converToLine(line));
+				scaleLines.add(line);
 				paintLine(nowx, nowy);
 			}else{
 				//点の上の時

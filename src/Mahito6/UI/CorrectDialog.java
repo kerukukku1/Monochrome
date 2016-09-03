@@ -210,7 +210,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		double dist = Edge.distance(kx1, ky1, kx2, ky2);
 		double sum = Edge.distance(x,y,kx1,ky1) + Edge.distance(x,y,kx2,ky2);
 		double sabun = Math.abs(dist - sum);
-		if(sabun < 1)return true;///線上にあるのでOK
+		if(sabun < 4.0)return true;///線上にあるのでOK
 		return false;
 	}
 		
@@ -341,18 +341,22 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 				break;
 			}
 		}
-		isDrag = true;
-		dragLineIndexes = new ArrayList<Integer>();
-		dragPlotIndex = rmIndex;
-		for(int i = 0; i < focusLines.size(); i++){
-			Line2D line = focusLines.get(i);
-			if(onLine(nowx, nowy, line)){
-				dragLineIndexes.add(i);
-			}
+		isDrag = isOn;
+		if(isDrag){
+			dragLineIndexes = new ArrayList<Integer>();
+			dragPlotIndex = rmIndex;
+			for(int i = 0; i < focusLines.size(); i++){
+				Line2D line = focusLines.get(i);
+				if(onLine(nowx, nowy, line)){
+					dragLineIndexes.add(i);
+				}
+			}			
 		}
+
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		if(!isDrag)return;
 		boolean isOk = true;
 		int nowx = e.getX();
 		int nowy = e.getY();
@@ -363,13 +367,33 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			if(dist <= 5.0){
 				isOk = false;
+				break;
 			}
 		}
 		
-		//点の更新しない
+		for(int i = 0; i < focusLines.size(); i++){
+			if(onLine(nowx, nowy, focusLines.get(i))){
+				isOk = false;
+				break;
+			}
+		}
+		
+		//点上なら更新しない
 		if(!isOk)return;
-		
-		
+		for(int i = 0; i < dragLineIndexes.size(); i++){
+			int index = dragLineIndexes.get(i);
+			System.out.println("index:"+index);
+			int x1 = focusPlots.get(dragPlotIndex).t1;
+			int y1 = focusPlots.get(dragPlotIndex).t2;
+			Line2D line = focusLines.get(index);
+			if(Math.abs(line.getX1() - x1) < 2.0 && Math.abs(line.getY1() - y1) < 2.0){
+				focusLines.set(index, new Line2D.Double(nowx, nowy, line.getX2(), line.getY2()));
+			}else{
+				focusLines.set(index, new Line2D.Double(line.getX1(), line.getY1(), nowx, nowy));
+			}
+		}
+		focusPlots.set(dragPlotIndex, new Tuple2<Integer, Integer>(nowx, nowy));
+		mouseMoved(e);
 	}
 	@Override
 	public void mouseEntered(MouseEvent e) {}
@@ -381,6 +405,9 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	public void keyReleased(KeyEvent e) {}
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		if(!isDrag){
+			mouseMoved(e);
+		}
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		int nowx = e.getX();
