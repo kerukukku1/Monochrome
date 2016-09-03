@@ -3,6 +3,9 @@ package Mahito6.Main;
 import java.awt.Color;
 
 public class Constants{
+	
+	public static final int solveThread = 8;
+	
 	public static final double gosa = 10.0;///線上にあるか判定するアルゴリズムの許容誤差
     public static final int kAngleSplits = 1024;   					   //0~3.14(pi)をどれだけ分割するか(デフォは4096分割、除算するので2^nの数を使おう)
     public static final int kMinCount = 15;       					   //ハフ変換での直線認識の閾値、この値より小さいと直線でないとみなす

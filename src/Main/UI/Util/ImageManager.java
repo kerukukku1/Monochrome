@@ -23,6 +23,7 @@ import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
+import Mahito6.Thread.SolverThreadingAgent;
 import Mahito6.UI.MainPanel;
 import Mahito6.UI.PieceListView;
 import Mahito6.UI.VisualizeFrame;
@@ -136,12 +137,15 @@ public class ImageManager{
 
 		System.out.println("Find Edge");
 		start = System.nanoTime();
-		allEdges = runEdgeFinderThread(bufImages);
-		runCrossAlgorithm(allEdges, bufImages);
+		try {
+			runSolveThread();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		end = System.nanoTime();
-		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
-
 		outputData();
+		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
 
 		System.out.println("end get piece");
 		
@@ -157,87 +161,14 @@ public class ImageManager{
 		PieceListView view = new PieceListView(this);
 	}
 	
-	public List<List<Edge>> runEdgeFinderThread(List<BufferedImage> images){
-		List<Thread> threads = new ArrayList<Thread>();
-		List<EdgeFinder> finders = new ArrayList<EdgeFinder>();
-		for(int i = 0; i < images.size(); i++){
-			finders.add(new EdgeFinder(images.get(i), true));
-		}
-		for(int i = 0; i < finders.size(); i++){
-			Runnable runnable = finders.get(i);
-			Thread th = new Thread(runnable);
-			th.start();
-			threads.add(th);
-		}
-		
-		for(int i = 0; i < threads.size(); i++){
-			try {
-				threads.get(i).join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		List<List<Edge>> ret = new ArrayList<List<Edge>>();
-		for(int i = 0; i < finders.size(); i++){
-			ret.add(finders.get(i).getResult_edge());
-			BufferedImage result = finders.get(i).getResult_line();
-			File line_save = new File(getPath(String.valueOf(i)+"_line_"));
-			try {
-				ImageIO.write(result, "png", line_save);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
-		System.out.println("EdgeFind Thread Ended");
-		return ret;
-	}
-
-	public void runCrossAlgorithm(List<List<Edge>> source, List<BufferedImage> images){
-		for(int index = 0; index < source.size(); index++){
-			BufferedImage image = images.get(index);
-			List<Edge> edges = source.get(index);
-			CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());///���o�����S�ẴG�b�W�����_�����߂�\���o�\
-			solver2.solve();
-			List<Tuple2<Double,Double>> ans = solver2.getAnswer();///�S�Ă̒��_���擾
-			System.out.println("--------------NO." +index+" answer--------------");
-			List<String> tmpOut = new ArrayList<String>();
-			System.out.println(ans.size());
-			tmpOut.add(String.valueOf(ans.size()));
-			List<Tuple2<Double, Double> > tmplist = new ArrayList< Tuple2<Double, Double> >();
-			for(Tuple2<Double,Double> t : ans){
-				System.out.println(t.t1+","+t.t2);
-				tmplist.add(t);
-			}
-			vertex.add(tmplist);
-			coords.get(index).setError(solver2.isErrorCross());
-			
-			BufferedImage result3 = solver2.getAnswerImage();
-			File ans_save = new File(getPath(String.valueOf(index)+"_ans_"));
-			try {
-				ImageIO.write(result3, "png", ans_save);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if(Constants.isOutputDebugOval){
-				Graphics2D graphic = (Graphics2D) confirm.getGraphics();
-				graphic.setColor(Color.YELLOW);
-				List<Tuple2<Integer,Integer>> tmpCross = solver2.getCrossPoints();
-				for(int i = 0; i < tmpCross.size(); i++){
-					Tuple2<Integer, Integer> point = tmpCross.get(i);
-					Coordinates tmpc = coords.get(index);
-					int x = point.t1;
-					int y = point.t2;
-					x += (tmpc.minx - Constants.imagePositionOffset/2);
-					y += (tmpc.miny - Constants.imagePositionOffset/2);
-					graphic.fillOval(x-2, y-2, 4, 4);
-					graphic.drawOval(x-8, y-8, 16, 16);
-				}
-			}
-			
+	public void runSolveThread() throws Exception{
+		int threadNum = Constants.solveThread;
+		SolverThreadingAgent agent = new SolverThreadingAgent(bufImages, threadNum);
+		agent.run();
+		allEdges = agent.getAllEdges();
+		for(int i = 0; i < bufImages.size(); i++){
+			vertex.add(agent.getCrossAnswer(i));
+			coords.get(i).setError(agent.isError(i));			
 		}
 	}
 
