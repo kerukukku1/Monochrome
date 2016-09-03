@@ -163,7 +163,7 @@ public class ImageManager{
 	}
 
 	public void runSolveThread() throws Exception{
-		int threadNum = 16;
+		int threadNum = Constants.solveThread;
 		SolverThreadingAgent agent = new SolverThreadingAgent(bufImages, threadNum);
 		agent.run();
 		allEdges = agent.getAllEdges();
