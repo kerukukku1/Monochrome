@@ -136,9 +136,8 @@ public class ImageManager{
 
 		System.out.println("Find Edge");
 		start = System.nanoTime();
-		for(int i = 0; i < bufImages.size(); i++){
-			pieceSolve(bufImages.get(i), i);
-		}
+		allEdges = runEdgeFinderThread(bufImages);
+		runCrossAlgorithm(allEdges, bufImages);
 		end = System.nanoTime();
 		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
 
@@ -157,60 +156,88 @@ public class ImageManager{
 		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
 		PieceListView view = new PieceListView(this);
 	}
-
-	public void pieceSolve(BufferedImage image, int index){
-		EdgeFinder solver = new EdgeFinder(image,false);///�G�b�W���o�p�\���o�\
-		try {
-			solver.edgeFind();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			return;
+	
+	public List<List<Edge>> runEdgeFinderThread(List<BufferedImage> images){
+		List<Thread> threads = new ArrayList<Thread>();
+		List<EdgeFinder> finders = new ArrayList<EdgeFinder>();
+		for(int i = 0; i < images.size(); i++){
+			finders.add(new EdgeFinder(images.get(i), true));
 		}
-		List<Edge> edges = solver.getResult_edge();
-		allEdges.add(edges);
-		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());///���o�����S�ẴG�b�W�����_�����߂�\���o�\
-		solver2.solve();
-		List<Tuple2<Double,Double>> ans = solver2.getAnswer();///�S�Ă̒��_���擾
-		System.out.println("--------------NO." +index+" answer--------------");
-		List<String> tmpOut = new ArrayList<String>();
-		System.out.println(ans.size());
-		tmpOut.add(String.valueOf(ans.size()));
-		List<Tuple2<Double, Double> > tmplist = new ArrayList< Tuple2<Double, Double> >();
-		for(Tuple2<Double,Double> t : ans){
-			System.out.println(t.t1+","+t.t2);
-			tmplist.add(t);
+		for(int i = 0; i < finders.size(); i++){
+			Runnable runnable = finders.get(i);
+			Thread th = new Thread(runnable);
+			th.start();
+			threads.add(th);
 		}
-		vertex.add(tmplist);
-		coords.get(index).setError(solver2.isErrorCross());
 		
-		//BufferedImage result = solver.getResult();
-		BufferedImage result2 = solver.getResult_line();
-		BufferedImage result3 = solver2.getAnswerImage();
-		File line_save = new File(getPath(String.valueOf(index)+"_line_"));
-		File ans_save = new File(getPath(String.valueOf(index)+"_ans_"));
-//		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
-//		System.out.println(pathStr);
-		try {
-			//ImageIO.write(result, "png", saveFile);
-			ImageIO.write(result2, "png", line_save);
-			ImageIO.write(result3, "png", ans_save);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if(Constants.isOutputDebugOval){
-			Graphics2D graphic = (Graphics2D) confirm.getGraphics();
-			graphic.setColor(Color.YELLOW);
-			List<Tuple2<Integer,Integer>> tmpCross = solver2.getCrossPoints();
-			for(int i = 0; i < tmpCross.size(); i++){
-				Tuple2<Integer, Integer> point = tmpCross.get(i);
-				Coordinates tmpc = coords.get(index);
-				int x = point.t1;
-				int y = point.t2;
-				x += (tmpc.minx - Constants.imagePositionOffset/2);
-				y += (tmpc.miny - Constants.imagePositionOffset/2);
-				graphic.fillOval(x-2, y-2, 4, 4);
-				graphic.drawOval(x-8, y-8, 16, 16);
+		for(int i = 0; i < threads.size(); i++){
+			try {
+				threads.get(i).join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		}
+		
+		List<List<Edge>> ret = new ArrayList<List<Edge>>();
+		for(int i = 0; i < finders.size(); i++){
+			ret.add(finders.get(i).getResult_edge());
+			BufferedImage result = finders.get(i).getResult_line();
+			File line_save = new File(getPath(String.valueOf(i)+"_line_"));
+			try {
+				ImageIO.write(result, "png", line_save);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		System.out.println("EdgeFind Thread Ended");
+		return ret;
+	}
+
+	public void runCrossAlgorithm(List<List<Edge>> source, List<BufferedImage> images){
+		for(int index = 0; index < source.size(); index++){
+			BufferedImage image = images.get(index);
+			List<Edge> edges = source.get(index);
+			CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());///���o�����S�ẴG�b�W�����_�����߂�\���o�\
+			solver2.solve();
+			List<Tuple2<Double,Double>> ans = solver2.getAnswer();///�S�Ă̒��_���擾
+			System.out.println("--------------NO." +index+" answer--------------");
+			List<String> tmpOut = new ArrayList<String>();
+			System.out.println(ans.size());
+			tmpOut.add(String.valueOf(ans.size()));
+			List<Tuple2<Double, Double> > tmplist = new ArrayList< Tuple2<Double, Double> >();
+			for(Tuple2<Double,Double> t : ans){
+				System.out.println(t.t1+","+t.t2);
+				tmplist.add(t);
+			}
+			vertex.add(tmplist);
+			coords.get(index).setError(solver2.isErrorCross());
+			
+			BufferedImage result3 = solver2.getAnswerImage();
+			File ans_save = new File(getPath(String.valueOf(index)+"_ans_"));
+			try {
+				ImageIO.write(result3, "png", ans_save);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(Constants.isOutputDebugOval){
+				Graphics2D graphic = (Graphics2D) confirm.getGraphics();
+				graphic.setColor(Color.YELLOW);
+				List<Tuple2<Integer,Integer>> tmpCross = solver2.getCrossPoints();
+				for(int i = 0; i < tmpCross.size(); i++){
+					Tuple2<Integer, Integer> point = tmpCross.get(i);
+					Coordinates tmpc = coords.get(index);
+					int x = point.t1;
+					int y = point.t2;
+					x += (tmpc.minx - Constants.imagePositionOffset/2);
+					y += (tmpc.miny - Constants.imagePositionOffset/2);
+					graphic.fillOval(x-2, y-2, 4, 4);
+					graphic.drawOval(x-8, y-8, 16, 16);
+				}
+			}
+			
 		}
 	}
 
