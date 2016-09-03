@@ -119,9 +119,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	}
 	
 	public void paintPiece(){
-		if(vertex.isEmpty()){
-			System.out.println("Vertex is not set.");
-		}
+		if(vertex.isEmpty())System.out.println("Vertex is not set.");
 		Graphics2D g = (Graphics2D)gPiece.getGraphics();
 //
 //	    BasicStroke normalStroke = new BasicStroke(5.0f);
