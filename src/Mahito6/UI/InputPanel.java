@@ -115,20 +115,30 @@ public class InputPanel extends JPanel implements ActionListener{
 		if(cmd.equals("Load")){
 			LoadFiles(inputForm.getText());	
 		}else if(cmd.equals("Run")){
-			new Thread(new Runnable(){
-				@Override
-				public void run(){
-					System.out.println("All Noise Clear");
-					long start = System.nanoTime();
-					InputPanel.loadButton.setEnabled(false);
-					InputPanel.runButton.setEnabled(false);
-					images.getPieces();
-					InputPanel.loadButton.setEnabled(true);
-					InputPanel.runButton.setEnabled(true);
-					long end = System.nanoTime();
-					System.out.println((end - start) / 1000000f + "ms");
-				}
-			}).start();
+			System.out.println("All Noise Clear");
+			long start = System.nanoTime();
+			InputPanel.loadButton.setEnabled(false);
+			InputPanel.runButton.setEnabled(false);
+			images.getPieces();
+			InputPanel.loadButton.setEnabled(true);
+			InputPanel.runButton.setEnabled(true);
+			long end = System.nanoTime();
+			System.out.println((end - start) / 1000000f + "ms");
+
+//			new Thread(new Runnable(){
+//				@Override
+//				public void run(){
+//					System.out.println("All Noise Clear");
+//					long start = System.nanoTime();
+//					InputPanel.loadButton.setEnabled(false);
+//					InputPanel.runButton.setEnabled(false);
+//					images.getPieces();
+//					InputPanel.loadButton.setEnabled(true);
+//					InputPanel.runButton.setEnabled(true);
+//					long end = System.nanoTime();
+//					System.out.println((end - start) / 1000000f + "ms");
+//				}
+//			}).start();
 		}
 	}
 }

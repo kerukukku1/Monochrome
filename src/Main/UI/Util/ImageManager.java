@@ -23,6 +23,7 @@ import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
+import Mahito6.Thread.SolverThreadingAgent;
 import Mahito6.UI.MainPanel;
 import Mahito6.UI.PieceListView;
 import Mahito6.UI.VisualizeFrame;
@@ -136,8 +137,11 @@ public class ImageManager{
 
 		System.out.println("Find Edge");
 		start = System.nanoTime();
-		for(int i = 0; i < bufImages.size(); i++){
-			pieceSolve(bufImages.get(i), i);
+		try {
+			runSolveThread();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		end = System.nanoTime();
 		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
@@ -158,60 +162,53 @@ public class ImageManager{
 		PieceListView view = new PieceListView(this);
 	}
 
-	public void pieceSolve(BufferedImage image, int index){
-		EdgeFinder solver = new EdgeFinder(image,false);///�G�b�W���o�p�\���o�\
-		try {
-			solver.edgeFind();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			return;
+	public void runSolveThread() throws Exception{
+		int threadNum = 16;
+		SolverThreadingAgent agent = new SolverThreadingAgent(bufImages, threadNum);
+		agent.run();
+		allEdges = agent.getAllEdges();
+		for(int i = 0; i < bufImages.size(); i++){
+			vertex.add(agent.getCrossAnswer(i));
+			coords.get(i).setError(agent.isError(i));			
 		}
-		List<Edge> edges = solver.getResult_edge();
-		allEdges.add(edges);
-		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());///���o�����S�ẴG�b�W�����_�����߂�\���o�\
-		solver2.solve();
-		List<Tuple2<Double,Double>> ans = solver2.getAnswer();///�S�Ă̒��_���擾
-		System.out.println("--------------NO." +index+" answer--------------");
-		List<String> tmpOut = new ArrayList<String>();
-		System.out.println(ans.size());
-		tmpOut.add(String.valueOf(ans.size()));
-		List<Tuple2<Double, Double> > tmplist = new ArrayList< Tuple2<Double, Double> >();
-		for(Tuple2<Double,Double> t : ans){
-			System.out.println(t.t1+","+t.t2);
-			tmplist.add(t);
-		}
-		vertex.add(tmplist);
-		coords.get(index).setError(solver2.isErrorCross());
 		
-		//BufferedImage result = solver.getResult();
-		BufferedImage result2 = solver.getResult_line();
-		BufferedImage result3 = solver2.getAnswerImage();
-		File line_save = new File(getPath(String.valueOf(index)+"_line_"));
-		File ans_save = new File(getPath(String.valueOf(index)+"_ans_"));
-//		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
-//		System.out.println(pathStr);
-		try {
-			//ImageIO.write(result, "png", saveFile);
-			ImageIO.write(result2, "png", line_save);
-			ImageIO.write(result3, "png", ans_save);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if(Constants.isOutputDebugOval){
-			Graphics2D graphic = (Graphics2D) confirm.getGraphics();
-			graphic.setColor(Color.YELLOW);
-			List<Tuple2<Integer,Integer>> tmpCross = solver2.getCrossPoints();
-			for(int i = 0; i < tmpCross.size(); i++){
-				Tuple2<Integer, Integer> point = tmpCross.get(i);
-				Coordinates tmpc = coords.get(index);
-				int x = point.t1;
-				int y = point.t2;
-				x += (tmpc.minx - Constants.imagePositionOffset/2);
-				y += (tmpc.miny - Constants.imagePositionOffset/2);
-				graphic.fillOval(x-2, y-2, 4, 4);
-				graphic.drawOval(x-8, y-8, 16, 16);
-			}
-		}
+//		System.out.println(ans.size());
+//		tmpOut.add(String.valueOf(ans.size()));
+//		List<Tuple2<Double, Double> > tmplist = new ArrayList< Tuple2<Double, Double> >();
+//		for(Tuple2<Double,Double> t : ans){
+//			System.out.println(t.t1+","+t.t2);
+//			tmplist.add(t);
+//		}
+//		
+//		//BufferedImage result = solver.getResult();
+//		BufferedImage result2 = solver.getResult_line();
+//		BufferedImage result3 = solver2.getAnswerImage();
+//		File line_save = new File(getPath(String.valueOf(index)+"_line_"));
+//		File ans_save = new File(getPath(String.valueOf(index)+"_ans_"));
+////		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
+////		System.out.println(pathStr);
+//		try {
+//			//ImageIO.write(result, "png", saveFile);
+//			ImageIO.write(result2, "png", line_save);
+//			ImageIO.write(result3, "png", ans_save);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		if(Constants.isOutputDebugOval){
+//			Graphics2D graphic = (Graphics2D) confirm.getGraphics();
+//			graphic.setColor(Color.YELLOW);
+//			List<Tuple2<Integer,Integer>> tmpCross = solver2.getCrossPoints();
+//			for(int i = 0; i < tmpCross.size(); i++){
+//				Tuple2<Integer, Integer> point = tmpCross.get(i);
+//				Coordinates tmpc = coords.get(index);
+//				int x = point.t1;
+//				int y = point.t2;
+//				x += (tmpc.minx - Constants.imagePositionOffset/2);
+//				y += (tmpc.miny - Constants.imagePositionOffset/2);
+//				graphic.fillOval(x-2, y-2, 4, 4);
+//				graphic.drawOval(x-8, y-8, 16, 16);
+//			}
+//		}
 	}
 
 	public void clearAllNoise(){

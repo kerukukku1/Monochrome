@@ -28,13 +28,20 @@ public class SolverThreadingAgent {
 		this.threadNum = threadNum;
 		this.sourceImages = sourceImages;
 		this.pieceNum = sourceImages.size();
+		System.out.println(pieceNum);
 		this.allAnswer = new ArrayList<List<Tuple2<Double,Double>>>(pieceNum);
 		this.allAnswerImage = new ArrayList<BufferedImage>(pieceNum);
 		this.allEdges = new ArrayList<List<Edge>>(pieceNum);
 		this.isErrorList = new ArrayList<Boolean>(pieceNum);
+		for(int i = 0; i < pieceNum; i++){
+			allAnswer.add(null);
+			allAnswerImage.add(null);
+			allEdges.add(null);
+			isErrorList.add(null);
+		}
 	}
 	
-	public List<Tuple2<Double, Double>> getEdgeAnswer(int id){
+	public List<Tuple2<Double, Double>> getCrossAnswer(int id){
 		return allAnswer.get(id);
 	}
 	public BufferedImage getAnswerImage(int id){
@@ -47,13 +54,20 @@ public class SolverThreadingAgent {
 		return allEdges;
 	}
 	
-	private synchronized void endMethod(int id,List<Tuple2<Double, Double>> answerEdges, List<Edge> edges,
-									   BufferedImage image,boolean isError){
+	private synchronized void endMethod(int id,List<Tuple2<Double, Double>> answerEdges,
+			   BufferedImage image,boolean isError){
 		///解をぶちこむためのメソッド、衝突防止
-		allAnswer.set(id, answerEdges);
 		allAnswerImage.set(id, image);
-		allEdges.set(id, edges);
 		isErrorList.set(id, isError);
+		allAnswer.set(id, answerEdges);
+
+		List<Edge> edges = new ArrayList<Edge>();
+		for(int i = 0; i < answerEdges.size(); i++){
+			Tuple2<Double, Double> e1 = answerEdges.get(i);
+			Tuple2<Double, Double> e2 = answerEdges.get((i+1)%answerEdges.size());
+			edges.add(new Edge(e1.t1,e1.t2,e2.t1,e2.t2));
+		}
+		allEdges.set(id, edges);
 	}
 	
 	public void run() throws Exception{///並列化のすべてを投げる
@@ -96,7 +110,7 @@ public class SolverThreadingAgent {
 						List<Tuple2<Double, Double>> answerEdges = crossAlgorithm.getAnswer();
 						BufferedImage answerImage = crossAlgorithm.getAnswerImage();
 						boolean isError = crossAlgorithm.isErrorCross();
-						endMethod(id,answerEdges,edges,answerImage,isError);
+						endMethod(id,answerEdges,answerImage,isError);
 					}
 				}
 			});
