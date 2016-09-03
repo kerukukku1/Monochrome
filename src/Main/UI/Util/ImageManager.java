@@ -144,9 +144,8 @@ public class ImageManager{
 			e1.printStackTrace();
 		}
 		end = System.nanoTime();
-		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
-
 		outputData();
+		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
 
 		System.out.println("end get piece");
 		
