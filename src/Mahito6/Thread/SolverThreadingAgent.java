@@ -18,6 +18,7 @@ public class SolverThreadingAgent {
 	private List<List<Tuple2<Double,Double>>> allAnswer;
 	private List<BufferedImage> allAnswerImage;
 	private List<Boolean> isErrorList;
+	private List<List<Edge>> allEdges;
 	
 	/*
 	 * threadNum:スレッドの数
@@ -29,6 +30,7 @@ public class SolverThreadingAgent {
 		this.pieceNum = sourceImages.size();
 		this.allAnswer = new ArrayList<List<Tuple2<Double,Double>>>(pieceNum);
 		this.allAnswerImage = new ArrayList<BufferedImage>(pieceNum);
+		this.allEdges = new ArrayList<List<Edge>>(pieceNum);
 		this.isErrorList = new ArrayList<Boolean>(pieceNum);
 	}
 	
@@ -42,11 +44,12 @@ public class SolverThreadingAgent {
 		return isErrorList.get(id);
 	}
 	
-	private synchronized void endMethod(int id,List<Tuple2<Double, Double>> answerEdges,
+	private synchronized void endMethod(int id,List<Tuple2<Double, Double>> answerEdges, List<Edge> edges,
 									   BufferedImage image,boolean isError){
 		///解をぶちこむためのメソッド、衝突防止
 		allAnswer.set(id, answerEdges);
 		allAnswerImage.set(id, image);
+		allEdges.set(id, edges);
 		isErrorList.set(id, isError);
 	}
 	
@@ -90,7 +93,7 @@ public class SolverThreadingAgent {
 						List<Tuple2<Double, Double>> answerEdges = crossAlgorithm.getAnswer();
 						BufferedImage answerImage = crossAlgorithm.getAnswerImage();
 						boolean isError = crossAlgorithm.isErrorCross();
-						endMethod(id,answerEdges,answerImage,isError);
+						endMethod(id,answerEdges,edges,answerImage,isError);
 					}
 				}
 			});
