@@ -36,8 +36,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	private List<Tuple2<Integer, Integer>> focusPlots;
 	private List<Line2D> lines;
 	private List<Line2D> focusLines;
-	private List<Line2D> dragLines;
-	private Tuple2<Double, Double> dragPlot;
+	private int dragPlotIndex;
+	private List<Integer> dragLineIndexes;
 	private BufferedImage img, paint;
 	private boolean isDrag = false;
 	private JLabel earth;
@@ -253,15 +253,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		//Left Click
 		}else{
 			if(isOn){
-				isDrag = true;
-				dragLines = new ArrayList<Line2D>();
-				dragPlot = nowOn;
-				for(int i = 0; i < focusLines.size(); i++){
-					Line2D line = focusLines.get(i);
-					if(onLine(nowx, nowy, line)){
-						dragLines.add(line);
-					}
-				}
+
 			}else{
 				focusPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
 				double nx = (double)e.getX() - range + (double)this.x/scale;
@@ -334,6 +326,30 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
+		boolean isOn = false;
+		int rmIndex = 0;
+		int nowx = e.getX();
+		int nowy = e.getY();
+		for(int i = 0; i < focusPlots.size(); i++){
+			Tuple2<Integer, Integer> t = focusPlots.get(i);
+			int vx = t.t1;
+			int vy = t.t2;
+			double dist = Edge.distance(nowx, nowy, vx, vy);
+			if(dist <= 5.0){
+				isOn = true;
+				rmIndex = i;
+				break;
+			}
+		}
+		isDrag = true;
+		dragLineIndexes = new ArrayList<Integer>();
+		dragPlotIndex = rmIndex;
+		for(int i = 0; i < focusLines.size(); i++){
+			Line2D line = focusLines.get(i);
+			if(onLine(nowx, nowy, line)){
+				dragLineIndexes.add(i);
+			}
+		}
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
@@ -374,6 +390,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			Tuple2<Integer, Integer> t = focusPlots.get(i);
 			int vx = t.t1;
 			int vy = t.t2;
+			if(i == dragPlotIndex)continue;
 			g.setColor(Constants.plotColor);
 			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
