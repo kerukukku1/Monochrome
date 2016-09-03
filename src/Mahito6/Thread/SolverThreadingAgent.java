@@ -43,6 +43,9 @@ public class SolverThreadingAgent {
 	public boolean isError(int id){
 		return isErrorList.get(id);
 	}
+	public List<List<Edge>> getAllEdges(){
+		return allEdges;
+	}
 	
 	private synchronized void endMethod(int id,List<Tuple2<Double, Double>> answerEdges, List<Edge> edges,
 									   BufferedImage image,boolean isError){
