@@ -98,16 +98,8 @@ public class SolverThreadingAgent {
 			runningThread.add(newThread);
 		}
 		
-		while(true){///全てのスレッドが終了するまで待つ
-			for(int i = 0;i < runningThread.size();i++){
-				Thread th = runningThread.get(i);
-				if(th.isAlive()){
-					///まだ終わってないスレッドあり
-					i = -1;
-					Thread.sleep(100L);
-				}
-			}
-			break;
+		for(int i = 0;i < runningThread.size();i++){
+			runningThread.get(i).join();
 		}
 	}
 
