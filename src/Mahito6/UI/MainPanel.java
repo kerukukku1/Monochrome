@@ -3,6 +3,7 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+import Mahito6.Main.ProblemManager;
 import Main.UI.Util.MyKeyListener;
 
 public class MainPanel extends JPanel{
@@ -20,8 +21,12 @@ public class MainPanel extends JPanel{
 		this.add(inputPanel);
 		this.setBackground(Color.gray.darker());
 		
+		ProblemManager.setInputPanel(inputPanel);
+		
 		uPanel = new UtilityPanel();
 		this.add(uPanel);
+		
+		ProblemManager.setUtilityPanel(uPanel);
 		
 //		imagePanel = new MainImagePanel();
 //		this.add(imagePanel);

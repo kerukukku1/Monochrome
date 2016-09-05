@@ -15,13 +15,13 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
 
+import Mahito6.Main.ProblemManager;
 import Main.UI.Util.ImageManager;
 import Main.UI.Util.MyKeyListener;
 
 public class InputPanel extends JPanel implements ActionListener{
 	public int x, y;
 	public static JButton loadButton, runButton;
-	public ImageManager images;
 	public JTextField inputForm;
 	public InputPanel(int x, int y){
 		this.x = x;
@@ -64,8 +64,7 @@ public class InputPanel extends JPanel implements ActionListener{
 	}
 	
 	private void LoadFiles(String path){
-		images = new ImageManager();
-		if(!images.setPath(path)){
+		if(!ProblemManager.imageManager.setPath(path)){
 			inputForm.setText("Illegal Path");
 			return;
 		}
@@ -119,7 +118,7 @@ public class InputPanel extends JPanel implements ActionListener{
 			long start = System.nanoTime();
 			InputPanel.loadButton.setEnabled(false);
 			InputPanel.runButton.setEnabled(false);
-			images.getPieces();
+			ProblemManager.generatePieceDatas();
 			InputPanel.loadButton.setEnabled(true);
 			InputPanel.runButton.setEnabled(true);
 			long end = System.nanoTime();

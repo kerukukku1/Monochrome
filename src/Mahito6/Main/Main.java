@@ -35,6 +35,7 @@ public class Main {
 	
 	public Main(){
 		mainFrame = new MainFrame(Constants.uiTitle);
+		new ProblemManager(mainFrame);
 	}
 	
 	public static void main(String[] args){

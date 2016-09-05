@@ -14,18 +14,17 @@ import javax.swing.JFrame;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Main;
+import Mahito6.Main.ProblemManager;
 import Main.UI.Util.MyKeyListener;
 
 public class MainFrame extends JFrame{
 	public static final int frame_height = 600;
 	public static final int frame_width = 700;
 	
-	private static MainFrame mine;
 	private MainPanel mainPanel;
 	private String title;
 	
 	public MainFrame(String title){
-		this.mine = this;
 		this.title = title;
 		launchUI();
 		this.setLocationRelativeTo(null);
@@ -48,8 +47,12 @@ public class MainFrame extends JFrame{
 		this.add(mainPanel);
 	}
 	
+	public MainPanel getMainPanel(){
+		return mainPanel;
+	}
+	
 	public static void changeTitle(String title){
-		MainFrame.mine.setTitle(Constants.uiTitle + title);
+		ProblemManager.mainFrame.setTitle(Constants.uiTitle + title);
 	}
 
 }

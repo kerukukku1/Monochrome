@@ -109,44 +109,42 @@ public class ImageManager{
 	}
 
 	public void getPieces(){
-		long start = 0;
-		long end = 0;
 		System.out.println("K=" + Constants.dividePixelLookingForDist);
 		System.out.println("Get Piece");
 		problem = new Problem(Highgui.imread(path, 0));
 		System.out.println("runAdaptiveThreshold");
-		start = System.nanoTime();
+		MeasureTimer.start();
 		problem.runAdaptiveThreshold();
 		if(Constants.isOutputDebugOval)try {confirm = ImageIO.read(new File(path));} catch (IOException e1) {e1.printStackTrace();}
 		//runAdaptiveThreshold();
-		end = System.nanoTime();
-		System.out.println((end - start) / 1000000f + "ms");
+		MeasureTimer.end();
+		MeasureTimer.call();
 
 		System.out.println("Divide Images");
-		start = System.nanoTime();
+		MeasureTimer.start();
 		Act act = new Act(problem.getBinaryBufferedImage(), Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
-		end = System.nanoTime();
-		System.out.println((end - start) / 1000000f + "ms");
+		MeasureTimer.end();
+		MeasureTimer.call();
 
 		System.out.println("All Noise Clear");
-		start = System.nanoTime();
+		MeasureTimer.start();
 		clearAllNoise();
-		end = System.nanoTime();
-		System.out.println((end - start) / 1000000f + "ms");
+		MeasureTimer.end();
+		MeasureTimer.call();
 
 		System.out.println("Find Edge");
-		start = System.nanoTime();
+		MeasureTimer.start();
 		try {
 			runSolveThread();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		end = System.nanoTime();
 		outputData();
-		System.out.println("Hough : " + (end - start) / 1000000f + "ms");
-
+		MeasureTimer.end();
+		MeasureTimer.call();
+		
 		System.out.println("end get piece");
 		
 		File yellowP = new File(getPath(String.valueOf(0)+"yellow"));
