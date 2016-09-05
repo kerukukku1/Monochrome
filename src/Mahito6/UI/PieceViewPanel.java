@@ -20,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.Problem;
+import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
@@ -36,19 +38,18 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private Coordinates coord;
 	private VisualizeFrame vis = null;
 	private List<Edge> edges;
-	private PieceListView parent;
 	
-	public PieceViewPanel(int x, int y, int width, int height, int index, PieceListView parent){
+	public PieceViewPanel(int x, int y, int width, int height, int index){
 		this.width = width;
 		this.height = height;
 		this.x = x;
 		this.y = y;
 		this.index = index;
-		this.parent = parent;
-		this.vertex = parent.database.getVertex().get(index);
-		this.coord = parent.database.getCoord().get(index);
-		this.edges = parent.getEdges(index);
-		this.image = parent.database.getImages().get(index);
+		Problem p = ProblemManager.getProblem();
+		this.vertex = p.getVertex(index);
+		this.coord = p.getCoord(index);
+		this.edges = p.getEdges(index);
+		this.image = p.getImage(index);
 		setUtil();
 		launchItems();
 		paintPiece();

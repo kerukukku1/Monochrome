@@ -47,7 +47,7 @@ public class Act{
 				//System.out.print(rgb);
 				if(rgb == 0)continue;
 				c.clear();
-				c = BFS.findPointsForAct(j, i, maxX, maxY, memo, buf);
+				c = BFS.findPointsForDivide(j, i, maxX, maxY, memo, buf);
 				if(c.size() < threshold)continue;
 				coords.add(new Coordinates(c.arx, c.ary));
 			}

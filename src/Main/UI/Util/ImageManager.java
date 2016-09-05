@@ -18,6 +18,7 @@ import org.opencv.imgproc.Imgproc;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
+import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
@@ -48,18 +49,14 @@ public class ImageManager{
 		allEdges = new ArrayList<List<Edge>>();
 	}
 
-	private void runAdaptiveThreshold(){
-        Mat src = Highgui.imread(path, 0);
+	public void runAdaptiveThreshold(Mat source){
         //枠のときの速度上げ専
-
         //if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
-
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
-
         //if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
-        binImage = src.clone();
-
+		Mat binImage = source.clone();
+		Mat binImage2 = source.clone();
         //61 14 太いけど確実param　GAUSSIAN
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 71, 21);
@@ -67,22 +64,17 @@ public class ImageManager{
         if(!Constants.modeWaku){
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 17, 8);
-        	
-//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
-        	
+        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
         	//nico nico
-        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 25, 25.25);
-        	
-        	
+        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);	
 //            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
         }
-
+        Core.bitwise_and(binImage, binImage2, binImage);
+//        Highgui.imwrite("and_image.png", dst);
         //枠専用
         if(Constants.modeWaku){
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
         }
-        
-        
         bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
@@ -114,7 +106,7 @@ public class ImageManager{
 		problem = new Problem(Highgui.imread(path, 0));
 		System.out.println("runAdaptiveThreshold");
 		MeasureTimer.start();
-		problem.runAdaptiveThreshold();
+		runAdaptiveThreshold(problem.getBinaryMatImage());
 		if(Constants.isOutputDebugOval)try {confirm = ImageIO.read(new File(path));} catch (IOException e1) {e1.printStackTrace();}
 		//runAdaptiveThreshold();
 		MeasureTimer.end();
@@ -122,7 +114,7 @@ public class ImageManager{
 
 		System.out.println("Divide Images");
 		MeasureTimer.start();
-		Act act = new Act(problem.getBinaryBufferedImage(), Constants.divideImageGarbageThreshold);
+		Act act = new Act(bufBinImage, Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
 		MeasureTimer.end();
 		MeasureTimer.call();
@@ -154,9 +146,13 @@ public class ImageManager{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		problem.setData(allEdges, vertex, coords);
+		problem.setBufferedImages(bufImages);
+		ProblemManager.setProblem(problem);
 
 		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
-		PieceListView view = new PieceListView(this);
+		PieceListView view = new PieceListView();
 	}
 	
 	public void runSolveThread() throws Exception{
@@ -171,7 +167,7 @@ public class ImageManager{
 	}
 
 	public void clearAllNoise(){
-		int minx,miny,maxx,maxy,mat_h,mat_w,offset;
+		int minx,miny,maxx,maxy,mat_h,mat_w;
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates now = coords.get(i);
 			BFS.clearNoise(Constants.clearNoiseThreshold, now);

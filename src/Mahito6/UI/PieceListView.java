@@ -13,28 +13,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 
+import Mahito6.Main.Problem;
+import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
 import Main.UI.Util.ImageManager;
 
 public class PieceListView extends JFrame{
-	private VisualizePanel visPanel;
 	private String title;
 	private List< List<Tuple2<Double, Double>> > vertex;
 	private JPanel paint;
 	private JPanel earth;
-	private JScrollPane sp;
-	private List<Coordinates> coords;
-	public ImageManager database;
 	private List<PieceViewPanel> pieceViews;
 	private List<List<Edge>> allEdges;
 	
-	public PieceListView(ImageManager database){
-		this.database = database;
-		this.coords = database.getCoord();
-		this.vertex = database.getVertex();
-		this.allEdges = database.getEdges();
+	public PieceListView(){
+		Problem p = ProblemManager.getProblem();
+		this.vertex = p.getVertex();
+		this.allEdges = p.getAllEdges();
 		title = "ListViewer";
 		launchUI();
 		this.requestFocusInWindow();
@@ -44,7 +41,7 @@ public class PieceListView extends JFrame{
 	
 	private void paintPiecePanel(){
 		for(int i = 0; i < vertex.size(); i++){
-			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i, this);
+			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i);
 			pieceViews.add(p);
 			paint.add(p);
 		}

@@ -1,6 +1,7 @@
 package Mahito6.Main;
 
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
+import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
 import Main.UI.Util.ImageManager;
 
@@ -19,31 +21,11 @@ public class Problem {
 	public BufferedImage bufBinImage;
 	public List<BufferedImage> div;
 	private List<Coordinates> coords;
+	private List<List<Edge>> allEdges;
+	private List<List<Tuple2<Double, Double>>> vertex;
 	public Problem(Mat source){
 		this.source = source;
 		div = new ArrayList<BufferedImage>();
-	}
-	
-	public void runAdaptiveThreshold(){
-        binImage = source.clone();
-        binImage2 = source.clone();
-        if(!Constants.modeWaku){
-//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
-//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 17, 8);
-        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
-        	//nico nico
-        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);	
-//          Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
-        }
-        Core.bitwise_and(binImage, binImage2, binImage);
-        //枠専用
-        if(Constants.modeWaku){
-        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
-        }
-        bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
-        
-//        黄色プロット確認
-//        if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(src);
 	}
 	
 	public void setCoordinates(List<Coordinates> coords){
@@ -52,5 +34,47 @@ public class Problem {
 
 	public BufferedImage getBinaryBufferedImage(){
 		return bufBinImage;
+	}
+	
+	public void setBufferedImages(List<BufferedImage> images){
+		this.div = images;
+	}
+	
+	public void setData(List<List<Edge>> allEdges, List<List<Tuple2<Double, Double>>> vertex, List<Coordinates> coords){
+		this.allEdges = allEdges;
+		this.vertex = vertex;
+		this.coords = coords;
+	}
+	
+	public List<List<Edge>> getAllEdges(){
+		return allEdges;
+	}
+	
+	public List<Coordinates> getCoords(){
+		return coords;
+	}
+	
+	public List<List<Tuple2<Double, Double>>> getVertex(){
+		return vertex;
+	}
+	
+	public List<Tuple2<Double, Double>> getVertex(int index){
+		return vertex.get(index);
+	}
+	
+	public Mat getBinaryMatImage(){
+		return source;
+	}
+	
+	public Coordinates getCoord(int index){
+		return coords.get(index);
+	}
+	
+	public List<Edge> getEdges(int index){
+		return allEdges.get(index);
+	}
+	
+	public BufferedImage getImage(int index){
+		return div.get(index);
 	}
 }

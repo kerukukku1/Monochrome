@@ -11,6 +11,7 @@ public class ProblemManager {
 	public static UtilityPanel utilPanel;
 	public static InputPanel inputPanel;
 	public static ImageManager imageManager;
+	public static Problem problem;
 	public ProblemManager(MainFrame mainFrame){
 		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();
@@ -20,12 +21,20 @@ public class ProblemManager {
 		imageManager.getPieces();
 	}
 	
+	public static void setProblem(Problem problem){
+		ProblemManager.problem = problem;
+	}
+	
 	public static void setInputPanel(InputPanel inputPanel){
 		ProblemManager.inputPanel = inputPanel;
 	}
 	
 	public static void setUtilityPanel(UtilityPanel utilPanel){
 		ProblemManager.utilPanel = utilPanel;
+	}
+	
+	public static Problem getProblem(){
+		return ProblemManager.problem;
 	}
 	
 	public static MainPanel getMainPanel(){
