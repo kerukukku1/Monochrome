@@ -455,6 +455,9 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					realtimeDialog.drawScreen(range, range);
+					//フォーカスをダイアログへ
+					realtimeDialog.requestFocusInWindow();
 //					Point p = e.getLocationOnScreen();
 //					p.x -= range/2;
 //					if(p.x < 0)p.x = 0;

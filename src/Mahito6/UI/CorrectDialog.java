@@ -51,7 +51,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
     
 	public CorrectDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
         super(owner, "look", false);
-        setBounds(parent.getWidth(), 0, range*2, range*2);
+        setBounds(parent.getWidth(), 30, range*2, range*2);
+        this.setLocation(parent.getWidth(), 30);
 		this.x = x;
 		this.y = y;
 		this.owner = owner;
@@ -61,6 +62,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.range = range;
 		this.scale = parent.getScale();
 		this.lines = parent.getLines();
+		this.setUndecorated(true);
 		System.out.println("Correct line size:" + lines.size());
 		plots = parent.getPlots();
 		focusPlots = this.convertScaleToFocusPlots(parent.getScalePlots());
@@ -98,7 +100,6 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		g2.fillRect(0,0,16,16);  
 		g2.dispose();  
 		earth.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(image, new Point(0,0), "null_cursor"));
-		
 		this.setResizable(false);
 	}
 	
@@ -406,10 +407,12 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		if(!isDrag){
 			mouseMoved(e);
 		}
+		drawScreen(e.getX(), e.getY());
+	}
+	
+	public void drawScreen(int nowx, int nowy){
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
-		int nowx = e.getX();
-		int nowy = e.getY();
 
 		for(int i = 0; i < focusPlots.size(); i++){
 			Tuple2<Integer, Integer> t = focusPlots.get(i);
