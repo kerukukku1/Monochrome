@@ -67,7 +67,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	}
 	
 	private void setVisualizePanel(){
-		visPanel = new VisualizePanel(vertex, coord, lines);
+		visPanel = new VisualizePanel(vertex, coord, lines, this);
 		this.add(visPanel);
 	}
 	

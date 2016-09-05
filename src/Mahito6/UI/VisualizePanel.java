@@ -1,5 +1,6 @@
 package Mahito6.UI;
 
+import java.awt.AWTException;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -7,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Robot;
 import java.awt.ScrollPane;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -49,7 +51,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private List<String> textData;
     private double scale = 1.0;
     private DiffPiece diff;
-    private CorrectDialog dia = null;
+    private CorrectDialog realtimeDialog = null;
     private Coordinates coord;
     //スケールを合わせたプロット
     private List<Tuple2<Integer, Integer>> scalePlots;
@@ -67,11 +69,13 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private BasicStroke miniStroke;
     private BasicStroke maxiStroke;
     private Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>> _hash;
+    private VisualizeFrame parent;
     
-    public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines){
+    public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
     	this.vertex = vertex;
     	this.coord = coord;
     	this.lines = lines;
+    	this.parent = parent;
 //    	for(int i = 0 ; i < lines.size(); i++){
 //    		this.lines.add(this.expandLine(lines.get(i)));
 //    	}
@@ -91,6 +95,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     	isSelect = false;
 	    drawLines();
 	    paintPlots();
+	    
+		realtimeDialog = new CorrectDialog(0, 0, range, this, parent);
     }
 	
 	private void setUtil(){
@@ -216,6 +222,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		}
 	}
 	
+	private void drawDialog(int x, int y){
+		realtimeDialog.reloadPoints(x, y);
+	}
+	
 	private boolean isVerifyLine(int nx, int ny, int cx, int cy){
 		if(nx==cx && ny==cy)return false;
 		Tuple2<Integer, Integer> nt = new Tuple2<Integer, Integer>(nx,ny);
@@ -272,43 +282,52 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    double w = (double)screenSize.width;
 	    double h = (double)screenSize.height;
 	    //System.out.println("w:" + w + " h:" + h);
-	    w -= 200;
-	    h -= 200;
+	    w -= 300;
+	    h -= 300;
 	    coord.calc();
 	    maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
 	    maxy = coord.maxy - coord.miny + Constants.imagePositionOffset/2;
 	    System.out.println(maxx + "," + maxy);
-	    if(maxy < maxx && maxx > w){
-	    	scale = w/maxx;
-////	    	if(coord.isError())return;
-//	    	maxx = 0.0;
-//	    	maxy = 0.0;
-//	    	for(int i = 0 ; i < data.size(); i++){
-//		    	Tuple2<Double, Double> d = data.get(i);
-//		    	double x = d.t1;
-//		    	double y = d.t2;
-//		    	maxx = (x < maxx)?maxx:x;
-//		    	maxy = (y < maxy)?maxy:y;   		
-//	    	}
-//	    	scale = Math.min(w/maxx, scale);
-	    }else if(maxx < maxy && maxy > h){
-	    	scale = h/maxy;
-////	    	if(coord.isError())return;
-//	    	maxx = 0.0;
-//	    	maxy = 0.0;
-//	    	for(int i = 0 ; i < data.size(); i++){
-//		    	Tuple2<Double, Double> d = data.get(i);
-//		    	double x = d.t1;
-//		    	double y = d.t2;
-//		    	maxx = (x < maxx)?maxx:x;
-//		    	maxy = (y < maxy)?maxy:y;	
-//	    	}
-//	    	scale = Math.min(h/maxy, scale);
-	    }else{
-	    	scale = 1.0;
-	    }
-	    
-		this.setPreferredSize(new Dimension((int)(maxx*scale+100), (int)(maxy*scale+100)));
+	    scale = Math.min(w/maxx, Math.min(h/maxy, 1.0));
+//	    if(maxy < maxx && maxx > w){
+//	    	scale = w/maxx;
+//////	    	if(coord.isError())return;
+////	    	maxx = 0.0;
+////	    	maxy = 0.0;
+////	    	for(int i = 0 ; i < data.size(); i++){
+////		    	Tuple2<Double, Double> d = data.get(i);
+////		    	double x = d.t1;
+////		    	double y = d.t2;
+////		    	maxx = (x < maxx)?maxx:x;
+////		    	maxy = (y < maxy)?maxy:y;   		
+////	    	}
+////	    	scale = Math.min(w/maxx, scale);
+//	    }else if(maxx < maxy && maxy > h){
+//	    	scale = h/maxy;
+//////	    	if(coord.isError())return;
+////	    	maxx = 0.0;
+////	    	maxy = 0.0;
+////	    	for(int i = 0 ; i < data.size(); i++){
+////		    	Tuple2<Double, Double> d = data.get(i);
+////		    	double x = d.t1;
+////		    	double y = d.t2;
+////		    	maxx = (x < maxx)?maxx:x;
+////		    	maxy = (y < maxy)?maxy:y;	
+////	    	}
+////	    	scale = Math.min(h/maxy, scale);
+//	    }else{
+//	    	scale = 1.0;
+//	    }
+//	    
+		this.setPreferredSize(new Dimension((int)(maxx*scale+50), (int)(maxy*scale+50)));
+	}
+	
+	public int getWidth(){
+		return (int)(maxx*scale+50);
+	}
+	
+	public int getHeight(){
+		return (int)(maxy*scale+50);
 	}
 	
 	public List<Tuple2<Double, Double>> getVertex(){
@@ -429,14 +448,20 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 					clickP = new Tuple2<Integer, Integer>(nowOnX, nowOnY);
 				}else{
 					System.out.println(e.getX()+","+e.getY());
-					dia = new CorrectDialog(nowx, nowy, range, this);
-					Point p = e.getLocationOnScreen();
-					p.x -= range/2;
-					if(p.x < 0)p.x = 0;
-					p.y -= range/2;
-					if(p.y < 0)p.y = 0;
-					dia.setLocation(p);
-					VisualizeFrame.setVisibleFrame(false);	
+					try {
+						Robot r = new Robot();
+						r.mouseMove(getWidth()+range, range);
+					} catch (AWTException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+//					Point p = e.getLocationOnScreen();
+//					p.x -= range/2;
+//					if(p.x < 0)p.x = 0;
+//					p.y -= range/2;
+//					if(p.y < 0)p.y = 0;
+//					dia.setLocation(p);
+//					VisualizeFrame.setVisibleFrame(false);	
 				}	
 			}
 			
@@ -488,11 +513,11 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
-		drawBackground();
-		Graphics2D g = (Graphics2D)paint.getGraphics();
 		int nowx = e.getX();
 		int nowy = e.getY();
-		
+		drawDialog(nowx, nowy);
+		drawBackground();
+		Graphics2D g = (Graphics2D)paint.getGraphics();
 		g.setStroke(maxiStroke);
 		isLine = false;
 		for(int i = 0; i < scaleLines.size(); i++){

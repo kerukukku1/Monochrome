@@ -47,10 +47,14 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
     private VisualizePanel parent = null;
     private int[] ypoints;
     private int[] xpoints;
+    private VisualizeFrame owner;
     
-	public CorrectDialog(int x, int y, int range, VisualizePanel parent){
+	public CorrectDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
+        super(owner, "look", false);
+        setBounds(parent.getWidth(), 0, range*2, range*2);
 		this.x = x;
 		this.y = y;
+		this.owner = owner;
 		this.parent = parent;
 		this.vertex = parent.getVertex();
 		this.coord = parent.getCoordinates();
@@ -62,22 +66,26 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		focusPlots = this.convertScaleToFocusPlots(parent.getScalePlots());
 		focusLines = this.convertToFocusLines(lines);
 		setUtil();
-		makeDXDY(this.range);
 		paintBackground();
 		
 		//閉じるで閉められない
-		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+//		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+	}
+	
+	public void reloadPoints(int x, int y){
+		this.x = x;
+		this.y = y;
+		drawBackground();
 	}
 	
 	private void setUtil(){
-		this.setTitle("TEST");
 		this.setVisible(true);
 		this.setLayout(null);
 		this.setSize(this.range*2,this.range*2);
-		img = new BufferedImage(range*2, range*2, BufferedImage.TYPE_INT_ARGB);
-		paint = new BufferedImage(range*2, range*2, BufferedImage.TYPE_INT_ARGB);
+		img = new BufferedImage(parent.getWidth()+range*2, parent.getHeight()+range*2, BufferedImage.TYPE_INT_ARGB);
+		paint = new BufferedImage(parent.getWidth()+range*2, parent.getHeight()+range*2, BufferedImage.TYPE_INT_ARGB);
 		earth = new JLabel(new ImageIcon(paint));
-		earth.setBounds(0, 0, range*2, range*2);
+		earth.setBounds(0, 0, parent.getWidth()+range*2, parent.getHeight()+range*2);
 		earth.addMouseMotionListener(this);
 		earth.addMouseListener(this);
 		this.add(earth);
@@ -94,41 +102,27 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.setResizable(false);
 	}
 	
-	public static void makeDXDY(int range){
-		dx = new int[(range*2+1)*(range*2+1)-1];
-		dy = new int[(range*2+1)*(range*2+1)-1];
-		int count = 0;
-		for(int i = -range; i <= range; i++){
-			for(int j = -range; j <= range; j++){
-				if(i == 0 && j == 0)continue;
-				dx[count] = i;
-				dy[count] = j;
-				count++;
-			}
-		}
-	}
-	
 	private void paintBackground(){
 		Graphics2D g = (Graphics2D)img.getGraphics();
 		g.setColor(Constants.backgroundColor);
-		g.clearRect(0, 0, range*2, range*2);
+		g.clearRect(0, 0, coord.maxx+range*2, coord.maxy+range*2);
 		
-	    List<Tuple2<Double,Double>> data = this.vertex;
-	    double maxx = 0.0;
-	    double maxy = 0.0;
-	    xpoints = new int[data.size()];
-	    ypoints = new int[data.size()];
-	    for(int i = 0; i < data.size(); i++){
-	    	Tuple2<Double, Double> d = data.get(i);
-	    	double tx = d.t1 + (range) - this.x/scale;
-	    	double ty = d.t2 + (range) - this.y/scale;
-	    	//System.out.println(tx + "," + ty);
-	    	maxx = (tx < maxx)?maxx:tx;
-	    	maxy = (ty < maxy)?maxy:ty;
-	    	xpoints[i] = (int)tx;
-	    	ypoints[i] = (int)ty;
-	    	//System.out.println(xpoints[i] + "," + ypoints[i]);
-	    }
+//	    List<Tuple2<Double,Double>> data = this.vertex;
+//	    double maxx = 0.0;
+//	    double maxy = 0.0;
+//	    xpoints = new int[data.size()];
+//	    ypoints = new int[data.size()];
+//	    for(int i = 0; i < data.size(); i++){
+//	    	Tuple2<Double, Double> d = data.get(i);
+//	    	double tx = d.t1 + (range) - this.x/scale;
+//	    	double ty = d.t2 + (range) - this.y/scale;
+//	    	//System.out.println(tx + "," + ty);
+//	    	maxx = (tx < maxx)?maxx:tx;
+//	    	maxy = (ty < maxy)?maxy:ty;
+//	    	xpoints[i] = (int)tx;
+//	    	ypoints[i] = (int)ty;
+//	    	//System.out.println(xpoints[i] + "," + ypoints[i]);
+//	    }
 	    
 //	    Polygon polygon = new Polygon(xpoints, ypoints, xpoints.length);
 //		g.setColor(Constants.polyColor);
@@ -138,19 +132,23 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		
 		g.setColor(Constants.coordColor);
 	    for(int i = 0; i < coord.size(); i++){
-	    	double nowx = (coord.getVisX(i) + Constants.imagePositionOffset/2) +range - this.x/scale;
-	    	double nowy = (coord.getVisY(i) + Constants.imagePositionOffset/2) +range - this.y/scale;
-	    	if(nowx < 0 || nowy < 0 || nowx >= range*2+1 || nowy >=range*2+1)continue;
+//	    	double nowx = (coord.getVisX(i) + Constants.imagePositionOffset/2) +range - this.x/scale;
+//	    	double nowy = (coord.getVisY(i) + Constants.imagePositionOffset/2) +range - this.y/scale;
+	    	double nowx = (coord.getVisX(i) + Constants.imagePositionOffset/2);
+	    	double nowy = (coord.getVisY(i) + Constants.imagePositionOffset/2);
+//	    	if(nowx < 0 || nowy < 0 || nowx >= range*2+1 || nowy >=range*2+1)continue;
 	    	g.fillRect((int)nowx, (int)nowy, 1, 1);
 	    }
-	    
 		g.drawImage(img, null, 0, 0);
 		drawBackground();
 	}
 	
 	private void drawBackground(){
 		Graphics2D g = (Graphics2D)paint.getGraphics();
-		g.drawImage(img, 0, 0, earth);
+		int w = (int)((double)this.x/scale)-range;
+		int h = (int)((double)this.y/scale)-range;
+		BufferedImage output = img.getSubimage(Math.max(0, w), Math.max(0, h), range*2, range*2);
+		g.drawImage(output, 0, 0, earth);
 		this.repaint();
 	}
 	
