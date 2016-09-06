@@ -1,11 +1,14 @@
 package Mahito6.UI;
 
+import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -21,6 +24,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import Mahito6.Main.Constants;
@@ -63,6 +67,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.scale = parent.getScale();
 		this.lines = parent.getLines();
 		this.setUndecorated(true);
+		
 		System.out.println("Correct line size:" + lines.size());
 		plots = parent.getPlots();
 		focusPlots = this.convertScaleToFocusPlots(parent.getScalePlots());
@@ -77,7 +82,9 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	public void reloadPoints(int x, int y){
 		this.x = x;
 		this.y = y;
-		drawBackground();
+		focusPlots = this.convertScaleToFocusPlots(parent.getScalePlots());
+		focusLines = this.convertToFocusLines(lines);
+		this.paintMoveScreen(x, y);
 	}
 	
 	private void setUtil(){
@@ -272,9 +279,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
-			this.dispose();
-			parent.setPlots(plots);
-			VisualizeFrame.setVisibleFrame(true);
+			parent.setPlots(plots);			
 		}
 	}
 
@@ -282,45 +287,10 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 		//背景を描画
-		int x = e.getX();
-		int y = e.getY();
-		drawBackground();
-		Graphics2D g = (Graphics2D)paint.getGraphics();
-		
-		//線を描画
-		BasicStroke maxiStroke = new BasicStroke(4.0f);
-		BasicStroke miniStroke = new BasicStroke(1.0f);
-		g.setStroke(maxiStroke);
-		g.setColor(Constants.newLineColor);
-		for(int i = 0; i < focusLines.size(); i++){
-			g.draw(focusLines.get(i));
-		}
-		g.setStroke(miniStroke);
-		
-		//点を描画
 		int nowx = e.getX();
 		int nowy = e.getY();
-		for(int i = 0; i < focusPlots.size(); i++){
-			Tuple2<Integer, Integer> t = focusPlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
-			double dist = Edge.distance(nowx, nowy, vx, vy);
-			g.setColor(Constants.plotColor);
-			if(dist <= 5.0)g.setColor(Constants.onPlotColor);
-			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
-		}
-		
-		//カーソル円を描画
-		g.setColor(Color.BLUE);
-		g.drawOval(x-Constants.targetOvalRadius, y-Constants.targetOvalRadius, Constants.targetOvalRadius*2, Constants.targetOvalRadius*2);
-		g.drawOval(x-Constants.targetOvalRadius*2+1, y-Constants.targetOvalRadius*2+1, (Constants.targetOvalRadius*2-1)*2, (Constants.targetOvalRadius*2-1)*2);
-		//カーソル線を描画
-	    g.drawLine(0, y, x-Constants.targetOvalRadius, y);
-	    g.drawLine(x+Constants.targetOvalRadius, y, range*2, y);
-	    g.drawLine(x, 0, x, y-Constants.targetOvalRadius);
-	    g.drawLine(x, y+Constants.targetOvalRadius, x, range*2);
-		
-	    this.repaint();
+		paintMoveScreen(nowx,nowy);
+		paintCursor(nowx,nowy);
 	}
 	
 	@Override
@@ -407,10 +377,51 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		if(!isDrag){
 			mouseMoved(e);
 		}
-		drawScreen(e.getX(), e.getY());
+		paintDragScreen(e.getX(), e.getY());
 	}
 	
-	public void drawScreen(int nowx, int nowy){
+	public void paintMoveScreen(int nowx, int nowy){
+		drawBackground();
+		Graphics2D g = (Graphics2D)paint.getGraphics();
+		
+		//線を描画
+		BasicStroke maxiStroke = new BasicStroke(4.0f);
+		BasicStroke miniStroke = new BasicStroke(1.0f);
+		g.setStroke(maxiStroke);
+		g.setColor(Constants.newLineColor);
+		for(int i = 0; i < focusLines.size(); i++){
+			g.draw(focusLines.get(i));
+		}
+		g.setStroke(miniStroke);
+		
+		//点を描画
+		for(int i = 0; i < focusPlots.size(); i++){
+			Tuple2<Integer, Integer> t = focusPlots.get(i);
+			int vx = t.t1;
+			int vy = t.t2;
+			double dist = Edge.distance(nowx, nowy, vx, vy);
+			g.setColor(Constants.plotColor);
+			if(dist <= 5.0)g.setColor(Constants.onPlotColor);
+			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
+		}
+		
+	    this.repaint();
+	}
+	
+	private void paintCursor(int nowx, int nowy){
+		//カーソル円を描画
+		Graphics2D g = (Graphics2D)paint.getGraphics();
+		g.setColor(Color.BLUE);
+		g.drawOval(nowx-Constants.targetOvalRadius, nowy-Constants.targetOvalRadius, Constants.targetOvalRadius*2, Constants.targetOvalRadius*2);
+		g.drawOval(nowx-Constants.targetOvalRadius*2+1, nowy-Constants.targetOvalRadius*2+1, (Constants.targetOvalRadius*2-1)*2, (Constants.targetOvalRadius*2-1)*2);
+		//カーソル線を描画
+	    g.drawLine(0, nowy, nowx-Constants.targetOvalRadius, nowy);
+	    g.drawLine(nowx+Constants.targetOvalRadius, nowy, range*2, nowy);
+	    g.drawLine(nowx, 0, nowx, nowy-Constants.targetOvalRadius);
+	    g.drawLine(nowx, nowy+Constants.targetOvalRadius, nowx, range*2);
+	}
+	
+	public void paintDragScreen(int nowx, int nowy){
 		drawBackground();
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 
@@ -425,15 +436,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		g.setColor(Color.orange);
 		g.fillOval(nowx - Constants.plotOvalRadius, nowy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		
-		//カーソル円を描画
-		g.setColor(Color.BLUE);
-		g.drawOval(nowx-Constants.targetOvalRadius, nowy-Constants.targetOvalRadius, Constants.targetOvalRadius*2, Constants.targetOvalRadius*2);
-		g.drawOval(nowx-Constants.targetOvalRadius*2+1, nowy-Constants.targetOvalRadius*2+1, (Constants.targetOvalRadius*2-1)*2, (Constants.targetOvalRadius*2-1)*2);
-		//カーソル線を描画
-	    g.drawLine(0, nowy, nowx-Constants.targetOvalRadius, nowy);
-	    g.drawLine(nowx+Constants.targetOvalRadius, nowy, range*2, nowy);
-	    g.drawLine(nowx, 0, nowx, nowy-Constants.targetOvalRadius);
-	    g.drawLine(nowx, nowy+Constants.targetOvalRadius, nowx, range*2);
+		paintCursor(nowx, nowy);
 	    
 	    this.repaint();
 	    

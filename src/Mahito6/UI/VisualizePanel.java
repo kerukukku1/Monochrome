@@ -6,7 +6,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Polygon;
 import java.awt.Robot;
 import java.awt.ScrollPane;
@@ -450,14 +452,15 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 					System.out.println(e.getX()+","+e.getY());
 					try {
 						Robot r = new Robot();
-						r.mouseMove(getWidth()+range, range);
+						Point p = MouseInfo.getPointerInfo().getLocation();
+						r.mouseMove(p.x-e.getX()+getWidth()+range, p.y-e.getY()+range);
 					} catch (AWTException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					realtimeDialog.drawScreen(range, range);
+					realtimeDialog.paintDragScreen(range, range);
 					//フォーカスをダイアログへ
-					realtimeDialog.requestFocusInWindow();
+//					realtimeDialog.requestFocusInWindow();
 //					Point p = e.getLocationOnScreen();
 //					p.x -= range/2;
 //					if(p.x < 0)p.x = 0;
