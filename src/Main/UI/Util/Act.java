@@ -1,6 +1,8 @@
 package Main.UI.Util;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class Act{
 	public boolean[][] memo;
 	public boolean[][] state;
 	private BufferedImage buf = null;
+	private byte[] rgbs;
 	private int threshold;
 	//row = x, col = y
 	//any[x][y]
@@ -28,6 +31,7 @@ public class Act{
 		BFS.initialize(maxX, maxY);
 		this.threshold = threshold;
 		memo = new boolean[maxX][maxY];
+		rgbs = ((DataBufferByte) buf.getRaster().getDataBuffer()).getData();
 	}
 
     public static int rgbConverter(int c){
@@ -36,18 +40,16 @@ public class Act{
 
 	public List<Coordinates> divideImages(){
 		System.out.println(maxX + "," + maxY);
-		int rgb;
 		Coordinates c = new Coordinates();
+		
 		for(int i = Constants.divideImageOffset; i < maxY-Constants.divideImageOffset; i++){
 			for(int j = Constants.divideImageOffset; j < maxX-Constants.divideImageOffset; j++){
 				//System.out.println(j + "," + i);
 				if(memo[j][i] == true)continue;
 				memo[j][i] = true;
-				rgb = rgbConverter(buf.getRGB(j, i));
-				//System.out.print(rgb);
-				if(rgb == 0)continue;
-				c.clear();
-				c = BFS.findPointsForDivide(j, i, maxX, maxY, memo, buf);
+				if(rgbs[j+i*maxX] == 0)continue;
+				//c.clear();
+				c = BFS.findPointsForDivide(j, i, maxX, maxY, memo, buf, rgbs);
 				if(c.size() < threshold)continue;
 				coords.add(new Coordinates(c.arx, c.ary));
 			}

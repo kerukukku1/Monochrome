@@ -42,7 +42,7 @@ public class BFS{
 		}
 	}
 
-	public static Coordinates findPointsForDivide(int x, int y, int maxx, int maxy, boolean[][] memo, BufferedImage buf){
+	public static Coordinates findPointsForDivide(int x, int y, int maxx, int maxy, boolean[][] memo, BufferedImage buf, byte[] rgbs){
 		que.clear();
 		que.push(x,y);
 		BFS.makeDXDY(Constants.dividePixelLookingForDist);
@@ -61,11 +61,10 @@ public class BFS{
 				if(memo[nx][ny] == true)continue;
 				memo[nx][ny] = true;
 //				System.out.println(nx + "," + ny);
-				if(rgbConverter(buf.getRGB(nx, ny)) == 255){
-					tmpPoints.addCord(nx, ny);
-					que.push(nx, ny);
-					//System.out.println("queque:" + que.getNow());
-				}
+				if(rgbs[nx+ny*maxx] == 0)continue;
+				tmpPoints.addCord(nx, ny);
+				que.push(nx, ny);
+				//System.out.println("queque:" + que.getNow());
 			}
 		}
 		return tmpPoints;

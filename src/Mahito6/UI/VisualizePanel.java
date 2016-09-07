@@ -325,11 +325,11 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	}
 	
 	public int getWidth(){
-		return (int)(maxx*scale+50);
+		return (int)(maxx+50);
 	}
 	
 	public int getHeight(){
-		return (int)(maxy*scale+50);
+		return (int)(maxy+50);
 	}
 	
 	public List<Tuple2<Double, Double>> getVertex(){
@@ -453,7 +453,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 					try {
 						Robot r = new Robot();
 						Point p = MouseInfo.getPointerInfo().getLocation();
-						r.mouseMove(p.x-e.getX()+getWidth()+range, p.y-e.getY()+range);
+						r.mouseMove(p.x-e.getX()+(int)((double)getWidth()*scale)+range, p.y-e.getY()+range);
 					} catch (AWTException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

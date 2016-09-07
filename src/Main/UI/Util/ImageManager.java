@@ -32,7 +32,6 @@ import Mahito6.UI.VisualizeFrame;
 public class ImageManager{
 
 	private String path;
-	private Mat binImage;
 	private List<Coordinates> coords;
 	private List<BufferedImage> bufImages;
 	private List< List<Tuple2<Double, Double>> > vertex;

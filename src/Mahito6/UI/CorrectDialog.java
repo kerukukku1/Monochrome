@@ -55,8 +55,8 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
     
 	public CorrectDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
         super(owner, "look", false);
-        setBounds(parent.getWidth(), 30, range*2, range*2);
-        this.setLocation(parent.getWidth(), 30);
+        setBounds((int)((double)parent.getWidth()*parent.getScale()), 30, range*2, range*2);
+        this.setLocation((int)((double)parent.getWidth()*parent.getScale()), 30);
 		this.x = x;
 		this.y = y;
 		this.owner = owner;
@@ -153,9 +153,9 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 	
 	private void drawBackground(){
 		Graphics2D g = (Graphics2D)paint.getGraphics();
-		int w = (int)((double)this.x/scale)-range;
-		int h = (int)((double)this.y/scale)-range;
-		BufferedImage output = img.getSubimage(Math.max(0, w), Math.max(0, h), range*2, range*2);
+		int nowx = (int)((double)x/scale);
+		int nowy = (int)((double)y/scale);
+		BufferedImage output = img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2);
 		g.drawImage(output, 0, 0, earth);
 		this.repaint();
 	}
@@ -439,6 +439,5 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		paintCursor(nowx, nowy);
 	    
 	    this.repaint();
-	    
 	}
 }
