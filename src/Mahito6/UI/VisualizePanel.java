@@ -134,7 +134,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //		g.setPaint(Color.BLACK);
 		
 		g.setColor(Constants.backgroundColor);
-		g.clearRect(0, 0, (int)(maxx+100), (int)(maxy+100));
+		g.clearRect(0, 0, (int)(VisualizeFrame.visualizeWidth), (int)(VisualizeFrame.visualizeHeight));
 		
 //	    g.setStroke(maxiStroke);
 //		polygon = new Polygon(xpoints, ypoints, xpoints.length);
@@ -279,8 +279,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //	    	double y = d.t2;
 //	    }
 //	    
-	    double w = VisualizeFrame.visualizeWidth - 30;
-	    double h = VisualizeFrame.visualizeHeight - 30;
+	    double w = VisualizeFrame.visualizeWidth - Constants.imagePositionOffset/4;
+	    double h = VisualizeFrame.visualizeHeight - Constants.imagePositionOffset/4;
 	    //System.out.println("w:" + w + " h:" + h);
 	    coord.calc();
 	    maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
