@@ -32,8 +32,9 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
 
-public class CorrectDialog extends JDialog implements MouseListener, KeyListener, MouseMotionListener{
-	private int x, y, range;
+public class RealTimeDialog extends JPanel implements MouseListener, KeyListener, MouseMotionListener{
+	private int x, y;
+	public int range;
 	private static int[] dx;
 	private static int[] dy;
 	private List<Tuple2<Double, Double>> plots;
@@ -53,10 +54,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
     private int[] xpoints;
     private VisualizeFrame owner;
     
-	public CorrectDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
-        super(owner, "look", false);
-        setBounds((int)((double)parent.getWidth()*parent.getScale()), 30, range*2, range*2);
-        this.setLocation((int)((double)parent.getWidth()*parent.getScale()), 30);
+	public RealTimeDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
 		this.x = x;
 		this.y = y;
 		this.owner = owner;
@@ -66,7 +64,6 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.range = range;
 		this.scale = parent.getScale();
 		this.lines = parent.getLines();
-		this.setUndecorated(true);
 		
 		System.out.println("Correct line size:" + lines.size());
 		plots = parent.getPlots();
@@ -91,10 +88,14 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		this.setVisible(true);
 		this.setLayout(null);
 		this.setSize(this.range*2,this.range*2);
-		img = new BufferedImage(parent.getWidth()+range*2, parent.getHeight()+range*2, BufferedImage.TYPE_INT_ARGB);
-		paint = new BufferedImage(parent.getWidth()+range*2, parent.getHeight()+range*2, BufferedImage.TYPE_INT_ARGB);
+		int wd = VisualizeFrame.visualizeWidth;
+		int ht = VisualizeFrame.visualizeHeight;
+		wd = (int)((double)wd/scale);
+		ht = (int)((double)ht/scale);
+		img = new BufferedImage(wd+range*2, ht+range*2, BufferedImage.TYPE_INT_ARGB);
+		paint = new BufferedImage(wd+range*2, ht+range*2, BufferedImage.TYPE_INT_ARGB);
 		earth = new JLabel(new ImageIcon(paint));
-		earth.setBounds(0, 0, parent.getWidth()+range*2, parent.getHeight()+range*2);
+		earth.setBounds(0, 0, wd+range*2, ht+range*2);
 		earth.addMouseMotionListener(this);
 		earth.addMouseListener(this);
 		this.add(earth);
@@ -107,7 +108,6 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		g2.fillRect(0,0,16,16);  
 		g2.dispose();  
 		earth.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(image, new Point(0,0), "null_cursor"));
-		this.setResizable(false);
 	}
 	
 	private void paintBackground(){
@@ -157,7 +157,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		int nowy = (int)((double)y/scale);
 		BufferedImage output = img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2);
 		g.drawImage(output, 0, 0, earth);
-		this.repaint();
+		owner.repaint();
 	}
 	
 	public List<Tuple2<Double, Double>> getPlos(){
@@ -273,7 +273,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 				}	
 			}
 		}
-		this.repaint();
+		owner.repaint();
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -405,7 +405,7 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
 		
-	    this.repaint();
+	    owner.repaint();
 	}
 	
 	private void paintCursor(int nowx, int nowy){
@@ -438,6 +438,6 @@ public class CorrectDialog extends JDialog implements MouseListener, KeyListener
 		
 		paintCursor(nowx, nowy);
 	    
-	    this.repaint();
+	    owner.repaint();
 	}
 }

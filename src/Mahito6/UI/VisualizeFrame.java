@@ -32,6 +32,9 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private List<Line2D> lines;
 	private List<Edge> edges;
 	private PieceViewPanel parent;
+	private RealTimeDialog realtimeDialog;
+	public static final int visualizeWidth = 600;
+	public static final int visualizeHeight = 800;
 	
 	public VisualizeFrame(List<Tuple2<Double, Double>> vertex, Coordinates coord, PieceViewPanel parent){
 		this.vertex = vertex;
@@ -47,13 +50,12 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	private void launchUI() {
 		this.setTitle(title);
+		this.setSize(VisualizeFrame.visualizeWidth + 300, VisualizeFrame.visualizeHeight);
 		this.setResizable(false);
 		lines = makeLine2D(this.vertex);
 		edges = new ArrayList<Edge>();
 		
 		setVisualizePanel();
-		//パネルサイズに合わせる
-		pack();
 	}
 	
 	private List<Line2D> makeLine2D(List<Tuple2<Double, Double>> source){
@@ -68,7 +70,14 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	private void setVisualizePanel(){
 		visPanel = new VisualizePanel(vertex, coord, lines, this);
+		visPanel.setBounds(0, 0, VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight);
 		this.add(visPanel);
+	}
+	
+	public void setRealTimeDialog(RealTimeDialog realtimeDialog){
+		this.realtimeDialog = realtimeDialog;
+		this.realtimeDialog.setBounds(VisualizeFrame.visualizeWidth, 0, realtimeDialog.range*2, realtimeDialog.range*2);
+		this.add(realtimeDialog);
 	}
 	
 	public static void changeTitle(String title){
@@ -139,5 +148,9 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public RealTimeDialog getRealTimeDialog() {
+		return realtimeDialog;
 	}
 }

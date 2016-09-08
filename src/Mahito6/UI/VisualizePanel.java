@@ -53,7 +53,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private List<String> textData;
     private double scale = 1.0;
     private DiffPiece diff;
-    private CorrectDialog realtimeDialog = null;
+    private RealTimeDialog realtimeDialog = null;
     private Coordinates coord;
     //スケールを合わせたプロット
     private List<Tuple2<Integer, Integer>> scalePlots;
@@ -98,22 +98,21 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    drawLines();
 	    paintPlots();
 	    
-		realtimeDialog = new CorrectDialog(0, 0, range, this, parent);
+	    parent.setRealTimeDialog(new RealTimeDialog(0, 0, range, this, parent));
+	    realtimeDialog = parent.getRealTimeDialog(); 
     }
 	
 	private void setUtil(){
 		this.setLayout(null);
 		this.setBackground(Color.gray.brighter().brighter());
-		this.setPreferredSize(new Dimension(300, 300));
 		this.setOpaque(true);
 		this.setTransferHandler(new DropFileHandler());
 
-		//スクリーンサイズ以上のピースは存在しないようにスケールを合わせてある
-	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		gPiece = new BufferedImage(screenSize.width, screenSize.height, BufferedImage.TYPE_INT_ARGB);
-		paint = new BufferedImage(screenSize.width, screenSize.height, BufferedImage.TYPE_INT_ARGB);
+		//スクリーンサイズ以上のピースは存在しないようにスケールを合わせる
+		gPiece = new BufferedImage(VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight, BufferedImage.TYPE_INT_ARGB);
+		paint = new BufferedImage(VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight, BufferedImage.TYPE_INT_ARGB);
 		earth = new JLabel(new ImageIcon(paint));
-		earth.setBounds(0, 0, screenSize.width, screenSize.height);
+		earth.setBounds(0, 0, VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight);
 		earth.addMouseListener(this);
 		earth.addMouseMotionListener(this);
 		this.add(earth);
@@ -280,12 +279,9 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //	    	double y = d.t2;
 //	    }
 //	    
-	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    double w = (double)screenSize.width;
-	    double h = (double)screenSize.height;
+	    double w = VisualizeFrame.visualizeWidth - 30;
+	    double h = VisualizeFrame.visualizeHeight - 30;
 	    //System.out.println("w:" + w + " h:" + h);
-	    w -= 300;
-	    h -= 300;
 	    coord.calc();
 	    maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
 	    maxy = coord.maxy - coord.miny + Constants.imagePositionOffset/2;
@@ -321,15 +317,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //	    	scale = 1.0;
 //	    }
 //	    
-		this.setPreferredSize(new Dimension((int)(maxx*scale+50), (int)(maxy*scale+50)));
-	}
-	
-	public int getWidth(){
-		return (int)(maxx+50);
-	}
-	
-	public int getHeight(){
-		return (int)(maxy+50);
+//		this.setPreferredSize(new Dimension((int)(maxx*scale+50), (int)(maxy*scale+50)));
 	}
 	
 	public List<Tuple2<Double, Double>> getVertex(){
