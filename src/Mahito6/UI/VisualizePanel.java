@@ -162,7 +162,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	private void drawBackground(){
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		g.drawImage(gPiece, 0, 0, earth);
-		this.repaint();
+		parent.repaint();
 	}
 	
 	public static List<String> readTxt(File file) throws Exception{
@@ -183,7 +183,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			int ny = now.t2;
 			g.fillOval(nx-Constants.plotOvalRadius, ny-Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
-		this.repaint();
+		parent.repaint();
 	}
 	
 	public void setPlots(List<Tuple2<Double, Double>> plots){
@@ -442,12 +442,12 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 					try {
 						Robot r = new Robot();
 						Point p = MouseInfo.getPointerInfo().getLocation();
-						r.mouseMove(p.x-e.getX()+(int)((double)getWidth()*scale)+range, p.y-e.getY()+range);
+						r.mouseMove(p.x-e.getX()+(int)((double)VisualizeFrame.visualizeWidth)+range, p.y-e.getY()+range);
 					} catch (AWTException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					realtimeDialog.paintDragScreen(range, range);
+					realtimeDialog.paintMoveScreen(range, range);
 					//フォーカスをダイアログへ
 //					realtimeDialog.requestFocusInWindow();
 //					Point p = e.getLocationOnScreen();
@@ -545,7 +545,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		
 		//点に乗っている場合には範囲方形は描画しない。
 		if(isOn){
-			this.repaint();
+			parent.repaint();
 			return;
 		}
 		
@@ -553,7 +553,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		g.setColor(Constants.rangeRectColor);
 		g.drawRect(nowx-scaleRange, nowy-scaleRange, scaleRange*2, scaleRange*2);
 
-		this.repaint();
+		parent.repaint();
 	}
 	
 	private class DropFileHandler extends TransferHandler {

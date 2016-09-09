@@ -33,7 +33,7 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
 
-public class RealTimeDialog extends JPanel implements MouseListener, KeyListener, MouseMotionListener{
+public class RealTimeDialog extends JPanel implements MouseListener, MouseMotionListener{
 	private int x, y;
 	public int range;
 	private static int[] dx;
@@ -100,7 +100,6 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 		earth.addMouseMotionListener(this);
 		earth.addMouseListener(this);
 		this.add(earth);
-		this.addKeyListener(this);
 		
 		BufferedImage image = new BufferedImage(16,16,BufferedImage.TYPE_4BYTE_ABGR);  
 		Graphics2D g2 = image.createGraphics();  
@@ -274,14 +273,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 				}	
 			}
 		}
+		parent.setPlots(plots);
 		owner.repaint();
-	}
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
-			parent.setPlots(plots);			
-		}
 	}
 
 	@Override
@@ -375,10 +368,6 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 	public void mouseEntered(MouseEvent e) {}
 	@Override
 	public void mouseExited(MouseEvent e) {}
-	@Override
-	public void keyTyped(KeyEvent e) {}
-	@Override
-	public void keyReleased(KeyEvent e) {}
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if(!isDrag){

@@ -67,6 +67,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		// TODO Auto-generated method stub
 		paramPanel = new ParameterPanel(this);
 		paramPanel.setBounds(visualizeWidth+10, 300+10, 300, visualizeHeight-300-5);
+		paramPanel.addKeyListener(this);
 		this.add(paramPanel);
 	}
 
@@ -83,12 +84,14 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private void setVisualizePanel(){
 		visPanel = new VisualizePanel(vertex, coord, lines, this);
 		visPanel.setBounds(5, 5, VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight);
+		visPanel.addKeyListener(this);
 		this.add(visPanel);
 	}
 	
 	public void setRealTimeDialog(RealTimeDialog realtimeDialog){
 		this.realtimeDialog = realtimeDialog;
 		this.realtimeDialog.setBounds(VisualizeFrame.visualizeWidth+10, 5, realtimeDialog.range*2, realtimeDialog.range*2);
+		this.realtimeDialog.addKeyListener(this);
 		this.add(realtimeDialog);
 	}
 	
