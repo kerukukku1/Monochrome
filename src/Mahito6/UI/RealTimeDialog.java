@@ -209,7 +209,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 		return ret;
 	}
 
-	public boolean onLine(double x,double y, Line2D line){///(x,y)がこのエッジ上に存在するか判定
+	public boolean onLine(double x,double y, Line2D line, double threshold){///(x,y)がこのエッジ上に存在するか判定
 		double kx1 = line.getX1();
 		double ky1 = line.getY1();
 		double kx2 = line.getX2();
@@ -217,7 +217,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 		double dist = Edge.distance(kx1, ky1, kx2, ky2);
 		double sum = Edge.distance(x,y,kx1,ky1) + Edge.distance(x,y,kx2,ky2);
 		double sabun = Math.abs(dist - sum);
-		if(sabun < 4.0)return true;///線上にあるのでOK
+		if(sabun < threshold)return true;///線上にあるのでOK
 		return false;
 	}
 		
@@ -308,6 +308,9 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 			if(dist <= 5.0){
 				isOn = true;
 				rmIndex = i;
+				//プロット点の座標と置き換え
+				nowx = vx;
+				nowy = vy;
 				break;
 			}
 		}
@@ -317,7 +320,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 			dragPlotIndex = rmIndex;
 			for(int i = 0; i < focusLines.size(); i++){
 				Line2D line = focusLines.get(i);
-				if(onLine(nowx, nowy, line)){
+				if(onLine(nowx, nowy, line, 6.0)){
 					dragLineIndexes.add(i);
 				}
 			}			
@@ -356,7 +359,10 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 			int x1 = focusPlots.get(dragPlotIndex).t1;
 			int y1 = focusPlots.get(dragPlotIndex).t2;
 			Line2D line = focusLines.get(index);
-			if(Math.abs(line.getX1() - x1) < 5.0 && Math.abs(line.getY1() - y1) < 5.0){
+			double dist1, dist2;
+			dist1 = Edge.distance(line.getX1(),line.getY1(),x1,y1);
+			dist2 = Edge.distance(line.getX2(),line.getY2(),x1,y1);
+			if(dist1<dist2){
 				focusLines.set(index, new Line2D.Double(nowx, nowy, line.getX2(), line.getY2()));
 			}else{
 				focusLines.set(index, new Line2D.Double(line.getX1(), line.getY1(), nowx, nowy));
