@@ -96,11 +96,12 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		plots = vertex;
 		scaleLine = new Line2D.Double();
     	isSelect = false;
-	    drawLines();
-	    paintPlots();
+	    drawLines(false);
+	    drawPlots(false);
 	    
 	    parent.setRealTimeDialog(new RealTimeDialog(0, 0, range, this, parent));
-	    realtimeDialog = parent.getRealTimeDialog(); 
+	    realtimeDialog = parent.getRealTimeDialog();
+	    parent.repaint();
     }
 	
 	private void setUtil(){
@@ -128,7 +129,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	
 	public void paintPiece(){
 		if(vertex.isEmpty())System.out.println("Vertex is not set.");
-		Graphics2D g = (Graphics2D)gPiece.getGraphics();
+		Graphics2D g = (Graphics2D) gPiece.getGraphics();
 //
 //	    BasicStroke normalStroke = new BasicStroke(5.0f);
 //	    g.setStroke(normalStroke);
@@ -147,22 +148,28 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //        // アルファ値をセット（以後の描画は半透明になる）
 //        g.setComposite(composite);
 	    g.setColor(Constants.coordColor);
+	    boolean[][] memo = new boolean[VisualizeFrame.visualizeWidth][VisualizeFrame.visualizeHeight];
 	    for(int i = 0; i < coord.size(); i++){
-	    	double x = (coord.getVisX(i)+Constants.imagePositionOffset/2)*scale;
-	    	double y = (coord.getVisY(i)+Constants.imagePositionOffset/2)*scale;
-	    	g.fillRect((int)x, (int)y, 1, 1);
+	    	int x = (int)((coord.getVisX(i)+Constants.imagePositionOffset/2)*scale);
+	    	int y = (int)((coord.getVisY(i)+Constants.imagePositionOffset/2)*scale);
+	    	if(x < 0 || y < 0 || x >= VisualizeFrame.visualizeWidth || y >= VisualizeFrame.visualizeHeight)continue;
+	    	if(memo[x][y])continue;
+	    	memo[x][y] = true;
+	    	g.fillRect(x, y, 1, 1);
 	    }
 	    
 	    //画像として自身に保存し高速化	    
 	    g.drawImage(gPiece, null, 0, 0);
+	    g.dispose();
 	    //背景として保存したgPieceを描画する。
-	    drawBackground();
+	    drawBackground(false);
 	}
 	
-	private void drawBackground(){
-		Graphics2D g = (Graphics2D)paint.getGraphics();
+	private void drawBackground(boolean isRepaint){
+		Graphics2D g = paint.createGraphics();
 		g.drawImage(gPiece, 0, 0, earth);
-		parent.repaint();
+		g.dispose();
+		if(isRepaint)parent.repaint();
 	}
 	
 	public static List<String> readTxt(File file) throws Exception{
@@ -174,7 +181,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return in;
 	}
 	
-	public void paintPlots(){
+	public void drawPlots(boolean isRepaint){
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		g.setColor(Constants.plotColor);
 		for(int i = 0; i < scalePlots.size(); i++){
@@ -183,13 +190,14 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			int ny = now.t2;
 			g.fillOval(nx-Constants.plotOvalRadius, ny-Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
-		parent.repaint();
+		g.dispose();
+		if(isRepaint)parent.repaint();
 	}
 	
 	public void setPlots(List<Tuple2<Double, Double>> plots){
 		this.plots = plots;
 		this.scalePlots = this.encodeToScalePlot(plots);
-		paintPlots();
+		drawPlots(true);
 	}
 	
 	private List<Tuple2<Integer, Integer>> encodeToScalePlot(List<Tuple2<Double, Double>> plots){
@@ -202,13 +210,15 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return ret;
 	}
 	
-	private void drawLines(){
+	private void drawLines(boolean isRepaint){
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		g.setStroke(maxiStroke);
 		g.setColor(Constants.newLineColor);
 		for(int i = 0; i < scaleLines.size(); i++){
 			g.draw(scaleLines.get(i));
 		}
+		g.dispose();
+		if(isRepaint)parent.repaint();
 	}
 	
 	private void paintLine(int nowx, int nowy){
@@ -222,6 +232,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			scaleLine.setLine(nowx, nowy, cx, cy);
 			g.draw(scaleLine);
 		}
+		g.dispose();
 	}
 	
 	private void drawDialog(int x, int y){
@@ -420,8 +431,6 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 				//有効なラインか確認(重複確認含)
 				if(!isVerifyLine(nowOnX,nowOnY,cx,cy))return;
 				
-				Graphics2D g = (Graphics2D)paint.getGraphics();
-				g.setColor(Constants.newLineColor);
 				Line2D line = new Line2D.Double(nowOnX, nowOnY, cx, cy);
 				//点の上の時
 				clickP = null;
@@ -511,7 +520,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		int nowx = e.getX();
 		int nowy = e.getY();
 		drawDialog(nowx, nowy);
-		drawBackground();
+		drawBackground(false);
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		g.setStroke(maxiStroke);
 		isLine = false;
@@ -545,6 +554,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		
 		//点に乗っている場合には範囲方形は描画しない。
 		if(isOn){
+			g.dispose();
 			parent.repaint();
 			return;
 		}
@@ -552,7 +562,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		int scaleRange = (int)((double)range*scale);
 		g.setColor(Constants.rangeRectColor);
 		g.drawRect(nowx-scaleRange, nowy-scaleRange, scaleRange*2, scaleRange*2);
-
+		g.dispose();
 		parent.repaint();
 	}
 	

@@ -148,6 +148,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	    	g.fillRect((int)nowx, (int)nowy, 1, 1);
 	    }
 		g.drawImage(img, null, 0, 0);
+		g.dispose();
 		drawBackground();
 	}
 	
@@ -157,6 +158,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		int nowy = (int)((double)y/scale);
 		BufferedImage output = img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2);
 		g.drawImage(output, 0, 0, earth);
+		g.dispose();
 		owner.repaint();
 	}
 	
@@ -256,6 +258,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				if(dist <= 5.0)g.setColor(Constants.onPlotColor);
 				g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 			}
+			g.dispose();
 		//Left Click
 		}else{
 			if(isOn){
@@ -271,6 +274,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				for(int i = 0; i < focusPlots.size(); i++){
 					g.fillOval(focusPlots.get(i).t1 - 4, focusPlots.get(i).t2 - 4, 8, 8);
 				}	
+				g.dispose();
 			}
 		}
 		parent.setPlots(plots);
@@ -400,7 +404,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 			if(dist <= 5.0)g.setColor(Constants.onPlotColor);
 			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
-		
+		g.dispose();
 	    owner.repaint();
 	}
 	
@@ -415,6 +419,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	    g.drawLine(nowx+Constants.targetOvalRadius, nowy, range*2, nowy);
 	    g.drawLine(nowx, 0, nowx, nowy-Constants.targetOvalRadius);
 	    g.drawLine(nowx, nowy+Constants.targetOvalRadius, nowx, range*2);
+	    g.dispose();
 	}
 	
 	public void paintDragScreen(int nowx, int nowy){
@@ -433,7 +438,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		g.fillOval(nowx - Constants.plotOvalRadius, nowy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		
 		paintCursor(nowx, nowy);
-	    
+		g.dispose(); 
 	    owner.repaint();
 	}
 }
