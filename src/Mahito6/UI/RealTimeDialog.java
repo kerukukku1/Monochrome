@@ -26,6 +26,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import javax.swing.border.LineBorder;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
@@ -334,18 +335,18 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 			int vx = t.t1;
 			int vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
-			if(dist <= 5.0){
+			if(dist <= 3.0){
 				isOk = false;
 				break;
 			}
 		}
 		
-		for(int i = 0; i < focusLines.size(); i++){
-			if(onLine(nowx, nowy, focusLines.get(i))){
-				isOk = false;
-				break;
-			}
-		}
+//		for(int i = 0; i < focusLines.size(); i++){
+//			if(onLine(nowx, nowy, focusLines.get(i))){
+//				isOk = false;
+//				break;
+//			}
+//		}
 		
 		//点上なら更新しない
 		if(!isOk)return;
@@ -355,7 +356,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, KeyListener
 			int x1 = focusPlots.get(dragPlotIndex).t1;
 			int y1 = focusPlots.get(dragPlotIndex).t2;
 			Line2D line = focusLines.get(index);
-			if(Math.abs(line.getX1() - x1) < 2.0 && Math.abs(line.getY1() - y1) < 2.0){
+			if(Math.abs(line.getX1() - x1) < 5.0 && Math.abs(line.getY1() - y1) < 5.0){
 				focusLines.set(index, new Line2D.Double(nowx, nowy, line.getX2(), line.getY2()));
 			}else{
 				focusLines.set(index, new Line2D.Double(line.getX1(), line.getY1(), nowx, nowy));

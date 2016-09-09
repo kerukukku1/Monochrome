@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.ScrollPane;
+import java.awt.color.ColorSpace;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Line2D;
@@ -33,6 +34,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private List<Edge> edges;
 	private PieceViewPanel parent;
 	private RealTimeDialog realtimeDialog;
+	private ParameterPanel paramPanel;
 	public static final int visualizeWidth = 600;
 	public static final int visualizeHeight = 800;
 	
@@ -50,14 +52,24 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	private void launchUI() {
 		this.setTitle(title);
-		this.setSize(VisualizeFrame.visualizeWidth + 300, VisualizeFrame.visualizeHeight);
+		this.setSize(VisualizeFrame.visualizeWidth + 300+15, VisualizeFrame.visualizeHeight+35);
 		this.setResizable(false);
+		this.setLayout(null);
+	    this.getContentPane().setBackground(Color.BLUE.darker().darker());
 		lines = makeLine2D(this.vertex);
 		edges = new ArrayList<Edge>();
 		
 		setVisualizePanel();
+		setParameterPanel();
 	}
 	
+	private void setParameterPanel() {
+		// TODO Auto-generated method stub
+		paramPanel = new ParameterPanel(this);
+		paramPanel.setBounds(visualizeWidth+10, 300+10, 300, visualizeHeight-300-5);
+		this.add(paramPanel);
+	}
+
 	private List<Line2D> makeLine2D(List<Tuple2<Double, Double>> source){
 		List<Line2D> ret = new ArrayList<Line2D>();
 		for(int i = 0; i < source.size(); i++){
@@ -70,13 +82,13 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	private void setVisualizePanel(){
 		visPanel = new VisualizePanel(vertex, coord, lines, this);
-		visPanel.setBounds(0, 0, VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight);
+		visPanel.setBounds(5, 5, VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight);
 		this.add(visPanel);
 	}
 	
 	public void setRealTimeDialog(RealTimeDialog realtimeDialog){
 		this.realtimeDialog = realtimeDialog;
-		this.realtimeDialog.setBounds(VisualizeFrame.visualizeWidth, 0, realtimeDialog.range*2, realtimeDialog.range*2);
+		this.realtimeDialog.setBounds(VisualizeFrame.visualizeWidth+10, 5, realtimeDialog.range*2, realtimeDialog.range*2);
 		this.add(realtimeDialog);
 	}
 	

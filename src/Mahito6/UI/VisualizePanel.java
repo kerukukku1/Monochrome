@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
+import javax.swing.border.LineBorder;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
