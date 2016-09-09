@@ -19,7 +19,9 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -28,10 +30,13 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
+import org.opencv.core.Mat;
+
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.ImageManager;
 
 public class RealTimeDialog extends JPanel implements MouseListener, MouseMotionListener{
 	private int x, y;
@@ -44,16 +49,20 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	private List<Line2D> focusLines;
 	private int dragPlotIndex;
 	private List<Integer> dragLineIndexes;
-	private BufferedImage img, paint;
+	private BufferedImage img, paint, cutImg;
 	private boolean isDrag = false;
 	private JLabel earth;
     private List<Tuple2<Double, Double>> vertex;
     private Coordinates coord;
+    private int[] pixels;
     private double scale;
     private VisualizePanel parent = null;
     private int[] ypoints;
     private int[] xpoints;
+	private BasicStroke maxiStroke;
+	private BasicStroke miniStroke;
     private VisualizeFrame owner;
+    private Map<Integer, Boolean> isWhite;
     
 	public RealTimeDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
 		this.x = x;
@@ -65,6 +74,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		this.range = range;
 		this.scale = parent.getScale();
 		this.lines = parent.getLines();
+		this.isWhite = new HashMap<Integer, Boolean>();
 		
 		System.out.println("Correct line size:" + lines.size());
 		plots = parent.getPlots();
@@ -100,6 +110,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		earth.addMouseMotionListener(this);
 		earth.addMouseListener(this);
 		this.add(earth);
+		maxiStroke = new BasicStroke(4.0f);
+		miniStroke = new BasicStroke(1.0f);
 		
 		BufferedImage image = new BufferedImage(16,16,BufferedImage.TYPE_4BYTE_ABGR);  
 		Graphics2D g2 = image.createGraphics();  
@@ -108,6 +120,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		g2.fillRect(0,0,16,16);  
 		g2.dispose();  
 		earth.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(image, new Point(0,0), "null_cursor"));
+		
+	//	cutImg = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
 	}
 	
 	private void paintBackground(){
@@ -137,7 +151,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 //		BasicStroke wideStroke = new BasicStroke(4.0f);
 //		g.setStroke(wideStroke);
 //		g.drawPolygon(polygon);
-		
+
 		g.setColor(Constants.coordColor);
 	    for(int i = 0; i < coord.size(); i++){
 //	    	double nowx = (coord.getVisX(i) + Constants.imagePositionOffset/2) +range - this.x/scale;
@@ -145,22 +159,42 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	    	double nowx = (coord.getVisX(i) + Constants.imagePositionOffset/2);
 	    	double nowy = (coord.getVisY(i) + Constants.imagePositionOffset/2);
 //	    	if(nowx < 0 || nowy < 0 || nowx >= range*2+1 || nowy >=range*2+1)continue;
+	    	isWhite.put((int)y << 14 | (int)x, true); 
 	    	g.fillRect((int)nowx, (int)nowy, 1, 1);
 	    }
 		g.drawImage(img, null, 0, 0);
 		g.dispose();
-		drawBackground();
+		drawBackground(true);
 	}
 	
-	private void drawBackground(){
+	private void drawBackground(boolean isRepaint){
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		int nowx = (int)((double)x/scale);
 		int nowy = (int)((double)y/scale);
-		BufferedImage output = img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2);
-		g.drawImage(output, 0, 0, earth);
+//		BufferedImage output = img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2);
+		g.drawImage(img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2), 0, 0, earth);
 		g.dispose();
-		owner.repaint();
+		if(isRepaint)owner.repaint();
 	}
+	
+//	private void drawBackground(int x, int y){
+//		int[] pixels = new int[300*300];
+//		int nowx = x;
+//		int nowy = y;
+//		Arrays.fill(pixels, 0);
+//		for(int i = 0; i < 300; i++){
+//			for(int j = 0; j < 300; j++){
+//				nowx = x-j;
+//				nowy = y-i;
+//				if(isWhite.containsKey(nowy << 14 | nowx)){
+//					pixels[j+i*300] = -16777216;
+//				}
+//			}
+//		}
+//		Graphics2D g = (Graphics2D)paint.getGraphics();
+//		cutImg.setRGB(0, 0, 300, 300, pixels, 0, 300);
+//		g.drawImage(cutImg, 0, 0, earth);
+//	}
 	
 	public List<Tuple2<Double, Double>> getPlos(){
 		return plots;
@@ -247,7 +281,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 			if(!isOn)return;
 			focusPlots.remove(rmIndex);
 			plots.remove(rmIndex);
-			drawBackground();
+			drawBackground(false);
 			Graphics2D g = (Graphics2D)paint.getGraphics();
 			for(int i = 0; i < focusPlots.size(); i++){
 				Tuple2<Integer, Integer> t = focusPlots.get(i);
@@ -268,7 +302,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				double nx = (double)e.getX() - range + (double)this.x/scale;
 				double ny = (double)e.getY() - range + (double)this.y/scale;
 				plots.add(new Tuple2<Double, Double>((double)nx, (double)ny));
-				drawBackground();
+				drawBackground(false);
 				Graphics2D g = (Graphics2D)paint.getGraphics();
 				g.setColor(Constants.plotColor);
 				for(int i = 0; i < focusPlots.size(); i++){
@@ -277,7 +311,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				g.dispose();
 			}
 		}
-		parent.setPlots(plots);
+		parent.setData(plots, this.convertFocusToLines(focusLines));
 		owner.repaint();
 	}
 
@@ -366,7 +400,10 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 			}
 		}
 		focusPlots.set(dragPlotIndex, new Tuple2<Integer, Integer>(nowx, nowy));
-		mouseMoved(e);
+		plots.set(dragPlotIndex, new Tuple2<Double, Double>(
+				nowx - range + (double)this.x/scale, nowy - range + (double)this.y/scale));
+		
+		parent.setData(plots, this.convertFocusToLines(focusLines));
 	}
 	@Override
 	public void mouseEntered(MouseEvent e) {}
@@ -381,12 +418,11 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	}
 	
 	public void paintMoveScreen(int nowx, int nowy){
-		drawBackground();
+		drawBackground(false);
+//		drawBackground(nowx, nowy);
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		
 		//線を描画
-		BasicStroke maxiStroke = new BasicStroke(4.0f);
-		BasicStroke miniStroke = new BasicStroke(1.0f);
 		g.setStroke(maxiStroke);
 		g.setColor(Constants.newLineColor);
 		for(int i = 0; i < focusLines.size(); i++){
@@ -423,7 +459,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	}
 	
 	public void paintDragScreen(int nowx, int nowy){
-		drawBackground();
+		drawBackground(false);
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 
 		for(int i = 0; i < focusPlots.size(); i++){
@@ -435,7 +471,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		}
 		g.setColor(Color.orange);
-		g.fillOval(nowx - Constants.plotOvalRadius, nowy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
+		if(isDrag)g.fillOval(nowx - Constants.plotOvalRadius, nowy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		
 		paintCursor(nowx, nowy);
 		g.dispose(); 

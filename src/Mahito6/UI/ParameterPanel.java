@@ -23,6 +23,8 @@ public class ParameterPanel extends JPanel{
 		Dimension d = this.getSize();
 		load.setBounds(0,d.height-25,d.width/2, 20);
 		run.setBounds(d.width/2, d.height-25, d.width/2, 20);
+		load.addKeyListener(parent);
+		run.addKeyListener(parent);
 		this.add(load);
 		this.add(run);
 	}
