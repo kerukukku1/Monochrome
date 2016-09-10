@@ -28,6 +28,18 @@ public class Problem {
 		div = new ArrayList<BufferedImage>();
 	}
 	
+	public int getSize(){
+		return allEdges.size();
+	}
+	
+	public void setEdges(int index, List<Edge> edges){
+		allEdges.set(index, edges);
+	}
+	
+	public void setVertex(int index, List<Tuple2<Double, Double>> v){
+		vertex.set(index, v);
+	}
+	
 	public void setCoordinates(List<Coordinates> coords){
 		this.coords = coords;
 	}

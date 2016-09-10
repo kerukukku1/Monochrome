@@ -128,29 +128,30 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	}
 	
 	public void updateEdges(List<Edge> updateEdges){
-		System.out.println("before:" + edges.size());
+//		System.out.println("before:" + edges.size());
 		edges = updateEdges;
+		ProblemManager.getProblem().setEdges(index, edges);
 //		for(int i = 0; i < edges.size(); i++){
 //			//エッジ伸ばす
 //			edges.set(i, edges.get(i).getExtensionEdge(40));
 //		}
-		System.out.println("after:" + this.edges.size());
-		System.out.println("distants:");
-		BufferedImage output = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = (Graphics2D)output.createGraphics();
-		for(int i = 0 ; i< updateEdges.size(); i++){
-			Edge e = updateEdges.get(i);
-			System.out.println("Edge" + Integer.valueOf(i+1) + " : " + e.distance);
-			System.out.println(e.kx1 + "," + e.ky1 + " & " + e.kx2 + "," + e.ky2);
-			g.draw(new Line2D.Double(e.kx1, e.ky1, e.kx2, e.ky2));
-		}
-		g.drawImage(output, 0, 0, null);
-		try {
-			ImageIO.write(output, "png", new File("line.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		System.out.println("after:" + this.edges.size());
+//		System.out.println("distants:");
+//		BufferedImage output = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+//		Graphics2D g = (Graphics2D)output.createGraphics();
+//		for(int i = 0 ; i< updateEdges.size(); i++){
+//			Edge e = updateEdges.get(i);
+//			System.out.println("Edge" + Integer.valueOf(i+1) + " : " + e.distance);
+//			System.out.println(e.kx1 + "," + e.ky1 + " & " + e.kx2 + "," + e.ky2);
+//			g.draw(new Line2D.Double(e.kx1, e.ky1, e.kx2, e.ky2));
+//		}
+//		g.drawImage(output, 0, 0, null);
+//		try {
+//			ImageIO.write(output, "png", new File("line.png"));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	//頂点検出。humei 
@@ -160,21 +161,21 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		solver2.solve();
 		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
 		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
-		this.vertex = new ArrayList< Tuple2<Double, Double> >();
+		this.vertex = ans;
 		for(Tuple2<Double,Double> t : ans){
 			System.out.println(t.t1+","+t.t2);
-			this.vertex.add(t);
 		}
-		BufferedImage result3 = solver2.getAnswerImage();
-		File ans_save = new File("ans.png");
-//		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
-//		System.out.println(pathStr);
-		try {
-			//ImageIO.write(result, "png", saveFile);
-			ImageIO.write(result3, "png", ans_save);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		ProblemManager.getProblem().setVertex(index, vertex);
+//		BufferedImage result3 = solver2.getAnswerImage();
+//		File ans_save = new File("ans.png");
+////		String pathStr = (getPath(String.valueOf(index)+"_ans_"));
+////		System.out.println(pathStr);
+//		try {
+//			//ImageIO.write(result, "png", saveFile);
+//			ImageIO.write(result3, "png", ans_save);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		errorType.setBackground(Color.ORANGE);
 	}
 	
@@ -185,7 +186,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		vis = new VisualizeFrame(vertex, coord, this);
+		vis = new VisualizeFrame(index, this);
 	}
 
 	@Override

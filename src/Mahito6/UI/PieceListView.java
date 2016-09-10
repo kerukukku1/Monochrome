@@ -25,7 +25,7 @@ public class PieceListView extends JFrame{
 	private List< List<Tuple2<Double, Double>> > vertex;
 	private JPanel paint;
 	private JPanel earth;
-	private List<PieceViewPanel> pieceViews;
+	public static List<PieceViewPanel> pieceViews;
 	private List<List<Edge>> allEdges;
 	
 	public PieceListView(){

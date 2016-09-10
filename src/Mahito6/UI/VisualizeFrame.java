@@ -20,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.Problem;
+import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
@@ -35,12 +37,29 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private PieceViewPanel parent;
 	private RealTimeDialog realtimeDialog;
 	private ParameterPanel paramPanel;
+	private int index;
 	public static final int visualizeWidth = 600;
 	public static final int visualizeHeight = 800;
 	
-	public VisualizeFrame(List<Tuple2<Double, Double>> vertex, Coordinates coord, PieceViewPanel parent){
-		this.vertex = vertex;
-		this.coord = coord;
+	public VisualizeFrame(int index, PieceViewPanel parent){
+		this.index = index;
+		Problem p = ProblemManager.getProblem();
+		this.vertex = p.getVertex(index);
+		this.coord = p.getCoord(index);
+		this.parent = parent;
+		VisualizeFrame.mine = this;
+		title = "Visualize";
+		launchUI();
+		this.requestFocusInWindow();
+		this.setVisible(true);
+		this.addKeyListener(this);
+	}
+	
+	public void relaunch(int index, PieceViewPanel parent){
+		this.index = index;
+		Problem p = ProblemManager.getProblem();
+		this.vertex = p.getVertex(index);
+		this.coord = p.getCoord(index);
 		this.parent = parent;
 		VisualizeFrame.mine = this;
 		title = "Visualize";
@@ -135,7 +154,9 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Q){
+		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_W){
+			this.dispose();
+		}else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Q){
 			System.out.println("Save");
 			lines = visPanel.getLines();
 			for(int i = 0; i < lines.size(); i++){
@@ -152,7 +173,18 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 			//エッジを考慮して頂点を検出し更新
 			parent.updateVertex();
 			parent.paintPiece();
-			this.dispose();
+		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			System.out.println("RIGHT");
+			Problem prob = ProblemManager.getProblem();
+			int next = (index+1)%prob.getSize();
+			mine.dispose();
+			VisualizeFrame.mine = new VisualizeFrame(next, PieceListView.pieceViews.get(next));
+		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			System.out.println("LEFT");
+			Problem prob = ProblemManager.getProblem();
+			int back = ((index-1)+prob.getSize())%prob.getSize();
+			mine.dispose();
+			VisualizeFrame.mine = new VisualizeFrame(back, PieceListView.pieceViews.get(back));
 		}
 	}
 

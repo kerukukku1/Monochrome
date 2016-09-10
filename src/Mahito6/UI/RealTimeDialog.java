@@ -10,6 +10,8 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -17,6 +19,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,35 +49,36 @@ import Main.UI.Util.ImageManager;
 public class RealTimeDialog extends JPanel implements MouseListener, MouseMotionListener{
 	private int x, y;
 	public int range;
-	private static int[] dx;
-	private static int[] dy;
+//	private static int[] dx;
+//	private static int[] dy;
 	private List<Tuple2<Double, Double>> plots;
 	private List<Tuple2<Integer, Integer>> focusPlots;
 	private List<Line2D> lines;
 	private List<Line2D> focusLines;
 	private int dragPlotIndex;
 	private List<Integer> dragLineIndexes;
-	private BufferedImage img, paint, cutImg;
+	private BufferedImage img, paint;
 	private boolean isDrag = false;
 	private JLabel earth;
-    private List<Tuple2<Double, Double>> vertex;
+//    private List<Tuple2<Double, Double>> vertex;
     private Coordinates coord;
-    private int[] pixels;
     private double scale;
     private VisualizePanel parent = null;
-    private int[] ypoints;
-    private int[] xpoints;
+//    private int[] ypoints;
+//    private int[] xpoints;
 	private BasicStroke maxiStroke;
 	private BasicStroke miniStroke;
     private VisualizeFrame owner;
     private Map<Integer, Boolean> isWhite;
+//    private int imgHeight, imgWidth;
+//    private byte[] pixels;
     
 	public RealTimeDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
 		this.x = x;
 		this.y = y;
 		this.owner = owner;
 		this.parent = parent;
-		this.vertex = parent.getVertex();
+//		this.vertex = parent.getVertex();
 		this.coord = parent.getCoordinates();
 		this.range = range;
 		this.scale = parent.getScale();
@@ -177,25 +186,30 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		if(isRepaint)owner.repaint();
 	}
 	
-//	private void drawBackground(int x, int y){
-//		int[] pixels = new int[300*300];
-//		int nowx = x;
-//		int nowy = y;
-//		Arrays.fill(pixels, 0);
-//		for(int i = 0; i < 300; i++){
-//			for(int j = 0; j < 300; j++){
-//				nowx = x-j;
-//				nowy = y-i;
-//				if(isWhite.containsKey(nowy << 14 | nowx)){
-//					pixels[j+i*300] = -16777216;
-//				}
+	public static BufferedImage createImage(byte[] data,int width,int height){
+		DataBuffer buffer = new DataBufferByte(data, width*height);
+		WritableRaster raster = Raster.
+				createInterleavedRaster(buffer, width, height, width,
+						1,new int[1], new Point());
+		ColorModel model = new ComponentColorModel(
+				ColorSpace.getInstance(ColorSpace.CS_GRAY), false, false, 
+				Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+		return new BufferedImage(model, raster, false, null);
+	}
+	
+//	private void drawBackground(int width, int height){
+//		byte[] tmp = new byte[width*height];
+//		int nowx = (int)((double)x/scale);
+//		int nowy = (int)((double)y/scale);
+//		for(int i = 0; i < height; i++){
+//			for(int j = 0; j < width; j++){
+//				tmp[j+i*height] = pixels[(nowx-j)+(nowy-i)*imgHeight];
 //			}
 //		}
 //		Graphics2D g = (Graphics2D)paint.getGraphics();
-//		cutImg.setRGB(0, 0, 300, 300, pixels, 0, 300);
-//		g.drawImage(cutImg, 0, 0, earth);
+//		g.drawImage(createImage(tmp, width, height), 0, 0, earth);
 //	}
-	
+//	
 	public List<Tuple2<Double, Double>> getPlos(){
 		return plots;
 	}
