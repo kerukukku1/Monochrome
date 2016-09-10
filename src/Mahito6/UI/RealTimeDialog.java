@@ -52,7 +52,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 //	private static int[] dx;
 //	private static int[] dy;
 	private List<Tuple2<Double, Double>> plots;
-	private List<Tuple2<Integer, Integer>> focusPlots;
+	private List<Tuple2<Double, Double>> focusPlots;
 	private List<Line2D> lines;
 	private List<Line2D> focusLines;
 	private int dragPlotIndex;
@@ -223,11 +223,12 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		return enc;
 	}
 	
-	private List<Tuple2<Integer, Integer>> convertScaleToFocusPlots(List<Tuple2<Integer, Integer>> source){
-		List<Tuple2<Integer, Integer>> ret = new ArrayList<Tuple2<Integer, Integer>>();
+	private List<Tuple2<Double, Double>> convertScaleToFocusPlots(List<Tuple2<Double, Double>> source){
+		List<Tuple2<Double, Double>> ret = new ArrayList<Tuple2<Double, Double>>();
 		for(int i = 0; i < source.size(); i++){
-			Tuple2<Integer, Integer> t = source.get(i);
-			ret.add(new Tuple2<Integer, Integer>((int)((double)t.t1/scale)-(int)((double)this.x/scale)+range, (int)((double)t.t2/scale)-(int)((double)this.y/scale)+range));
+			Tuple2<Double, Double> t = source.get(i);
+			ret.add(new Tuple2<Double, Double>(t.t1/scale-(double)this.x/scale+(double)range, 
+					(double)t.t2/scale-(double)this.y/scale+(double)range));
 		}
 		return ret;
 	}
@@ -279,9 +280,9 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		int nowy = e.getY();
 		Tuple2<Double, Double> nowOn = null;
 		for(int i = 0; i < focusPlots.size(); i++){
-			Tuple2<Integer, Integer> t = focusPlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
+			Tuple2<Double, Double> t = focusPlots.get(i);
+			double vx = t.t1;
+			double vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			if(dist <= 5.0){
 				isOn = true;
@@ -298,13 +299,16 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 			drawBackground(false);
 			Graphics2D g = (Graphics2D)paint.getGraphics();
 			for(int i = 0; i < focusPlots.size(); i++){
-				Tuple2<Integer, Integer> t = focusPlots.get(i);
-				int vx = t.t1;
-				int vy = t.t2;
+				Tuple2<Double, Double> t = focusPlots.get(i);
+				double vx = t.t1;
+				double vy = t.t2;
 				double dist = Edge.distance(nowx, nowy, vx, vy);
 				g.setColor(Constants.plotColor);
 				if(dist <= 5.0)g.setColor(Constants.onPlotColor);
-				g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
+				g.fillOval((int)vx - Constants.plotOvalRadius,
+						(int)vy - Constants.plotOvalRadius,
+						Constants.plotOvalRadius*2,
+						Constants.plotOvalRadius*2);
 			}
 			g.dispose();
 		//Left Click
@@ -312,7 +316,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 			if(isOn){
 
 			}else{
-				focusPlots.add(new Tuple2<Integer, Integer>((int)e.getX(), (int)e.getY()));
+				focusPlots.add(new Tuple2<Double, Double>((double)e.getX(), (double)e.getY()));
 				double nx = (double)e.getX() - range + (double)this.x/scale;
 				double ny = (double)e.getY() - range + (double)this.y/scale;
 				plots.add(new Tuple2<Double, Double>((double)nx, (double)ny));
@@ -320,7 +324,10 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				Graphics2D g = (Graphics2D)paint.getGraphics();
 				g.setColor(Constants.plotColor);
 				for(int i = 0; i < focusPlots.size(); i++){
-					g.fillOval(focusPlots.get(i).t1 - 4, focusPlots.get(i).t2 - 4, 8, 8);
+					Tuple2<Double, Double> d = focusPlots.get(i);
+					double d1 = d.t1;
+					double d2 = d.t2;
+					g.fillOval((int)d1 - 4, (int)d2 - 4, 8, 8);
 				}	
 				g.dispose();
 			}
@@ -343,12 +350,12 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	public void mousePressed(MouseEvent e) {
 		boolean isOn = false;
 		int rmIndex = 0;
-		int nowx = e.getX();
-		int nowy = e.getY();
+		double nowx = e.getX();
+		double nowy = e.getY();
 		for(int i = 0; i < focusPlots.size(); i++){
-			Tuple2<Integer, Integer> t = focusPlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
+			Tuple2<Double, Double> t = focusPlots.get(i);
+			double vx = t.t1;
+			double vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			if(dist <= 5.0){
 				isOn = true;
@@ -376,12 +383,12 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 	public void mouseReleased(MouseEvent e) {
 		if(!isDrag)return;
 		boolean isOk = true;
-		int nowx = e.getX();
-		int nowy = e.getY();
+		double nowx = e.getX();
+		double nowy = e.getY();
 		for(int i = 0; i < focusPlots.size(); i++){
-			Tuple2<Integer, Integer> t = focusPlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
+			Tuple2<Double, Double> t = focusPlots.get(i);
+			double vx = t.t1;
+			double vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			if(dist <= 3.0){
 				isOk = false;
@@ -401,8 +408,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		for(int i = 0; i < dragLineIndexes.size(); i++){
 			int index = dragLineIndexes.get(i);
 			System.out.println("index:"+index);
-			int x1 = focusPlots.get(dragPlotIndex).t1;
-			int y1 = focusPlots.get(dragPlotIndex).t2;
+			double x1 = focusPlots.get(dragPlotIndex).t1;
+			double y1 = focusPlots.get(dragPlotIndex).t2;
 			Line2D line = focusLines.get(index);
 			double dist1, dist2;
 			dist1 = Edge.distance(line.getX1(),line.getY1(),x1,y1);
@@ -413,7 +420,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				focusLines.set(index, new Line2D.Double(line.getX1(), line.getY1(), nowx, nowy));
 			}
 		}
-		focusPlots.set(dragPlotIndex, new Tuple2<Integer, Integer>(nowx, nowy));
+		focusPlots.set(dragPlotIndex, new Tuple2<Double, Double>(nowx, nowy));
 		plots.set(dragPlotIndex, new Tuple2<Double, Double>(
 				nowx - range + (double)this.x/scale, nowy - range + (double)this.y/scale));
 		
@@ -446,13 +453,16 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		
 		//点を描画
 		for(int i = 0; i < focusPlots.size(); i++){
-			Tuple2<Integer, Integer> t = focusPlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
+			Tuple2<Double, Double> t = focusPlots.get(i);
+			double vx = t.t1;
+			double vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			g.setColor(Constants.plotColor);
 			if(dist <= 5.0)g.setColor(Constants.onPlotColor);
-			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
+			g.fillOval((int)vx - Constants.plotOvalRadius,
+					(int)vy - Constants.plotOvalRadius,
+					Constants.plotOvalRadius*2,
+					Constants.plotOvalRadius*2);
 		}
 		g.dispose();
 	    owner.repaint();
@@ -477,12 +487,15 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 
 		for(int i = 0; i < focusPlots.size(); i++){
-			Tuple2<Integer, Integer> t = focusPlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
+			Tuple2<Double, Double> t = focusPlots.get(i);
+			double vx = t.t1;
+			double vy = t.t2;
 			if(i == dragPlotIndex)continue;
 			g.setColor(Constants.plotColor);
-			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
+			g.fillOval((int)vx - Constants.plotOvalRadius,
+					(int)vy - Constants.plotOvalRadius,
+					Constants.plotOvalRadius*2,
+					Constants.plotOvalRadius*2);
 		}
 		g.setColor(Color.orange);
 		if(isDrag)g.fillOval(nowx - Constants.plotOvalRadius, nowy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);

@@ -48,30 +48,27 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	
 	private BufferedImage gPiece;
 	private BufferedImage paint;
-    private Polygon polygon;
     private JLabel earth;
     private List<Tuple2<Double, Double>> vertex;
     private List<String> textData;
     private double scale = 1.0;
-    private DiffPiece diff;
     private RealTimeDialog realtimeDialog = null;
     private Coordinates coord;
     //スケールを合わせたプロット
-    private List<Tuple2<Integer, Integer>> scalePlots;
+    private List<Tuple2<Double, Double>> scalePlots;
     //合わせてないプロット
     private List<Tuple2<Double, Double>> plots;
+    private DiffPiece diff;
     private double maxx, maxy;
     private boolean isSelect = false;
     private boolean isLine = false;
     private Line2D scaleLine;
     private List<Line2D> scaleLines;
     private List<Line2D> lines;
-    private Tuple2<Integer, Integer> clickP = null;
+    private Tuple2<Double, Double> clickP = null;
     private int range = 150;
-    private HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean> lineMap;
     private BasicStroke miniStroke;
     private BasicStroke maxiStroke;
-    private Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>> _hash;
     private VisualizeFrame parent;
     
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
@@ -124,7 +121,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
         maxiStroke = new BasicStroke(2.0f);
         
         //既存の線か判定するテーブル(要書き換え)
-        lineMap = new HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean>();
+//        lineMap = new HashMap<Tuple2<Tuple2<Integer,Integer>, Tuple2<Integer,Integer>>, Boolean>();
 	}
 	
 	public void paintPiece(){
@@ -185,10 +182,13 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		g.setColor(Constants.plotColor);
 		for(int i = 0; i < scalePlots.size(); i++){
-			Tuple2<Integer, Integer> now = scalePlots.get(i);
-			int nx = now.t1;
-			int ny = now.t2;
-			g.fillOval(nx-Constants.plotOvalRadius, ny-Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
+			Tuple2<Double, Double> now = scalePlots.get(i);
+			double nx = now.t1;
+			double ny = now.t2;
+			g.fillOval((int)nx-Constants.plotOvalRadius, 
+					(int)ny-Constants.plotOvalRadius, 
+					Constants.plotOvalRadius*2, 
+					Constants.plotOvalRadius*2);
 		}
 		g.dispose();
 		if(isRepaint)parent.repaint();
@@ -215,12 +215,12 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return ret;
 	}
 		
-	private List<Tuple2<Integer, Integer>> encodeToScalePlot(List<Tuple2<Double, Double>> source){
-		List<Tuple2<Integer, Integer>> ret = new ArrayList<Tuple2<Integer, Integer>>();
+	private List<Tuple2<Double, Double>> encodeToScalePlot(List<Tuple2<Double, Double>> source){
+		List<Tuple2<Double, Double>> ret = new ArrayList<Tuple2<Double, Double>>();
 		for(Tuple2<Double, Double> d : source){
 			double nowx = d.t1 * scale;
 			double nowy = d.t2 * scale;
-			ret.add(new Tuple2<Integer, Integer>((int)nowx, (int)nowy));
+			ret.add(new Tuple2<Double, Double>(nowx, nowy));
 		}
 		return ret;
 	}
@@ -242,8 +242,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		g.setColor(Constants.newLineColor);
 		//点選択中
 		if(isSelect){
-			int cx = clickP.t1;
-			int cy = clickP.t2;
+			double cx = clickP.t1;
+			double cy = clickP.t2;
 			scaleLine.setLine(nowx, nowy, cx, cy);
 			g.draw(scaleLine);
 		}
@@ -254,25 +254,25 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		realtimeDialog.reloadPoints(x, y);
 	}
 	
-	private boolean isVerifyLine(int nx, int ny, int cx, int cy){
-		if(nx==cx && ny==cy)return false;
-		Tuple2<Integer, Integer> nt = new Tuple2<Integer, Integer>(nx,ny);
-		Tuple2<Integer, Integer> ct = new Tuple2<Integer, Integer>(cx,cy);
-		_hash = new Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>>(nt, ct);
-		if(lineMap.containsKey(_hash))return false;
-		lineMap.put(_hash, true);
-		_hash = new Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>>(ct, nt);
-		if(lineMap.containsKey(_hash))return false;
-		lineMap.put(_hash, true);
-		return true;
-	}
+//	private boolean isVerifyLine(int nx, int ny, int cx, int cy){
+//		if(nx==cx && ny==cy)return false;
+//		Tuple2<Integer, Integer> nt = new Tuple2<Integer, Integer>(nx,ny);
+//		Tuple2<Integer, Integer> ct = new Tuple2<Integer, Integer>(cx,cy);
+//		_hash = new Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>>(nt, ct);
+//		if(lineMap.containsKey(_hash))return false;
+//		lineMap.put(_hash, true);
+//		_hash = new Tuple2<Tuple2<Integer, Integer>, Tuple2<Integer, Integer>>(ct, nt);
+//		if(lineMap.containsKey(_hash))return false;
+//		lineMap.put(_hash, true);
+//		return true;
+//	}
 	
-	private List<Tuple2<Integer, Integer>> convertVertexToScalePlots(List<Tuple2<Double, Double>> vertex){
-		List<Tuple2<Integer, Integer>> ret = new ArrayList<Tuple2<Integer, Integer>>();
+	private List<Tuple2<Double, Double>> convertVertexToScalePlots(List<Tuple2<Double, Double>> vertex){
+		List<Tuple2<Double, Double>> ret = new ArrayList<Tuple2<Double, Double>>();
 		for(Tuple2<Double, Double> v : vertex){
 			double nowx = v.t1 * scale;
 			double nowy = v.t2 * scale;
-			ret.add(new Tuple2<Integer, Integer>((int)nowx, (int)nowy));
+			ret.add(new Tuple2<Double, Double>(nowx,nowy));
 		}
 		return ret;
 	}
@@ -363,7 +363,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return plots;
 	}
 	
-	public List<Tuple2<Integer, Integer>> getScalePlots(){
+	public List<Tuple2<Double, Double>> getScalePlots(){
 		return scalePlots;
 	}
 	
@@ -403,14 +403,14 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		Tuple2<Integer, Integer> nowOn = null;
+		Tuple2<Double, Double> nowOn = null;
 		int nowx = e.getX();
 		int nowy = e.getY();
 		boolean isOn = false;
 		for(int i = 0; i < scalePlots.size(); i++){
-			Tuple2<Integer, Integer> t = scalePlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
+			Tuple2<Double, Double> t = scalePlots.get(i);
+			double vx = t.t1;
+			double vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			if(dist <= 5.0){
 				isOn = true;
@@ -441,13 +441,13 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			//点選択時
 			if(isSelect){
 				if(!isOn)return;
-				int cx = clickP.t1;
-				int cy = clickP.t2;
-				int nowOnX = nowOn.t1;
-				int nowOnY = nowOn.t2;
+				double cx = clickP.t1;
+				double cy = clickP.t2;
+				double nowOnX = nowOn.t1;
+				double nowOnY = nowOn.t2;
 				
 				//有効なラインか確認(重複確認含)
-				if(!isVerifyLine(nowOnX,nowOnY,cx,cy))return;
+//				if(!isVerifyLine(nowOnX,nowOnY,cx,cy))return;
 				
 				Line2D line = new Line2D.Double(nowOnX, nowOnY, cx, cy);
 				//点の上の時
@@ -460,9 +460,9 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 				//点の上の時
 				if(isOn){
 					isSelect = true;
-					int nowOnX = nowOn.t1;
-					int nowOnY = nowOn.t2;
-					clickP = new Tuple2<Integer, Integer>(nowOnX, nowOnY);
+					double nowOnX = nowOn.t1;
+					double nowOnY = nowOn.t2;
+					clickP = new Tuple2<Double, Double>(nowOnX, nowOnY);
 				}else{
 					System.out.println(e.getX()+","+e.getY());
 					try {
@@ -556,9 +556,9 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		//paintLine(nowx, nowy);
 		boolean isOn = false;
 		for(int i = 0; i < scalePlots.size(); i++){
-			Tuple2<Integer, Integer> t = scalePlots.get(i);
-			int vx = t.t1;
-			int vy = t.t2;
+			Tuple2<Double, Double> t = scalePlots.get(i);
+			double vx = t.t1;
+			double vy = t.t2;
 			double dist = Edge.distance(nowx, nowy, vx, vy);
 			g.setColor(Constants.plotColor);
 			if(dist <= 5.0){
@@ -568,7 +568,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			if(clickP!=null && Edge.distance(clickP.t1, clickP.t2, vx, vy) < 5.0){
 				g.setColor(Color.yellow);
 			}
-			g.fillOval(vx - Constants.plotOvalRadius, vy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
+			g.fillOval((int)vx - Constants.plotOvalRadius, 
+					(int)vy - Constants.plotOvalRadius, 
+					Constants.plotOvalRadius*2, 
+					Constants.plotOvalRadius*2);
 		}
 
 		
