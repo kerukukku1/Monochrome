@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.ScrollPane;
+import java.awt.Toolkit;
 import java.awt.color.ColorSpace;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -39,7 +40,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private ParameterPanel paramPanel;
 	private int index;
 	public static final int visualizeWidth = 600;
-	public static final int visualizeHeight = 800;
+	public static final int visualizeHeight = Toolkit.getDefaultToolkit().getScreenSize().height-100;
 	
 	public VisualizeFrame(int index, PieceViewPanel parent){
 		this.index = index;
