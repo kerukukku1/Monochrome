@@ -500,6 +500,22 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		g.setColor(Color.orange);
 		if(isDrag)g.fillOval(nowx - Constants.plotOvalRadius, nowy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
 		
+		for(int i = 0; i < dragLineIndexes.size(); i++){
+			int index = dragLineIndexes.get(i);
+			System.out.println("index:"+index);
+			double x1 = focusPlots.get(dragPlotIndex).t1;
+			double y1 = focusPlots.get(dragPlotIndex).t2;
+			Line2D line = focusLines.get(index);
+			double dist1, dist2;
+			dist1 = Edge.distance(line.getX1(),line.getY1(),x1,y1);
+			dist2 = Edge.distance(line.getX2(),line.getY2(),x1,y1);
+			if(dist1<dist2){
+				g.draw(new Line2D.Double(nowx, nowy, line.getX2(), line.getY2()));
+			}else{
+				g.draw(new Line2D.Double(line.getX1(), line.getY1(), nowx, nowy));
+			}
+		}
+		
 		paintCursor(nowx, nowy);
 		g.dispose(); 
 	    owner.repaint();
