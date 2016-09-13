@@ -17,7 +17,7 @@ public class MainPanel extends JPanel{
 	}
 	
 	private void launchItems(){
-		inputPanel = new InputPanel(0,MainFrame.frame_height-50);
+		inputPanel = new InputPanel(0,MainFrame.frame_height-50, MainFrame.frame_width, 30);
 		this.add(inputPanel);
 		this.setBackground(Color.gray.darker());
 		

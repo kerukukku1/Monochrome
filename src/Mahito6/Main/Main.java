@@ -32,10 +32,11 @@ import Mahito6.UI.VisualizeFrame;
 
 public class Main {
 	private static MainFrame mainFrame;
-	
+	public static PieceListView pieceView;
 	public Main(){
-		mainFrame = new MainFrame(Constants.uiTitle);
+		//mainFrame = new MainFrame(Constants.uiTitle);
 		new ProblemManager(mainFrame);
+		pieceView = new PieceListView();
 	}
 	
 	public static void main(String[] args){

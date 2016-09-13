@@ -28,6 +28,7 @@ import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
 import Mahito6.Thread.SolverThreadingAgent;
 import Mahito6.UI.MainPanel;
+import Mahito6.Main.Main;
 import Mahito6.UI.PieceListView;
 import Mahito6.UI.VisualizeFrame;
 
@@ -153,7 +154,7 @@ public class ImageManager{
 		ProblemManager.setProblem(problem);
 
 		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
-		PieceListView view = new PieceListView();
+		Main.pieceView.launchPiecePanel(problem);
 	}
 	
 	public void runSolveThread() throws Exception{

@@ -29,13 +29,15 @@ public class PieceListView extends JFrame{
 	private List<List<Edge>> allEdges;
 	
 	public PieceListView(){
-		Problem p = ProblemManager.getProblem();
-		this.vertex = p.getVertex();
-		this.allEdges = p.getAllEdges();
 		title = "ListViewer";
 		launchUI();
 		this.requestFocusInWindow();
 		this.setVisible(true);
+	}
+	
+	public void launchPiecePanel(Problem p){
+		this.vertex = p.getVertex();
+		this.allEdges = p.getAllEdges();
 		paintPiecePanel();
 	}
 	
@@ -57,9 +59,10 @@ public class PieceListView extends JFrame{
 	private void launchUI() {
 		this.setTitle(title);
 		this.setResizable(false);
-		this.setSize(850, 520);
+		this.setSize(850, 570);
 		earth = new JPanel();
 		paint = new JPanel();
+		this.setLayout(null);
 		paint.setLayout(null);
 	    JScrollPane scrollpane = new JScrollPane();
 	    scrollpane.setPreferredSize(new Dimension(850, 520));
@@ -68,7 +71,11 @@ public class PieceListView extends JFrame{
 	    scrollpane.setViewport(view);
 	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
 	    earth.add(scrollpane);
+	    earth.setBounds(0, 0, 850, 520);
 	    this.add(earth);
+	    
+	    InputPanel inputPanel = new InputPanel(0, 520, 850, 30);
+	    this.add(inputPanel);
 	    
 	    pieceViews = new ArrayList<PieceViewPanel>();
 	}

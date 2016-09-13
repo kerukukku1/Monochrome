@@ -51,8 +51,8 @@ public class MainFrame extends JFrame{
 		return mainPanel;
 	}
 	
-	public static void changeTitle(String title){
-		ProblemManager.mainFrame.setTitle(Constants.uiTitle + title);
-	}
+//	public static void changeTitle(String title){
+//		ProblemManager.mainFrame.setTitle(Constants.uiTitle + title);
+//	}
 
 }

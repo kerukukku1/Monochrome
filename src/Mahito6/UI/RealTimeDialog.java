@@ -100,7 +100,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		this.x = x;
 		this.y = y;
 		focusPlots = this.convertScaleToFocusPlots(parent.getScalePlots());
-		focusLines = this.convertToFocusLines(lines);
+		focusLines = this.convertToFocusLines(parent.getLines());
 		this.paintMoveScreen(x, y);
 	}
 	

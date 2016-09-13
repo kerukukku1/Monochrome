@@ -9,23 +9,33 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
+import Mahito6.Main.Constants;
 import Mahito6.Main.ProblemManager;
 import Main.UI.Util.ImageManager;
 import Main.UI.Util.MyKeyListener;
 
-public class InputPanel extends JPanel implements ActionListener{
-	public int x, y;
+public class InputPanel extends JPanel implements ActionListener, ChangeListener{
+	public int x, y, width, height;
 	public static JButton loadButton, runButton;
 	public JTextField inputForm;
-	public InputPanel(int x, int y){
+	public ButtonGroup switType = new ButtonGroup();
+	private JRadioButton piece;
+	private JRadioButton frame;
+	public InputPanel(int x, int y, int width, int height){
 		this.x = x;
 		this.y = y;
+		this.width = width;
+		this.height = height;
 		setUtils();
 		launchItems();
 		this.addKeyListener(new MyKeyListener());
@@ -34,24 +44,25 @@ public class InputPanel extends JPanel implements ActionListener{
 	private void setInputForm(){
 		inputForm = new JTextField();
 		inputForm.addActionListener(this);
-		inputForm.setBounds(0, 0, 540, 30);
+		inputForm.setBounds(0, 0, width-320, height);
 		inputForm.setTransferHandler(new DropFileHandler());
 		this.add(inputForm);		
 	}
 	
 	private void setLoadButton(){
 		loadButton = new JButton("Load");
-		loadButton.setBounds(540, 0, 80, 30);
+		loadButton.setBounds(width-160, 0, 80, height);
 		loadButton.addActionListener(this);
 		this.add(loadButton);
 		
 		runButton = new JButton("Run");
-		runButton.setBounds(620, 0, 80, 30);
+		runButton.setBounds(width-80, 0, 80, height);
 		runButton.addActionListener(this);
 		this.add(runButton);		
 	}
 	
 	private void launchItems(){
+		setRadioButton();
 		setLoadButton();
 		setInputForm();
 	}
@@ -59,7 +70,7 @@ public class InputPanel extends JPanel implements ActionListener{
 	private void setUtils(){
 		this.setLayout(null);
 		this.setBackground(Color.RED.darker().darker());
-		this.setBounds(x, y, 700, 30);
+		this.setBounds(x, y, width, height);
 		this.setOpaque(true);
 	}
 	
@@ -140,4 +151,49 @@ public class InputPanel extends JPanel implements ActionListener{
 //			}).start();
 		}
 	}
+	
+	private void setRadioButton(){
+		piece = new JRadioButton("Piece");
+		frame = new JRadioButton("Frame");
+		piece.setOpaque(false);
+		frame.setOpaque(false);
+		
+		
+		piece.setBounds(width-240, 0, 80, height);
+		frame.setBounds(width-320, 0, 80, height);
+		
+		piece.setForeground(Color.red);
+		frame.setForeground(Color.red);
+		
+		piece.addChangeListener(this);
+		frame.addChangeListener(this);
+		
+		piece.setSelected(true);
+		
+		switType.add(piece);
+		switType.add(frame);
+		
+		this.add(piece);
+		this.add(frame);
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+		if(piece.isSelected()){
+			Constants.clearNoiseThreshold = 200;
+			Constants.edgeWidth = 6;
+			//Constants.lrAddition = 50;
+			Constants.lrAddition = 60;
+			Constants.dividePixelLookingForDist = 20;
+			Constants.modeWaku = false;
+		}else{
+			Constants.clearNoiseThreshold = 1200;
+			Constants.edgeWidth = 6;
+			Constants.lrAddition = 100;
+			Constants.dividePixelLookingForDist = 3;
+			Constants.modeWaku = true;
+		}
+	}
+
 }

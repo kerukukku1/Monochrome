@@ -7,13 +7,13 @@ import Mahito6.UI.UtilityPanel;
 import Main.UI.Util.ImageManager;
 
 public class ProblemManager {
-	public static MainFrame mainFrame;
+//	public static MainFrame mainFrame;
 	public static UtilityPanel utilPanel;
 	public static InputPanel inputPanel;
 	public static ImageManager imageManager;
 	public static Problem problem;
 	public ProblemManager(MainFrame mainFrame){
-		ProblemManager.mainFrame = mainFrame;
+//		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();
 	}
 	
@@ -37,7 +37,7 @@ public class ProblemManager {
 		return ProblemManager.problem;
 	}
 	
-	public static MainPanel getMainPanel(){
-		return ProblemManager.mainFrame.getMainPanel();
-	}
+//	public static MainPanel getMainPanel(){
+//		return ProblemManager.mainFrame.getMainPanel();
+//	}
 }
