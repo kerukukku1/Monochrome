@@ -41,12 +41,13 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private int index;
 	public static final int visualizeWidth = 600;
 	public static final int visualizeHeight = Toolkit.getDefaultToolkit().getScreenSize().height-100;
+	private Problem myProblem;
 	
 	public VisualizeFrame(int index, PieceViewPanel parent){
 		this.index = index;
-		Problem p = ProblemManager.getProblem();
-		this.vertex = p.getVertex(index);
-		this.coord = p.getCoord(index);
+		this.myProblem = parent.getProblem();
+		this.vertex = myProblem.getVertex(index);
+		this.coord = myProblem.getCoord(index);
 		this.parent = parent;
 		VisualizeFrame.mine = this;
 		title = "Visualize";
@@ -58,9 +59,8 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	public void relaunch(int index, PieceViewPanel parent){
 		this.index = index;
-		Problem p = ProblemManager.getProblem();
-		this.vertex = p.getVertex(index);
-		this.coord = p.getCoord(index);
+		this.vertex = myProblem.getVertex(index);
+		this.coord = myProblem.getCoord(index);
 		this.parent = parent;
 		VisualizeFrame.mine = this;
 		title = "Visualize";
@@ -176,14 +176,12 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 			parent.paintPiece();
 		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 			System.out.println("RIGHT");
-			Problem prob = ProblemManager.getProblem();
-			int next = (index+1)%prob.getSize();
+			int next = (index+1)%myProblem.getSize();
 			mine.dispose();
 			VisualizeFrame.mine = new VisualizeFrame(next, PieceListView.pieceViews.get(next));
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 			System.out.println("LEFT");
-			Problem prob = ProblemManager.getProblem();
-			int back = ((index-1)+prob.getSize())%prob.getSize();
+			int back = ((index-1)+myProblem.getSize())%myProblem.getSize();
 			mine.dispose();
 			VisualizeFrame.mine = new VisualizeFrame(back, PieceListView.pieceViews.get(back));
 		}

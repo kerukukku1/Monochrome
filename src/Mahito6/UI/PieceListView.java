@@ -22,11 +22,9 @@ import Main.UI.Util.ImageManager;
 
 public class PieceListView extends JFrame{
 	private String title;
-	private List< List<Tuple2<Double, Double>> > vertex;
 	private JPanel paint;
 	private JPanel earth;
 	public static List<PieceViewPanel> pieceViews;
-	private List<List<Edge>> allEdges;
 	
 	public PieceListView(){
 		title = "ListViewer";
@@ -35,25 +33,29 @@ public class PieceListView extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void launchPiecePanel(Problem p){
-		this.vertex = p.getVertex();
-		this.allEdges = p.getAllEdges();
-		paintPiecePanel();
+	public void launchPiecePanel(){
+		paintPiecePanel(ProblemManager.getProblems());
 	}
 	
-	private void paintPiecePanel(){
-		for(int i = 0; i < vertex.size(); i++){
-			PieceViewPanel p = new PieceViewPanel((i%4)*205+5,(i/4)*255+5,200,250, i);
-			pieceViews.add(p);
-			paint.add(p);
+	private void paintPiecePanel(List<Problem> problems){
+		List< List<Tuple2<Double, Double>> > vertex;
+		int count = 0;
+		for(int loop = 0; loop < problems.size(); loop++){
+			Problem problem = problems.get(loop);
+			vertex = problem.getVertex();
+			for(int i = 0; i < vertex.size(); i++){
+				//まだ変更してないよ〜〜〜〜バグるよ！！！！！！！！！！！！！！！！！！！！！！！！！
+				PieceViewPanel p = new PieceViewPanel((count%4)*205+5,(count/4)*255+5,200,250, i, problem);
+				pieceViews.add(p);
+				paint.add(p);
+				++count;
+			}
+			//追加されたピースは改行されて表示されるようにする。
+			count += (4 - count%4);
 		}
-		paint.setPreferredSize(new Dimension(830, 295+255*(vertex.size()/4)));
+		paint.setPreferredSize(new Dimension(830, 295+255*(count/4)));
 		this.revalidate();
 		this.repaint();
-	}
-	
-	public List<Edge> getEdges(int index){
-		return allEdges.get(index);
 	}
 	
 	private void launchUI() {

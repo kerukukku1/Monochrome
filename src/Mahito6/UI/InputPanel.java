@@ -26,7 +26,7 @@ import Main.UI.Util.MyKeyListener;
 
 public class InputPanel extends JPanel implements ActionListener, ChangeListener{
 	public int x, y, width, height;
-	public static JButton loadButton, runButton;
+	public static JButton loadButton, runButton, addButton, saveButton;
 	public JTextField inputForm;
 	public ButtonGroup switType = new ButtonGroup();
 	private JRadioButton piece;
@@ -44,16 +44,26 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	private void setInputForm(){
 		inputForm = new JTextField();
 		inputForm.addActionListener(this);
-		inputForm.setBounds(0, 0, width-320, height);
+		inputForm.setBounds(0, 0, width-480, height);
 		inputForm.setTransferHandler(new DropFileHandler());
 		this.add(inputForm);		
 	}
 	
-	private void setLoadButton(){
+	private void setButtons(){
+		saveButton = new JButton("Save");
+		saveButton.setBounds(width-320, 0, 80, height);
+		saveButton.addActionListener(this);
+		this.add(saveButton);
+		
 		loadButton = new JButton("Load");
-		loadButton.setBounds(width-160, 0, 80, height);
+		loadButton.setBounds(width-240, 0, 80, height);
 		loadButton.addActionListener(this);
 		this.add(loadButton);
+		
+		addButton = new JButton("Add");
+		addButton.setBounds(width-160, 0, 80, height);
+		addButton.addActionListener(this);
+		this.add(addButton);
 		
 		runButton = new JButton("Run");
 		runButton.setBounds(width-80, 0, 80, height);
@@ -63,7 +73,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	
 	private void launchItems(){
 		setRadioButton();
-		setLoadButton();
+		setButtons();
 		setInputForm();
 	}
 	
@@ -122,13 +132,25 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
-		if(cmd.equals("Load")){
+		if(cmd.equals("Add")){
+			System.out.println("All Noise Clear");
+			long start = System.nanoTime();
+			InputPanel.loadButton.setEnabled(false);
+			InputPanel.runButton.setEnabled(false);
+			ProblemManager.generatePieceDatas();
+			InputPanel.loadButton.setEnabled(true);
+			InputPanel.runButton.setEnabled(true);
+			long end = System.nanoTime();
+			System.out.println((end - start) / 1000000f + "ms");			
+		}else if(cmd.equals("Load")){
 			LoadFiles(inputForm.getText());	
 		}else if(cmd.equals("Run")){
 			System.out.println("All Noise Clear");
 			long start = System.nanoTime();
 			InputPanel.loadButton.setEnabled(false);
 			InputPanel.runButton.setEnabled(false);
+			//runの時は保持されているproblemデータを全てリセット
+			ProblemManager.resetImageManager();
 			ProblemManager.generatePieceDatas();
 			InputPanel.loadButton.setEnabled(true);
 			InputPanel.runButton.setEnabled(true);
@@ -159,8 +181,8 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		frame.setOpaque(false);
 		
 		
-		piece.setBounds(width-240, 0, 80, height);
-		frame.setBounds(width-320, 0, 80, height);
+		piece.setBounds(width-480, 0, 80, height);
+		frame.setBounds(width-400, 0, 80, height);
 		
 		piece.setForeground(Color.red);
 		frame.setForeground(Color.red);

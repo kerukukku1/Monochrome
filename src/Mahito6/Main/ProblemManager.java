@@ -1,5 +1,8 @@
 package Mahito6.Main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Mahito6.UI.InputPanel;
 import Mahito6.UI.MainFrame;
 import Mahito6.UI.MainPanel;
@@ -12,17 +15,24 @@ public class ProblemManager {
 	public static InputPanel inputPanel;
 	public static ImageManager imageManager;
 	public static Problem problem;
-	public ProblemManager(MainFrame mainFrame){
+	public static List<Problem> problems;
+	public ProblemManager(){
 //		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();
+		problems = new ArrayList<Problem>();
 	}
 	
 	public static void generatePieceDatas(){
 		imageManager.getPieces();
 	}
 	
-	public static void setProblem(Problem problem){
+	public static void resetImageManager(){
+		imageManager.clear();
+	}
+	
+	public static void addProblem(Problem problem){
 		ProblemManager.problem = problem;
+		problems.add(problem);
 	}
 	
 	public static void setInputPanel(InputPanel inputPanel){
@@ -35,6 +45,10 @@ public class ProblemManager {
 	
 	public static Problem getProblem(){
 		return ProblemManager.problem;
+	}
+	
+	public static List<Problem> getProblems(){
+		return ProblemManager.problems;
 	}
 	
 //	public static MainPanel getMainPanel(){

@@ -58,6 +58,14 @@ public class ImageManager{
 		data = new ArrayList<String>();
 		allEdges = new ArrayList<List<Edge>>();
 	}
+	
+	public void clear(){
+		coords.clear();
+		bufImages.clear();
+		vertex.clear();
+		data.clear();
+		allEdges.clear();
+	}
 
 	public void runAdaptiveThreshold(Mat source){
         //枠のときの速度上げ専
@@ -190,7 +198,7 @@ public class ImageManager{
 	public void getPieces(){
 		System.out.println("K=" + Constants.dividePixelLookingForDist);
 		System.out.println("Get Piece");
-		problem = new Problem(Highgui.imread(path, 0));
+		problem = new Problem(Highgui.imread(path, 0), Constants.modeWaku);
 		System.out.println("runAdaptiveThreshold");
 		MeasureTimer.start();
 		runAdaptiveThreshold(problem.getBinaryMatImage());
@@ -236,10 +244,13 @@ public class ImageManager{
 		
 		problem.setData(allEdges, vertex, coords);
 		problem.setBufferedImages(bufImages);
-		ProblemManager.setProblem(problem);
+		ProblemManager.addProblem(problem);
+		
+		//Problemにデータを引き継いでいるので無駄なデータは削除。addはこれしないと無理
+		this.clear();
 
 		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
-		Main.pieceView.launchPiecePanel(problem);
+		Main.pieceView.launchPiecePanel();
 	}
 	
 	public void runSolveThread() throws Exception{

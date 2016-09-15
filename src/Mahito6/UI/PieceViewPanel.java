@@ -38,18 +38,19 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private Coordinates coord;
 	private VisualizeFrame vis = null;
 	private List<Edge> edges;
+	private Problem myProblem;
 	
-	public PieceViewPanel(int x, int y, int width, int height, int index){
+	public PieceViewPanel(int x, int y, int width, int height, int index, Problem problem){
 		this.width = width;
 		this.height = height;
 		this.x = x;
 		this.y = y;
 		this.index = index;
-		Problem p = ProblemManager.getProblem();
-		this.vertex = p.getVertex(index);
-		this.coord = p.getCoord(index);
-		this.edges = p.getEdges(index);
-		this.image = p.getImage(index);
+		this.myProblem = problem;
+		this.vertex = myProblem.getVertex(index);
+		this.coord = myProblem.getCoord(index);
+		this.edges = myProblem.getEdges(index);
+		this.image = myProblem.getImage(index);
 		setUtil();
 		launchItems();
 		paintPiece();
@@ -127,10 +128,14 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	    this.repaint();
 	}
 	
+	public Problem getProblem(){
+		return myProblem;
+	}
+	
 	public void updateEdges(List<Edge> updateEdges){
 //		System.out.println("before:" + edges.size());
 		edges = updateEdges;
-		ProblemManager.getProblem().setEdges(index, edges);
+		myProblem.setEdges(index, edges);
 //		for(int i = 0; i < edges.size(); i++){
 //			//エッジ伸ばす
 //			edges.set(i, edges.get(i).getExtensionEdge(40));
@@ -165,7 +170,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		for(Tuple2<Double,Double> t : ans){
 			System.out.println(t.t1+","+t.t2);
 		}
-		ProblemManager.getProblem().setVertex(index, vertex);
+		myProblem.setVertex(index, vertex);
 //		BufferedImage result3 = solver2.getAnswerImage();
 //		File ans_save = new File("ans.png");
 ////		String pathStr = (getPath(String.valueOf(index)+"_ans_"));

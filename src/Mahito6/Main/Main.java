@@ -35,7 +35,7 @@ public class Main {
 	public static PieceListView pieceView;
 	public Main(){
 		//mainFrame = new MainFrame(Constants.uiTitle);
-		new ProblemManager(mainFrame);
+		new ProblemManager();
 		pieceView = new PieceListView();
 	}
 	

@@ -17,14 +17,14 @@ import Main.UI.Util.ImageManager;
 
 public class Problem {
 	public Mat source;
-	public Mat binImage, binImage2;
-	public BufferedImage bufBinImage;
 	public List<BufferedImage> div;
 	private List<Coordinates> coords;
 	private List<List<Edge>> allEdges;
 	private List<List<Tuple2<Double, Double>>> vertex;
-	public Problem(Mat source){
+	private boolean modeWaku;
+	public Problem(Mat source, boolean modeWaku){
 		this.source = source;
+		this.modeWaku = modeWaku;
 		div = new ArrayList<BufferedImage>();
 	}
 	
@@ -43,19 +43,15 @@ public class Problem {
 	public void setCoordinates(List<Coordinates> coords){
 		this.coords = coords;
 	}
-
-	public BufferedImage getBinaryBufferedImage(){
-		return bufBinImage;
-	}
 	
 	public void setBufferedImages(List<BufferedImage> images){
-		this.div = images;
+		this.div = new ArrayList<BufferedImage>(images);
 	}
 	
 	public void setData(List<List<Edge>> allEdges, List<List<Tuple2<Double, Double>>> vertex, List<Coordinates> coords){
-		this.allEdges = allEdges;
-		this.vertex = vertex;
-		this.coords = coords;
+		this.allEdges = new ArrayList<List<Edge>>(allEdges);
+		this.vertex = new ArrayList<List<Tuple2<Double, Double>>>(vertex);
+		this.coords = new ArrayList<Coordinates>(coords);
 	}
 	
 	public List<List<Edge>> getAllEdges(){
