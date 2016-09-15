@@ -14,9 +14,16 @@ import javax.imageio.ImageIO;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfInt4;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
@@ -57,6 +64,8 @@ public class ImageManager{
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
         //if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
+		Imgproc.resize(source, source, new Size(), 0.250, 0.250, Imgproc.INTER_LINEAR);
+		Imgproc.resize(source, source, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
 		Mat binImage = source.clone();
 		Mat binImage2 = source.clone();
         //61 14 太いけど確実param　GAUSSIAN
@@ -82,6 +91,76 @@ public class ImageManager{
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
 //        if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(src);
+	}
+	
+    private Mat pieceColorDetect(Mat mat) {
+        Mat mat1 = new Mat();
+        Core.inRange(mat, new Scalar(0, 0, 0), new Scalar(200, 200,200), mat1);
+        return mat1;
+    }
+    
+    private Mat distTransform(Mat mat) {
+        Mat mat1 = new Mat(mat.cols(), mat.rows(), CvType.CV_8UC1);
+        Mat mat2 = new Mat();
+        Imgproc.distanceTransform(mat, mat2, Imgproc.CV_DIST_L2, 3);
+        Core.convertScaleAbs(mat2, mat1);
+        Core.normalize(mat1, mat1, 0.0, 255.0, Core.NORM_MINMAX);
+        return mat1;
+    }
+	
+	private void testSalesio(Mat source){
+		Mat grayScale = source.clone();
+		
+        Mat hsv = new Mat();//HSV変換画像
+        Imgproc.cvtColor(source, hsv, Imgproc.COLOR_BGR2HSV);
+//        Imgproc.medianBlur(hsv, hsv, 3);
+        Mat skin = pieceColorDetect(hsv);
+        Mat skinDist = distTransform(skin);
+
+        Mat bin = new Mat();
+        Imgproc.threshold(skinDist, bin, 0, 255, Imgproc.THRESH_BINARY_INV
+                | Imgproc.THRESH_BINARY);
+        Highgui.imwrite("./hsv.png", bin);
+        System.exit(0);
+		Imgproc.cvtColor(source, grayScale, Imgproc.COLOR_BGR2GRAY);
+        List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+        Mat binImage = grayScale.clone();
+        Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
+		Imgproc.findContours(binImage, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//		Core.polylines(subSource, contours, true, new Scalar(0, 255, 0), 2);
+		for(int i = 0; i < contours.size(); i++){
+			MatOfPoint contour = contours.get(i);
+			MatOfPoint2f approxCurve = new MatOfPoint2f();
+		    List<Point> approxPoints = new ArrayList<Point>();
+		    Imgproc.approxPolyDP(new MatOfPoint2f(contour.toArray()), approxCurve, 0.0001, true);
+		    System.out.println(approxCurve.size());
+		    Converters.Mat_to_vector_Point(approxCurve, approxPoints);
+		    double area = Imgproc.contourArea(contour);
+		    if(area > 1000){
+		    	System.out.println("area:" + area);
+//				Core.line(source, approxPoints, true, new Scalar(0, 255, 0), 2);
+//	            MatOfInt hull = new MatOfInt();
+//	            Imgproc.convexHull(contour, hull);
+
+//	            Point data[] = contour.toArray();
+//	            int v = -1;
+//	            for (int j : hull.toArray()) {
+//	                if (v == -1) {
+//	                    v = j;
+//	                } else {
+//	                    Core.line(source, data[j], data[v], new Scalar(0, 255, 0));
+//	                    v = j;
+//	                }
+//	            }
+//	            convexityDefects(source, contour,hull);
+	            Imgproc.drawContours(binImage, contours, i, new Scalar(255, 0, 0));
+		    }
+//			Imgproc.approxPolyDP((MatOfPoint2f) contour, approx, 2, true); 
+		}
+		Highgui.imwrite("./result.png", binImage);
+		MeasureTimer.end();
+		MeasureTimer.call();
+		System.exit(0);
 	}
 
 	private String getPath(String head){
@@ -109,8 +188,8 @@ public class ImageManager{
 		System.out.println("runAdaptiveThreshold");
 		MeasureTimer.start();
 		runAdaptiveThreshold(problem.getBinaryMatImage());
+//		this.testSalesio(Highgui.imread(path));
 		if(Constants.isOutputDebugOval)try {confirm = ImageIO.read(new File(path));} catch (IOException e1) {e1.printStackTrace();}
-		//runAdaptiveThreshold();
 		MeasureTimer.end();
 		MeasureTimer.call();
 
