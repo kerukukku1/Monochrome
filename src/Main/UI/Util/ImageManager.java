@@ -19,6 +19,7 @@ import org.opencv.core.MatOfInt4;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
@@ -64,8 +65,12 @@ public class ImageManager{
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
         //if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
-		Imgproc.resize(source, source, new Size(), 0.250, 0.250, Imgproc.INTER_LINEAR);
-		Imgproc.resize(source, source, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
+		
+//		Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+//		Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+//		Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+//		Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+		if(Constants.modeWaku)source = new Mat(source, new Rect(10, 10, 7000-10, 7000-10));
 		Mat binImage = source.clone();
 		Mat binImage2 = source.clone();
         //61 14 太いけど確実param　GAUSSIAN
@@ -83,9 +88,10 @@ public class ImageManager{
         Core.bitwise_and(binImage, binImage2, binImage);
 //        Highgui.imwrite("and_image.png", dst);
         //枠専用
-        if(Constants.modeWaku){
+        if(Constants.modeWaku){ 
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
         }
+        
         bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);

@@ -420,6 +420,7 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				focusLines.set(index, new Line2D.Double(line.getX1(), line.getY1(), nowx, nowy));
 			}
 		}
+		dragLineIndexes.clear();
 		focusPlots.set(dragPlotIndex, new Tuple2<Double, Double>(nowx, nowy));
 		plots.set(dragPlotIndex, new Tuple2<Double, Double>(
 				nowx - range + (double)this.x/scale, nowy - range + (double)this.y/scale));
@@ -438,9 +439,16 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		paintDragScreen(e.getX(), e.getY());
 	}
 	
+	
 	public void paintMoveScreen(int nowx, int nowy){
 		drawBackground(false);
 //		drawBackground(nowx, nowy);
+		paintLineAndPlots(nowx, nowy);
+	    owner.repaint();
+	}
+	
+	private void paintLineAndPlots(int nowx, int nowy) {
+		// TODO Auto-generated method stub
 		Graphics2D g = (Graphics2D)paint.getGraphics();
 		
 		//線を描画
@@ -465,9 +473,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 					Constants.plotOvalRadius*2);
 		}
 		g.dispose();
-	    owner.repaint();
 	}
-	
+
 	private void paintCursor(int nowx, int nowy){
 		//カーソル円を描画
 		Graphics2D g = (Graphics2D)paint.getGraphics();
@@ -497,9 +504,20 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 					Constants.plotOvalRadius*2,
 					Constants.plotOvalRadius*2);
 		}
+		
+		if(dragLineIndexes.size()==0){
+			//線を描画
+			g.setStroke(maxiStroke);
+			g.setColor(Constants.newLineColor);
+			for(int i = 0; i < focusLines.size(); i++){
+				g.draw(focusLines.get(i));
+			}
+			g.setStroke(miniStroke);
+		}
+		
 		g.setColor(Color.orange);
 		if(isDrag)g.fillOval(nowx - Constants.plotOvalRadius, nowy - Constants.plotOvalRadius, Constants.plotOvalRadius*2, Constants.plotOvalRadius*2);
-		
+		g.setStroke(maxiStroke);
 		for(int i = 0; i < dragLineIndexes.size(); i++){
 			int index = dragLineIndexes.get(i);
 			System.out.println("index:"+index);
@@ -515,8 +533,9 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 				g.draw(new Line2D.Double(line.getX1(), line.getY1(), nowx, nowy));
 			}
 		}
+		g.setStroke(miniStroke);
 		
-		paintCursor(nowx, nowy);
+//		paintCursor(nowx, nowy);
 		g.dispose(); 
 	    owner.repaint();
 	}
