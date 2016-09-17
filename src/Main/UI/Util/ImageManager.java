@@ -109,7 +109,7 @@ public class ImageManager{
 	
     private Mat pieceColorDetect(Mat mat) {
         Mat mat1 = new Mat();
-        Core.inRange(mat, new Scalar(0, 0, 0), new Scalar(200, 200,200), mat1);
+        Core.inRange(mat, new Scalar(0, 0, 0), new Scalar(100, 240, 240), mat1);
         return mat1;
     }
     
@@ -133,7 +133,7 @@ public class ImageManager{
 
         Mat bin = new Mat();
         Imgproc.threshold(skinDist, bin, 0, 255, Imgproc.THRESH_BINARY_INV
-                | Imgproc.THRESH_BINARY);
+                | Imgproc.THRESH_OTSU);
         Highgui.imwrite("./hsv.png", bin);
         System.exit(0);
 		Imgproc.cvtColor(source, grayScale, Imgproc.COLOR_BGR2GRAY);

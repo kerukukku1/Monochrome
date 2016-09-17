@@ -8,7 +8,8 @@ public class Edge {
 	public double kx1,ky1,kx2,ky2;///直線の端点
 	public double r,theta;///直線のパラメータ(r = x*cosθ + y*sinθ)
 	public double distance;///端点間の距離
-
+	public static final double gosa = 10.0;///線上にあるか判定するアルゴリズムの許容誤差
+	
 	public Edge(double r,double theta,double kx1,double ky1,double kx2,double ky2){
 		this.r = r;
 		this.theta = theta;
@@ -53,7 +54,7 @@ public class Edge {
 	public boolean onLine(double x,double y){///(x,y)がこのエッジ上に存在するか判定
 		double sum = distance(x,y,kx1,ky1) + distance(x,y,kx2,ky2);
 		double sabun = Math.abs(distance - sum);
-		if(sabun < Constants.gosa)return true;///線上にあるのでOK
+		if(sabun < gosa)return true;///線上にあるのでOK
 		return false;
 	}
 	public boolean onLine(Tuple2<Double,Double> vertex){///オーバーロード

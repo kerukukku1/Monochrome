@@ -16,10 +16,16 @@ public class ProblemManager {
 	public static ImageManager imageManager;
 	public static Problem problem;
 	public static List<Problem> problems;
+	public static SolverConstants consts;
 	public ProblemManager(){
 //		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();
 		problems = new ArrayList<Problem>();
+		consts = new SolverConstants();
+	}
+	
+	public static SolverConstants getConstants(){
+		return consts;
 	}
 	
 	public static void generatePieceDatas(){

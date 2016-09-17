@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
+import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
@@ -98,7 +99,7 @@ public class SolverThreadingAgent {
 						BufferedImage image = target.get(j);
 						int id = ids.get(j);
 						int w = image.getWidth(),h = image.getHeight();
-						EdgeFinder edgeFinder = new EdgeFinder(image, false);
+						EdgeFinder edgeFinder = new EdgeFinder(image, false, ProblemManager.getConstants());
 						try {
 							edgeFinder.edgeFind();
 						} catch (Exception e) {
@@ -122,5 +123,4 @@ public class SolverThreadingAgent {
 			runningThread.get(i).join();
 		}
 	}
-
 }

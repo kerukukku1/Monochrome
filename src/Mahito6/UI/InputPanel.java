@@ -21,6 +21,7 @@ import javax.swing.event.ChangeListener;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.ProblemManager;
+import Mahito6.Main.SolverConstants;
 import Main.UI.Util.ImageManager;
 import Main.UI.Util.MyKeyListener;
 
@@ -202,17 +203,20 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
+		SolverConstants consts = ProblemManager.getConstants();
 		if(piece.isSelected()){
-			Constants.clearNoiseThreshold = 200;
-			Constants.edgeWidth = 6;
-			//Constants.lrAddition = 50;
-			Constants.lrAddition = 60;
+			consts.edgeWidth = 6;
+			//consts.lrAddition = 50;
+			consts.lrAddition = 60;
+			
 			Constants.dividePixelLookingForDist = 20;
+			Constants.clearNoiseThreshold = 200;
 			Constants.modeWaku = false;
 		}else{
+			consts.edgeWidth = 6;
+			consts.lrAddition = 100;
+			
 			Constants.clearNoiseThreshold = 1200;
-			Constants.edgeWidth = 6;
-			Constants.lrAddition = 100;
 			Constants.dividePixelLookingForDist = 3;
 			Constants.modeWaku = true;
 		}

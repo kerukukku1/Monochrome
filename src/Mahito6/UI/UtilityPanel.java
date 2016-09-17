@@ -54,19 +54,19 @@ public class UtilityPanel extends JPanel implements ChangeListener{
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
-		if(piece.isSelected()){
-			Constants.clearNoiseThreshold = 200;
-			Constants.edgeWidth = 6;
-			//Constants.lrAddition = 50;
-			Constants.lrAddition = 60;
-			Constants.dividePixelLookingForDist = 20;
-			Constants.modeWaku = false;
-		}else{
-			Constants.clearNoiseThreshold = 1200;
-			Constants.edgeWidth = 6;
-			Constants.lrAddition = 100;
-			Constants.dividePixelLookingForDist = 3;
-			Constants.modeWaku = true;
-		}
+//		if(piece.isSelected()){
+//			Constants.clearNoiseThreshold = 200;
+//			Constants.edgeWidth = 6;
+//			//Constants.lrAddition = 50;
+//			Constants.lrAddition = 60;
+//			Constants.dividePixelLookingForDist = 20;
+//			Constants.modeWaku = false;
+//		}else{
+//			Constants.clearNoiseThreshold = 1200;
+//			Constants.edgeWidth = 6;
+//			Constants.lrAddition = 100;
+//			Constants.dividePixelLookingForDist = 3;
+//			Constants.modeWaku = true;
+//		}
 	}
 }

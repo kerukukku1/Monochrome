@@ -58,7 +58,7 @@ public class Main {
 			e.printStackTrace();
 			return;
 		}
-		EdgeFinder finder = new EdgeFinder(tarImage,false);
+		EdgeFinder finder = new EdgeFinder(tarImage,false, ProblemManager.getConstants());
 		try {
 			finder.edgeFind();
 		} catch (Exception e) {

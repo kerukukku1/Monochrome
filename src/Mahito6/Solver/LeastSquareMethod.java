@@ -13,17 +13,21 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.ProblemManager;
+import Mahito6.Main.SolverConstants;
 import Mahito6.Main.Tuple2;
 
 public class LeastSquareMethod {
 	public static final File saveFile4 = new File("leastsquare.png");///デバッグ用
-
+	public static final long hashkey = 100000;
 	private BufferedImage sourceImage;
 	private BufferedImage tester = null;
+	private SolverConstants consts;
 
-	public LeastSquareMethod(BufferedImage sourceImage){
+	public LeastSquareMethod(BufferedImage sourceImage, SolverConstants consts){
 		this.sourceImage = sourceImage;
 		this.tester = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), BufferedImage.TYPE_INT_BGR);
+		this.consts = consts;
 	}
 
 	public void finish(){
@@ -56,9 +60,9 @@ public class LeastSquareMethod {
 	public Tuple2<Double,Double> detectAndConvert(Edge preAns){///最小二乗法によって線を修正する。
 		Edge edge = preAns;
 		if(Constants.outputStream)System.out.println("DISTANCE:"+edge.distance);
-		if(edge.distance > Constants.LongEdge){
+		if(edge.distance > consts.LongEdge){
 			///線分を短くすることで端点が含まれることを回避する
-			edge = edge.getExtensionEdge(-Constants.ShorteningLength);
+			edge = edge.getExtensionEdge(-consts.ShorteningLength);
 		}
 		
 		int w = sourceImage.getWidth();
@@ -75,13 +79,13 @@ public class LeastSquareMethod {
                 if(y < 0 || y >= h) continue;
                 if(!edge.onLine(x, y))continue;
 
-            	for(int i = -Constants.MethodWidth;i <= Constants.MethodWidth;i++){
-            		for(int j = -Constants.MethodWidth;j <= Constants.MethodWidth;j++){
+            	for(int i = -consts.MethodWidth;i <= consts.MethodWidth;i++){
+            		for(int j = -consts.MethodWidth;j <= consts.MethodWidth;j++){
             			int tx = x + j;
             			int ty = y + i;
             			if(tx<0||ty<0||tx>=w||ty>=h)continue;
             			if(sourceImage.getRGB(tx, ty) == -1){
-            				long v = Constants.hashkey * ty + tx;
+            				long v = hashkey * ty + tx;
             				set.add(v);
             			}
             		}
@@ -96,13 +100,13 @@ public class LeastSquareMethod {
                 if(x < 0 || x >= w) continue;
                 if(!edge.onLine(x, y))continue;
 
-            	for(int i = -Constants.MethodWidth;i <= Constants.MethodWidth;i++){
-            		for(int j = -Constants.MethodWidth;j <= Constants.MethodWidth;j++){
+            	for(int i = -consts.MethodWidth;i <= consts.MethodWidth;i++){
+            		for(int j = -consts.MethodWidth;j <= consts.MethodWidth;j++){
             			int tx = x + j;
             			int ty = y + i;
             			if(tx<0||ty<0||tx>=w||ty>=h)continue;
             			if(sourceImage.getRGB(tx, ty) == -1){
-            				long v = Constants.hashkey * ty + tx;
+            				long v = hashkey * ty + tx;
             				set.add(v);
             			}
             		}
@@ -119,8 +123,8 @@ public class LeastSquareMethod {
         ArrayList<Tuple2<Integer,Integer>> next = new ArrayList<Tuple2<Integer,Integer>>();
         ArrayList<Tuple2<Integer,Integer>> nextRotated = new ArrayList<Tuple2<Integer,Integer>>();
         for(Long l:conv){
-        	long x = l%Constants.hashkey;
-        	long y = l/Constants.hashkey;
+        	long x = l%hashkey;
+        	long y = l/hashkey;
         	next.add(new Tuple2<Integer,Integer>((int)x,(int)y));
         	nextRotated.add(new Tuple2<Integer,Integer>((int)-y,(int)x));///90°rotation
 

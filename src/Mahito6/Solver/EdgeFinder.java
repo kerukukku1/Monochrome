@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.ProblemManager;
+import Mahito6.Main.SolverConstants;
 import Mahito6.Main.Tuple2;
 
 public class EdgeFinder implements Runnable{
@@ -25,14 +27,15 @@ public class EdgeFinder implements Runnable{
 	private boolean[][] binary_image;///２値情報([w][h]、false:黒  true:白)
 	private ArrayList<Edge> edges;///検出したエッジを入れる(つまりans)
 	private int[][] dst_image;
-	
+	private SolverConstants consts;
 	private boolean isFinished = false;///全ての処理が終了するとtrueになる
 
-	public EdgeFinder(BufferedImage image,boolean isThreading){///imageは２値化された画像
+	public EdgeFinder(BufferedImage image,boolean isThreading, SolverConstants consts){///imageは２値化された画像
 		this.image = image;
 		this.w = image.getWidth();
 		this.h = image.getHeight();
 		cross = new ArrayList<Integer>();
+		this.consts = consts;
 		if(!isThreading)init();
 	}
 
@@ -61,7 +64,7 @@ public class EdgeFinder implements Runnable{
 			double dis1 = Math.sqrt(Math.pow(edge.kx1 - tar.kx1, 2.0) + Math.pow(edge.ky1 - tar.ky1, 2.0));
 			double dis2 = Math.sqrt(Math.pow(edge.kx2 - tar.kx2, 2.0) + Math.pow(edge.ky2 - tar.ky2, 2.0));
 			double mini = Math.min(dis1, dis2);
-			if(mini > Constants.doubleLineDetect)continue;
+			if(mini > consts.doubleLineDetect)continue;
 			return;
 		}
 		edges.add(edge);
@@ -72,7 +75,7 @@ public class EdgeFinder implements Runnable{
 
 		edges = new ArrayList<Edge>();
 		int c = 0;
-		LeastSquareMethod lsm = new LeastSquareMethod(save_image);///最小二乗法のソルバ―
+		LeastSquareMethod lsm = new LeastSquareMethod(save_image, consts);///最小二乗法のソルバ―
 		while(true){
 			Tuple2<Double,Double> target = calcHoughLine(false);///ハフ変換実行!(ここだけ重い)
 			if(target == null)break;
@@ -121,18 +124,18 @@ public class EdgeFinder implements Runnable{
         Graphics2D g2d2 = (Graphics2D)save_image_line.getGraphics();
         g2d2.drawImage(image, 0, 0, null);
 
-        sin_table = new ArrayList<Double>(Constants.kAngleSplits);
-        cos_table = new ArrayList<Double>(Constants.kAngleSplits);
+        sin_table = new ArrayList<Double>(consts.kAngleSplits);
+        cos_table = new ArrayList<Double>(consts.kAngleSplits);
         diagonal = (int)Math.sqrt(w * w + h * h) + 2;
         d2 = diagonal * 2;
-        for(int t = 0; t < Constants.kAngleSplits; t++){
-            sin_table.add(Math.sin(Constants.kTableConst * t));
-            cos_table.add(Math.cos(Constants.kTableConst * t));
+        for(int t = 0; t < consts.kAngleSplits; t++){
+            sin_table.add(Math.sin((Math.PI / consts.kAngleSplits) * t));
+            cos_table.add(Math.cos((Math.PI / consts.kAngleSplits) * t));
         }
         long s = System.currentTimeMillis();
-        dst_image = new int[d2][Constants.kAngleSplits];
+        dst_image = new int[d2][consts.kAngleSplits];
         for(int r = 0; r < d2; r++)
-        for(int t = 0; t < Constants.kAngleSplits; t++){
+        for(int t = 0; t < consts.kAngleSplits; t++){
             dst_image[r][t] = 0;
         }
         calcHoughTable(toBinaryImage(save_image));///最初に表を完成させる。
@@ -239,8 +242,8 @@ public class EdgeFinder implements Runnable{
         if(left == right){
         	return null;
         }
-        left = Math.max(0, left - Constants.lrAddition);
-        right += Constants.lrAddition;
+        left = Math.max(0, left - consts.lrAddition);
+        right += consts.lrAddition;
         double kx1 = 0,ky1 = 0,kx2 = 0,ky2 = 0;
         if(sint != 0){
             for(double x = 0; x < w; x += 0.25){
@@ -274,8 +277,8 @@ public class EdgeFinder implements Runnable{
 
     private void erase(Graphics2D target,int x,int y,
     		           List<Tuple2<Integer, Integer>> decPoints,BufferedImage image){///x,yの周りの白点を消す(黒にする)
-    	for(int i = -Constants.edgeWidth;i <= Constants.edgeWidth;i++){
-    		for(int j = -Constants.edgeWidth;j <= Constants.edgeWidth;j++){
+    	for(int i = -consts.edgeWidth;i <= consts.edgeWidth;i++){
+    		for(int j = -consts.edgeWidth;j <= consts.edgeWidth;j++){
     			int tx = x + j;
     			int ty = y + i;
     			if(tx<0||ty<0||tx>=w||ty>=h)continue;
@@ -287,7 +290,7 @@ public class EdgeFinder implements Runnable{
 //    			timeSum += (System.currentTimeMillis() - s);
     		}
     	}
-    	int ewidth = Constants.edgeWidth;
+    	int ewidth = consts.edgeWidth;
     	target.fillRect(x - ewidth, y - ewidth, ewidth * 2 + 1, ewidth * 2 + 1);
     }
 
@@ -330,7 +333,7 @@ public class EdgeFinder implements Runnable{
                 g2d.drawRect(x, y, 0, 0);
             }
         }
-        if(cost != Constants.kAngleSplits / 2){
+        if(cost != consts.kAngleSplits / 2){
             for(int y = 0; y < h; y++){
                 int x = (int)((r - y * sint) / cost);
                 if(x < 0 || x >= w) continue;
@@ -345,7 +348,7 @@ public class EdgeFinder implements Runnable{
         int max_count = 0;
         int t_max = 0, r_max = 0;
         for(int r = 0; r < d2; r++){
-            for(int t = 0; t < Constants.kAngleSplits; t++){
+            for(int t = 0; t < consts.kAngleSplits; t++){
                 int cnt = counter[r][t];
                 if(max_count < cnt){
                     max_count = cnt;
@@ -354,8 +357,8 @@ public class EdgeFinder implements Runnable{
                 }
             }
         }
-        if(max_count < Constants.kMinCount) return null;
-        double realTheta = (double)t_max * Constants.kTableConst;
+        if(max_count < consts.kMinCount) return null;
+        double realTheta = (double)t_max * (Math.PI / consts.kAngleSplits);
         double realR = r_max - diagonal;
         return new Tuple2<Double, Double>(realTheta, realR);
     }
@@ -367,7 +370,7 @@ public class EdgeFinder implements Runnable{
         for(int y = 0; y < h; y++){
             if(src_image[x][y] == false) continue;///黒色ならコンティニュー
 
-            for(int t = 0; t < Constants.kAngleSplits; t++){
+            for(int t = 0; t < consts.kAngleSplits; t++){
                 int r = (int)(x * cos_table.get(t) + y * sin_table.get(t) + 0.5);///intにキャストするためここで誤差出る
                 int rindex = r + diagonal;///rは-diagonal~diagonalの範囲で存在するため、これで正の値にする
                 dst_image[rindex][t] += 1;
@@ -380,7 +383,7 @@ public class EdgeFinder implements Runnable{
     	for(Tuple2<Integer, Integer> tuple2 : decPoints){
     		int x = tuple2.t1;
     		int y = tuple2.t2;
-            for(int t = 0; t < Constants.kAngleSplits; t++){
+            for(int t = 0; t < consts.kAngleSplits; t++){
                 int r = (int)(x * cos_table.get(t) + y * sin_table.get(t) + 0.5);///intにキャストするためここで誤差出る
                 int rindex = r + diagonal;///rは-diagonal~diagonalの範囲で存在するため、これで正の値にする
                 dst_image[rindex][t] -= 1;
