@@ -57,19 +57,6 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		this.addKeyListener(this);
 	}
 	
-	public void relaunch(int index, PieceViewPanel parent){
-		this.index = index;
-		this.vertex = myProblem.getVertex(index);
-		this.coord = myProblem.getCoord(index);
-		this.parent = parent;
-		VisualizeFrame.mine = this;
-		title = "Visualize";
-		launchUI();
-		this.requestFocusInWindow();
-		this.setVisible(true);
-		this.addKeyListener(this);
-	}
-	
 	private void launchUI() {
 		this.setTitle(title);
 		this.setSize(VisualizeFrame.visualizeWidth + 300+15, VisualizeFrame.visualizeHeight+35);
@@ -151,29 +138,32 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		// TODO Auto-generated method stub
 		
 	}
+	public void saveData(){
+		System.out.println("Save");
+		lines = visPanel.getLines();
+		for(int i = 0; i < lines.size(); i++){
+			lines.set(i, visPanel.expandLine(lines.get(i)));
+		}
+		for(int i = 0; i < lines.size(); i++){
+			Line2D l = lines.get(i);
+			edges.add(makeEdge(calcHoughParam(l), l));
+		}
+		System.out.println("edges:" + edges.size());
+		
+		//エッジを更新
+		parent.updateEdges(edges);
+		//エッジを考慮して頂点を検出し更新
+		parent.updateVertex();
+		parent.paintPiece();
+	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_W){
 			this.dispose();
-		}else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Q){
-			System.out.println("Save");
-			lines = visPanel.getLines();
-			for(int i = 0; i < lines.size(); i++){
-				lines.set(i, visPanel.expandLine(lines.get(i)));
-			}
-			for(int i = 0; i < lines.size(); i++){
-				Line2D l = lines.get(i);
-				edges.add(makeEdge(calcHoughParam(l), l));
-			}
-			System.out.println("edges:" + edges.size());
-			
-			//エッジを更新
-			parent.updateEdges(edges);
-			//エッジを考慮して頂点を検出し更新
-			parent.updateVertex();
-			parent.paintPiece();
+		}else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
+			saveData();
 		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 			System.out.println("RIGHT");
 			int next = (index+1)%myProblem.getSize();
@@ -185,6 +175,18 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 			mine.dispose();
 			VisualizeFrame.mine = new VisualizeFrame(back, PieceListView.pieceViews.get(back));
 		}
+	}
+	
+	public BufferedImage getImage(){
+		return myProblem.getImage(index);
+	}
+	
+	//頂点を更新して再描画させる
+	public void relaunch(List<Tuple2<Double, Double>> vertex){
+		this.vertex = vertex;
+		lines = makeLine2D(vertex);
+		edges = new ArrayList<Edge>();
+		visPanel.launchPanel(vertex, coord, lines, false);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package Mahito6.UI;
 
 import java.awt.Color;
+import java.lang.reflect.Field;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,6 +12,7 @@ public class InputParamPanel extends JPanel{
 	private JTextField tf;
 	private JLabel label;
 	private Object value;
+	private Field mine;
 	private int parent_width;
 	public InputParamPanel(String title, String type, Object value, int parent_width){
 		this.title = title;
@@ -54,5 +56,23 @@ public class InputParamPanel extends JPanel{
 	
 	private void setValue(double value){
 		System.out.println(title + ":" + "double");
+	}
+	
+	public Object getValue(){
+		if(type.equals("int")){
+			value = (Object)Integer.valueOf(tf.getText());			
+		}else{
+			value = (Object)Double.valueOf(tf.getText());
+		}
+		return value;
+	}
+
+	public void setField(Field field) {
+		// TODO Auto-generated method stub
+		this.mine = field;
+	}
+	
+	public Field getField(){
+		return mine;
 	}
 }

@@ -2,6 +2,9 @@ package Mahito6.UI;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +15,16 @@ import javax.swing.border.LineBorder;
 
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.SolverConstants;
+import Mahito6.Main.Tuple2;
+import Mahito6.Solver.CrossAlgorithm;
+import Mahito6.Solver.EdgeFinder;
 
-public class ParameterPanel extends JPanel{
+public class ParameterPanel extends JPanel implements ActionListener{
 	private VisualizeFrame parent;
-	private JButton run, load;
+	private JButton run, save;
 	private JPanel paramField;
 	private List<InputParamPanel> params;
+	private SolverConstants consts;
 	public ParameterPanel(VisualizeFrame parent){
 		this.parent = parent;
 		this.setLayout(null);
@@ -32,12 +39,14 @@ public class ParameterPanel extends JPanel{
 		paramField.setLayout(null);
 		Dimension d = this.getSize();
 		paramField.setBounds(5,5,d.width-10,d.height-35);
-		SolverConstants consts = new SolverConstants();
+		consts = new SolverConstants();
 		int count = 0;
         for (Field field : consts.getClass().getDeclaredFields()) {
         	String title = field.getName();
         	String type = field.getType().getName();
         	InputParamPanel ipp = new InputParamPanel(title, type, field.get(consts), paramField.getSize().width);
+        	//値を参照するために渡す
+        	ipp.setField(field);
         	ipp.setBounds(0, count*30, d.width, 30);
         	//store to list
         	params.add(ipp);
@@ -51,13 +60,15 @@ public class ParameterPanel extends JPanel{
 	
 	private void launchItems() {
 		run = new JButton("Run");
-		load = new JButton("Load");
+		save = new JButton("Save");
 		Dimension d = this.getSize();
-		load.setBounds(0,d.height-25,d.width/2, 20);
+		save.setBounds(0,d.height-25,d.width/2, 20);
 		run.setBounds(d.width/2, d.height-25, d.width/2, 20);
-		load.addKeyListener(parent);
+		save.addKeyListener(parent);
 		run.addKeyListener(parent);
-		this.add(load);
+		run.addActionListener(this);
+		save.addActionListener(this);
+		this.add(save);
 		this.add(run);
 		try {
 			launchParamField();
@@ -67,6 +78,48 @@ public class ParameterPanel extends JPanel{
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	private void reloadConstants(){
+		for(int i = 0; i < params.size(); i++){
+			InputParamPanel ipp = params.get(i);
+			Field field = ipp.getField();
+			try {
+				field.setAccessible(true);
+				field.set(consts, ipp.getValue());
+			} catch (IllegalArgumentException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		String cmd = e.getActionCommand();
+		if(cmd.equals("Save")){
+			parent.saveData();
+		}else if(cmd.equals("Run")){
+			reloadConstants();
+			BufferedImage tarImage = parent.getImage();
+			EdgeFinder finder = new EdgeFinder(parent.getImage(), false, consts);
+			try {
+				finder.edgeFind();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			CrossAlgorithm crossAlgorithm = new CrossAlgorithm(finder.getResult_edge(), tarImage.getWidth(), tarImage.getHeight());
+			crossAlgorithm.solve();
+			if(crossAlgorithm.isErrorCross()){
+				System.out.println("cross error!!");
+			}
+			parent.relaunch(crossAlgorithm.getAnswer());
 		}
 	}
 }

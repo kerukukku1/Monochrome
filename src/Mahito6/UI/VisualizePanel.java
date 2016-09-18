@@ -72,16 +72,20 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private VisualizeFrame parent;
     
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
+    	this.parent = parent;
+    	launchPanel(vertex, coord, lines, true);
+    }
+    
+    public void launchPanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, boolean isInit){
     	this.vertex = vertex;
     	this.coord = coord;
     	this.lines = lines;
-    	this.parent = parent;
 //    	for(int i = 0 ; i < lines.size(); i++){
 //    		this.lines.add(this.expandLine(lines.get(i)));
 //    	}
-		setUtil();
+		if(isInit)setUtil();
 		//スケールの計算。これしないとバグる
-		calcScale();
+		if(isInit)calcScale();
 		//二値化されたピースをペイント
 		paintPiece();
 		
@@ -96,8 +100,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    drawLines(false);
 	    drawPlots(false);
 	    
-	    parent.setRealTimeDialog(new RealTimeDialog(0, 0, range, this, parent));
-	    realtimeDialog = parent.getRealTimeDialog();
+	    if(isInit)parent.setRealTimeDialog(new RealTimeDialog(0, 0, range, this, parent));
+	    if(isInit)realtimeDialog = parent.getRealTimeDialog();
 	    parent.repaint();
     }
 	
