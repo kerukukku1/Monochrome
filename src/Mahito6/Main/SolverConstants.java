@@ -7,7 +7,6 @@ public class SolverConstants {
 	public int MethodWidth;
     public int lrAddition; //検出して切断したエッジを少しだけ伸ばす waku:50 piece:15
     public int doubleLineDetect;
-    public double kTableConst;   //3.14(pi)をkAngleSplitsで割った値、単位角度的なやつ
 	public double LongEdge;///線分がこれより長ければ端点を縮める
 	public double ShorteningLength;///LongEdgeを縮める長さ
 	

@@ -98,7 +98,7 @@ public class EdgeFinder implements Runnable{
 //			ImageIO.write(save_image_line, "png", new File(c+".png"));///途中経過を出力
 			c++;
 		}
-		//lsm.finish();///最小二乗法で抽出された白点をデバッグ
+		lsm.finish();///最小二乗法で抽出された白点をデバッグ
 
 		for(int i = 0;i < edges.size();i++){
 			for(int j = i + 1;j < edges.size();j++){

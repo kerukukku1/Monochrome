@@ -49,9 +49,10 @@ public class Main {
 //		outputImages();
 	}
 	
-	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/m-pc/test.JPG");
+	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/public/SCAN/08_23_SCAN/t/7_piece1_600.JPG");
 	public static void debug(){///EdgeFinderのデバッグ用
 		BufferedImage tarImage = null;
+		new ProblemManager();
 		try {
 			tarImage = ImageIO.read(debugImage);
 		} catch (IOException e) {
