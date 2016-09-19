@@ -42,7 +42,7 @@ public class BFS{
 		}
 	}
 
-	public static Coordinates findPointsForDivide(int x, int y, int maxx, int maxy, boolean[][] memo, BufferedImage buf, byte[] rgbs){
+	public static Coordinates findPointsForDivide(int x, int y, int maxx, int maxy, boolean[][] memo, byte[] rgbs){
 		que.clear();
 		que.push(x,y);
 		BFS.makeDXDY(Constants.dividePixelLookingForDist);

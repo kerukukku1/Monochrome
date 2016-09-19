@@ -18,13 +18,11 @@ public class Act{
 	private int maxX, maxY;
 	public boolean[][] memo;
 	public boolean[][] state;
-	private BufferedImage buf = null;
 	private byte[] rgbs;
 	private int threshold;
 	//row = x, col = y
 	//any[x][y]
 	public Act(BufferedImage buf, int threshold){
-		this.buf = buf;
 		coords = new ArrayList<Coordinates>();
 		maxX = buf.getWidth();
 		maxY = buf.getHeight();
@@ -49,7 +47,7 @@ public class Act{
 				memo[j][i] = true;
 				if(rgbs[j+i*maxX] == 0)continue;
 				//c.clear();
-				c = BFS.findPointsForDivide(j, i, maxX, maxY, memo, buf, rgbs);
+				c = BFS.findPointsForDivide(j, i, maxX, maxY, memo, rgbs);
 				if(c.size() < threshold)continue;
 				coords.add(new Coordinates(c.arx, c.ary));
 			}

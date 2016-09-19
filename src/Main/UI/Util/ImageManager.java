@@ -101,6 +101,7 @@ public class ImageManager{
         }
         
         bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
+        binImage = binImage2 = null;
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
@@ -211,6 +212,7 @@ public class ImageManager{
 		MeasureTimer.start();
 		Act act = new Act(bufBinImage, Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
+		bufBinImage = null;
 		MeasureTimer.end();
 		MeasureTimer.call();
 

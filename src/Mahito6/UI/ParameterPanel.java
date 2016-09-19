@@ -40,7 +40,7 @@ public class ParameterPanel extends JPanel implements ActionListener{
 		Dimension d = this.getSize();
 		paramField.setBounds(5,5,d.width-10,d.height-35);
 		consts = new SolverConstants();
-		int count = 0;
+		int count = 1;
         for (Field field : consts.getClass().getDeclaredFields()) {
         	String title = field.getName();
         	String type = field.getType().getName();
