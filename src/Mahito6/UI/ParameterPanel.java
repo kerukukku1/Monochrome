@@ -21,7 +21,7 @@ import Mahito6.Solver.EdgeFinder;
 
 public class ParameterPanel extends JPanel implements ActionListener{
 	private VisualizeFrame parent;
-	private JButton run, save;
+	private JButton run, save, next, back;
 	private JPanel paramField;
 	private List<InputParamPanel> params;
 	private SolverConstants consts;
@@ -38,7 +38,7 @@ public class ParameterPanel extends JPanel implements ActionListener{
 		paramField = new JPanel();
 		paramField.setLayout(null);
 		Dimension d = this.getSize();
-		paramField.setBounds(5,5,d.width-10,d.height-35);
+		paramField.setBounds(5,5,d.width-10,d.height-55);
 		consts = new SolverConstants();
 		int count = 1;
         for (Field field : consts.getClass().getDeclaredFields()) {
@@ -60,16 +60,22 @@ public class ParameterPanel extends JPanel implements ActionListener{
 	
 	private void launchItems() {
 		run = new JButton("Run");
-		save = new JButton("Save");
+		save = new JButton("Store");
+		next = new JButton(">");
+		back = new JButton("<");
 		Dimension d = this.getSize();
 		save.setBounds(0,d.height-25,d.width/2, 20);
 		run.setBounds(d.width/2, d.height-25, d.width/2, 20);
-		save.addKeyListener(parent);
-		run.addKeyListener(parent);
+		back.setBounds(0,d.height-45,d.width/2, 20);
+		next.setBounds(d.width/2, d.height-45, d.width/2, 20);
 		run.addActionListener(this);
 		save.addActionListener(this);
+		back.addActionListener(this);
+		next.addActionListener(this);
 		this.add(save);
 		this.add(run);
+		this.add(back);
+		this.add(next);
 		try {
 			launchParamField();
 		} catch (IllegalArgumentException e) {
@@ -102,7 +108,11 @@ public class ParameterPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
-		if(cmd.equals("Save")){
+		if(cmd.equals("<")){
+			parent.back();
+		}else if(cmd.equals(">")){
+			parent.next();
+		}else if(cmd.equals("Store")){
 			parent.saveData();
 		}else if(cmd.equals("Run")){
 			reloadConstants();

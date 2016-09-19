@@ -165,16 +165,24 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		}else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
 			saveData();
 		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-			System.out.println("RIGHT");
-			int next = (index+1)%myProblem.getSize();
-			mine.dispose();
-			VisualizeFrame.mine = new VisualizeFrame(next, PieceListView.pieceViews.get(next));
+			next();
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			System.out.println("LEFT");
-			int back = ((index-1)+myProblem.getSize())%myProblem.getSize();
-			mine.dispose();
-			VisualizeFrame.mine = new VisualizeFrame(back, PieceListView.pieceViews.get(back));
+			back();
 		}
+	}
+	
+	public void next(){
+		System.out.println("RIGHT");
+		int next = (index+1)%myProblem.getSize();
+		mine.dispose();
+		VisualizeFrame.mine = new VisualizeFrame(next, PieceListView.pieceViews.get(next));		
+	}
+	
+	public void back(){
+		System.out.println("LEFT");
+		int back = ((index-1)+myProblem.getSize())%myProblem.getSize();
+		mine.dispose();
+		VisualizeFrame.mine = new VisualizeFrame(back, PieceListView.pieceViews.get(back));		
 	}
 	
 	public BufferedImage getImage(){

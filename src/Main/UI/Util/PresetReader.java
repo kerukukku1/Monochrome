@@ -41,7 +41,7 @@ public class PresetReader {
 			e.printStackTrace();
 		}
 		for(String tar : list){
-			String[] spl = tar.split(":");
+			String[] spl = tar.split(",");
 			Object obj = new Object();
 			if(spl[0].equals("int")){
 				obj = (Object)Integer.valueOf(spl[2]);
