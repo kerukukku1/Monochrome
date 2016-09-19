@@ -44,17 +44,21 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private Problem myProblem;
 	
 	public VisualizeFrame(int index, PieceViewPanel parent){
-		this.index = index;
-		this.myProblem = parent.getProblem();
-		this.vertex = myProblem.getVertex(index);
-		this.coord = myProblem.getCoord(index);
-		this.parent = parent;
+		init(index, parent);
 		VisualizeFrame.mine = this;
 		title = "Visualize";
 		launchUI();
 		this.requestFocusInWindow();
 		this.setVisible(true);
 		this.addKeyListener(this);
+	}
+	
+	private void init(int index, PieceViewPanel parent){
+		this.index = index;
+		this.myProblem = parent.getProblem();
+		this.vertex = myProblem.getVertex(index);
+		this.coord = myProblem.getCoord(index);
+		this.parent = parent;
 	}
 	
 	private void launchUI() {
@@ -97,6 +101,10 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		this.realtimeDialog = realtimeDialog;
 		this.realtimeDialog.setBounds(VisualizeFrame.visualizeWidth+10, 5, realtimeDialog.range*2, realtimeDialog.range*2);
 		this.add(realtimeDialog);
+	}
+	
+	public void removeRealTimeDialog(){
+		this.remove(realtimeDialog);
 	}
 	
 	public static void changeTitle(String title){
@@ -174,15 +182,17 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	public void next(){
 		System.out.println("RIGHT");
 		int next = (index+1)%myProblem.getSize();
-		mine.dispose();
-		VisualizeFrame.mine = new VisualizeFrame(next, PieceListView.pieceViews.get(next));		
+		init(next, PieceListView.pieceViews.get(next));
+		lines = makeLine2D(vertex);
+		visPanel.relaunchPanel(vertex, coord, lines, this);
 	}
 	
 	public void back(){
 		System.out.println("LEFT");
 		int back = ((index-1)+myProblem.getSize())%myProblem.getSize();
-		mine.dispose();
-		VisualizeFrame.mine = new VisualizeFrame(back, PieceListView.pieceViews.get(back));		
+		init(back, PieceListView.pieceViews.get(back));
+		lines = makeLine2D(vertex);
+		visPanel.relaunchPanel(vertex, coord, lines, this);
 	}
 	
 	public BufferedImage getImage(){
@@ -190,11 +200,11 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	}
 	
 	//頂点を更新して再描画させる
-	public void relaunch(List<Tuple2<Double, Double>> vertex){
+	public void relaunch(List<Tuple2<Double, Double>> vertex, boolean isInit){
 		this.vertex = vertex;
 		lines = makeLine2D(vertex);
 		edges = new ArrayList<Edge>();
-		visPanel.launchPanel(vertex, coord, lines, false);
+		visPanel.launchPanel(vertex, coord, lines, isInit);
 	}
 
 	@Override

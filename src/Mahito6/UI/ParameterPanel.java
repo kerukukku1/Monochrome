@@ -129,7 +129,7 @@ public class ParameterPanel extends JPanel implements ActionListener{
 			if(crossAlgorithm.isErrorCross()){
 				System.out.println("cross error!!");
 			}
-			parent.relaunch(crossAlgorithm.getAnswer());
+			parent.relaunch(crossAlgorithm.getAnswer(), false);
 		}
 	}
 }

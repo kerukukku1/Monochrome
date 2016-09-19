@@ -76,6 +76,31 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     	launchPanel(vertex, coord, lines, true);
     }
     
+    public void relaunchPanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
+    	this.parent = parent;
+    	this.vertex = vertex;
+    	this.coord = coord;
+    	this.lines = lines;
+		//スケールの計算。これしないとバグる
+		calcScale();
+		//二値化されたピースをペイント
+		paintPiece();
+		
+		//頂点データをスケールに合わせてプロットに変換。このときint型に丸め込まれる
+		scalePlots = this.convertVertexToScalePlots(vertex);
+		//線をスケールを合わせて描画。これはdoubleのまま保持される。
+		scaleLines = this.convertScaleLines(this.lines);
+		//スケールを合わせていないプロット
+		plots = vertex;
+		scaleLine = new Line2D.Double();
+    	isSelect = false;
+	    drawLines(false);
+	    drawPlots(false);
+	    parent.removeRealTimeDialog();
+	    realtimeDialog = new RealTimeDialog(0, 0, range, this, parent);
+	    parent.setRealTimeDialog(realtimeDialog);
+    }
+    
     public void launchPanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, boolean isInit){
     	this.vertex = vertex;
     	this.coord = coord;
@@ -100,8 +125,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	    drawLines(false);
 	    drawPlots(false);
 	    
-	    if(isInit)parent.setRealTimeDialog(new RealTimeDialog(0, 0, range, this, parent));
-	    if(isInit)realtimeDialog = parent.getRealTimeDialog();
+	    if(isInit){
+	    	realtimeDialog = new RealTimeDialog(0, 0, range, this, parent);
+	    	parent.setRealTimeDialog(realtimeDialog);
+	    }
 	    parent.repaint();
     }
 	
