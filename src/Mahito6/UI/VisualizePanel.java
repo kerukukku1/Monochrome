@@ -385,7 +385,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		return new Line2D.Double(x1,y1,x2,y2);
 	}
 	
-	public Line2D expandLine(Line2D line){
+	public Line2D expandLine(Line2D line, int sign){
 		double x1 = line.getX1();
 		double y1 = line.getY1();
 		double x2 = line.getX2();
@@ -393,9 +393,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		double dist = Edge.distance(x1, y1, x2, y2);
 
 		//各軸の単位増加にオフセット分を掛けて追加分の長さを求める
-		double xInc = Math.abs((x1 - x2)/dist)*Constants.expandOffset;
-		double yInc = Math.abs((y1 - y2)/dist)*Constants.expandOffset;
-		
+		double xInc = Math.abs((x1 - x2)/dist)*Constants.expandOffset * (double)sign;
+		double yInc = Math.abs((y1 - y2)/dist)*Constants.expandOffset * (double)sign;
 		x1 += (x1>x2)?xInc:-xInc;
 		x2 += (x2>x1)?xInc:-xInc;
 		y1 += (y1>y2)?yInc:-yInc;
@@ -442,8 +441,18 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			}
 		//Left Click
 		}else{
-			//点選択時
-			if(isSelect){
+			if(isLine){
+				for(int i = 0; i < scaleLines.size(); i++){
+					if(onLine(nowx, nowy, scaleLines.get(i))){
+						lines.set(i, this.expandLine(lines.get(i), -1));
+						scaleLines.set(i, this.expandLine(scaleLines.get(i), -1));
+						break;
+					}
+				}
+				drawBackground(false);
+				drawLines(false);
+				drawPlots(true);				
+			}else if(isSelect){				//点選択時
 				if(!isOn)return;
 				double cx = clickP.t1;
 				double cy = clickP.t2;

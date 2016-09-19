@@ -29,6 +29,7 @@ import Mahito6.Solver.EdgeFinder;
 import Mahito6.UI.MainFrame;
 import Mahito6.UI.PieceListView;
 import Mahito6.UI.VisualizeFrame;
+import Main.UI.Util.FolderManager;
 
 public class Main {
 	private static MainFrame mainFrame;
@@ -36,6 +37,7 @@ public class Main {
 	public Main(){
 		//mainFrame = new MainFrame(Constants.uiTitle);
 		new ProblemManager();
+		new FolderManager().buildDirectory();
 		pieceView = new PieceListView();
 	}
 	
