@@ -31,6 +31,10 @@ public class PresetReader {
 		return consts;
 	}
 	
+	public Object getValue(String hash){
+		return memo.get(hash);
+	}
+	
 	private void createHash(){
 		memo = new HashMap<String, Object>();
 		List<String> list = new ArrayList<String>();

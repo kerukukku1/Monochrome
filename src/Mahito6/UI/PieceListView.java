@@ -30,6 +30,7 @@ public class PieceListView extends JFrame{
 		title = "ListViewer";
 		launchUI();
 		this.requestFocusInWindow();
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
 	

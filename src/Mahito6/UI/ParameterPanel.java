@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
@@ -18,13 +22,16 @@ import Mahito6.Main.SolverConstants;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.EdgeFinder;
+import Main.UI.Util.FolderManager;
+import Main.UI.Util.PresetReader;
 
-public class ParameterPanel extends JPanel implements ActionListener{
+public class ParameterPanel extends JPanel implements ActionListener, ItemListener{
 	private VisualizeFrame parent;
 	private JButton run, save, next, back;
 	private JPanel paramField;
 	private List<InputParamPanel> params;
 	private SolverConstants consts;
+	private JComboBox pulldown;
 	public ParameterPanel(VisualizeFrame parent){
 		this.parent = parent;
 		this.setLayout(null);
@@ -40,6 +47,7 @@ public class ParameterPanel extends JPanel implements ActionListener{
 		Dimension d = this.getSize();
 		paramField.setBounds(5,5,d.width-10,d.height-55);
 		consts = new SolverConstants();
+		setPulldown();
 		int count = 1;
         for (Field field : consts.getClass().getDeclaredFields()) {
         	String title = field.getName();
@@ -58,6 +66,19 @@ public class ParameterPanel extends JPanel implements ActionListener{
 		this.add(paramField);
 	}
 	
+	private void setPulldown() {
+		Vector<String> presetList = new Vector<String>();
+		List<String> names = FolderManager.getPresetNames();
+		for(String name : names){
+			presetList.add(name);
+		}
+		pulldown = new JComboBox(presetList);
+		Dimension d = paramField.getSize();
+		pulldown.setBounds(0, 0, d.width, 30);
+		pulldown.addItemListener(this);
+		paramField.add(pulldown);
+	}
+
 	private void launchItems() {
 		run = new JButton("Run");
 		save = new JButton("Store");
@@ -130,6 +151,26 @@ public class ParameterPanel extends JPanel implements ActionListener{
 				System.out.println("cross error!!");
 			}
 			parent.relaunch(crossAlgorithm.getAnswer(), false);
+		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+		String filename = (String)pulldown.getSelectedItem();
+		PresetReader reader = new PresetReader(FolderManager.getPresetFile(filename));
+		try {
+			consts = reader.getSolverConsts();
+			for(InputParamPanel ipp : params){
+				Object obj = reader.getValue(ipp.title);
+				ipp.reloadTextField(obj);
+			}
+		} catch (IllegalArgumentException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 }

@@ -34,12 +34,18 @@ public class FolderManager {
 		}		
 	}
 	
-	public static List<File> getPresets(){
+	public static File getPresetFile(String filename){
+		String preset = presetsPath + filename;
+		return new File(preset);
+	}
+	
+	public static List<String> getPresetNames(){
 		File dir = new File(presetsPath);
-		List<File> ret = new ArrayList<File>();
+		List<String> ret = new ArrayList<String>();
 	    File[] files = dir.listFiles();
 	    for (int i = 0; i < files.length; i++) {
-	        ret.add(files[i]);
+	    	if(!files[i].getName().matches(".*" + ".procon27" + ".*"))continue;
+	        ret.add(files[i].getName());
 	    }
 	    return ret;
 	}

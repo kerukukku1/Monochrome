@@ -96,6 +96,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     	isSelect = false;
 	    drawLines(false);
 	    drawPlots(false);
+	    
+	    //一端パネルを削除
 	    parent.removeRealTimeDialog();
 	    realtimeDialog = new RealTimeDialog(0, 0, range, this, parent);
 	    parent.setRealTimeDialog(realtimeDialog);
