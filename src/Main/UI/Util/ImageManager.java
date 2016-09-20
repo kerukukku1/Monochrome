@@ -189,10 +189,10 @@ public class ImageManager{
 	public void getPieces(){
 		System.out.println("K=" + Constants.dividePixelLookingForDist);
 		System.out.println("Get Piece");
-		problem = new Problem(Highgui.imread(path, 0), Constants.modeWaku);
+		problem = new Problem(Constants.modeWaku);
 		System.out.println("runAdaptiveThreshold");
 		MeasureTimer.start();
-		runAdaptiveThreshold(problem.getBinaryMatImage());
+		runAdaptiveThreshold(Highgui.imread(path, 0));
 //		this.testSalesio(Highgui.imread(path));
 		if(Constants.isOutputDebugOval)try {confirm = ImageIO.read(new File(path));} catch (IOException e1) {e1.printStackTrace();}
 		MeasureTimer.end();
@@ -252,7 +252,7 @@ public class ImageManager{
 		}
 
 		problem.setData(allEdges, vertex, coords);
-		problem.setBufferedImages(bufImages);
+//		problem.setBufferedImages(bufImages);
 		ProblemManager.addProblem(problem);
 
 		//Problemにデータを引き継いでいるので無駄なデータは削除。addはこれしないと無理
@@ -367,9 +367,9 @@ public class ImageManager{
 	public List<Coordinates> getCoord(){
 		return coords;
 	}
-
-	public List<BufferedImage> getImages(){
-		return bufImages;
+	
+	public static BufferedImage booleanToBufferedImage(boolean[][] state){
+		return null;
 	}
 
 }
