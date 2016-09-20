@@ -3,7 +3,6 @@ package Main.UI.Util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,31 +13,22 @@ import javax.imageio.ImageIO;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
-import org.opencv.core.MatOfInt4;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.utils.Converters;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.Main;
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.BFS;
-import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
-import Mahito6.Solver.EdgeFinder;
 import Mahito6.Thread.SolverThreadingAgent;
-import Mahito6.UI.MainPanel;
-import Mahito6.Main.Main;
-import Mahito6.UI.PieceListView;
-import Mahito6.UI.VisualizeFrame;
 
 public class ImageManager{
 
@@ -58,7 +48,7 @@ public class ImageManager{
 		data = new ArrayList<String>();
 		allEdges = new ArrayList<List<Edge>>();
 	}
-	
+
 	public void clear(){
 		coords.clear();
 		bufImages.clear();
@@ -73,12 +63,12 @@ public class ImageManager{
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
         //if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
-		
+
 //		Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 //		Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
 //		Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
 //		Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
-		if(Constants.modeWaku)source = new Mat(source, new Rect(10, 10, 7000-10, 7000-10));
+		//if(Constants.modeWaku)source = new Mat(source, new Rect(10, 10, 7000-10, 7000-10));
 		Mat binImage = source.clone();
 		Mat binImage2 = source.clone();
         //61 14 太いけど確実param　GAUSSIAN
@@ -90,30 +80,30 @@ public class ImageManager{
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 17, 8);
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
         	//nico nico
-        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);	
+        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
 //            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
         }
         Core.bitwise_and(binImage, binImage2, binImage);
 //        Highgui.imwrite("and_image.png", dst);
         //枠専用
-        if(Constants.modeWaku){ 
+        if(Constants.modeWaku){
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
         }
-        
+
         bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
         binImage = binImage2 = null;
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
-//        if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(src);
+        if(Constants.isOutputDebugOval)confirm = MatToBufferedImageBGR(source);
 	}
-	
+
     private Mat pieceColorDetect(Mat mat) {
         Mat mat1 = new Mat();
         Core.inRange(mat, new Scalar(0, 0, 0), new Scalar(100, 240, 240), mat1);
         return mat1;
     }
-    
+
     private Mat distTransform(Mat mat) {
         Mat mat1 = new Mat(mat.cols(), mat.rows(), CvType.CV_8UC1);
         Mat mat2 = new Mat();
@@ -122,10 +112,10 @@ public class ImageManager{
         Core.normalize(mat1, mat1, 0.0, 255.0, Core.NORM_MINMAX);
         return mat1;
     }
-	
+
 	private void testSalesio(Mat source){
 		Mat grayScale = source.clone();
-		
+
         Mat hsv = new Mat();//HSV変換画像
         Imgproc.cvtColor(source, hsv, Imgproc.COLOR_BGR2HSV);
 //        Imgproc.medianBlur(hsv, hsv, 3);
@@ -170,7 +160,7 @@ public class ImageManager{
 //	            convexityDefects(source, contour,hull);
 	            Imgproc.drawContours(binImage, contours, i, new Scalar(255, 0, 0));
 		    }
-//			Imgproc.approxPolyDP((MatOfPoint2f) contour, approx, 2, true); 
+//			Imgproc.approxPolyDP((MatOfPoint2f) contour, approx, 2, true);
 		}
 		Highgui.imwrite("./result.png", binImage);
 		MeasureTimer.end();
@@ -233,28 +223,45 @@ public class ImageManager{
 		outputData();
 		MeasureTimer.end();
 		MeasureTimer.call();
-		
+
 		System.out.println("end get piece");
-		
-		File yellowP = new File(getPath(String.valueOf(0)+"yellow"));
+
+
 		try {
-			if(Constants.isOutputDebugOval)ImageIO.write(confirm, "png", yellowP);
+			if(Constants.isOutputDebugOval){
+				File yellowP = new File(getPath(String.valueOf(0)+"yellow"));
+				Graphics2D g = confirm.createGraphics();
+				for(int i = 0; i < vertex.size(); i++){
+					List<Tuple2<Double, Double>> v = vertex.get(i);
+					Coordinates c = coords.get(i);
+					c.calc();
+					for(int j = 0; j < v.size(); j++){
+						Tuple2<Double, Double> tmp = v.get(j);
+						double x = tmp.t1;
+						double y = tmp.t2;
+						g.setColor(Color.yellow);
+						g.drawOval((int)x-2+c.minx-Constants.imagePositionOffset/2, (int)y-2+c.miny-Constants.imagePositionOffset/2, 4, 4);
+						System.out.println(x + "," + y);
+					}
+				}
+				ImageIO.write(confirm, "png", yellowP);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		problem.setData(allEdges, vertex, coords);
 		problem.setBufferedImages(bufImages);
 		ProblemManager.addProblem(problem);
-		
+
 		//Problemにデータを引き継いでいるので無駄なデータは削除。addはこれしないと無理
 		this.clear();
 
 		//VisualizeFrame visualizer = new VisualizeFrame(vertex, coords);
 		Main.pieceView.launchPiecePanel();
 	}
-	
+
 	public void runSolveThread() throws Exception{
 		int threadNum = Constants.solveThread;
 		SolverThreadingAgent agent = new SolverThreadingAgent(bufImages, threadNum);
@@ -262,7 +269,7 @@ public class ImageManager{
 		allEdges = agent.getAllEdges();
 		for(int i = 0; i < bufImages.size(); i++){
 			vertex.add(agent.getCrossAnswer(i));
-			coords.get(i).setError(agent.isError(i));			
+			coords.get(i).setError(agent.isError(i));
 		}
 	}
 
@@ -348,21 +355,21 @@ public class ImageManager{
 			}
 		}
 	}
-	
+
 	public List< List<Tuple2<Double, Double>> > getVertex(){
 		return vertex;
 	}
-	
+
 	public List< List<Edge>> getEdges(){
 		return allEdges;
 	}
-	
+
 	public List<Coordinates> getCoord(){
 		return coords;
 	}
-	
+
 	public List<BufferedImage> getImages(){
 		return bufImages;
 	}
-	
+
 }
