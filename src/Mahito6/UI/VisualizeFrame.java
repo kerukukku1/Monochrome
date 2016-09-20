@@ -181,16 +181,20 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	public void next(){
 		System.out.println("RIGHT");
-		int next = (index+1)%myProblem.getSize();
-		init(next, PieceListView.pieceViews.get(next));
+		int nowAllIndex = PieceListView.pieceViews.indexOf(parent);
+		int next = (nowAllIndex+1)%PieceListView.pieceViews.size();
+		PieceViewPanel pvp = PieceListView.pieceViews.get(next);
+		init(pvp.getIndex(), pvp);
 		lines = makeLine2D(vertex);
 		visPanel.relaunchPanel(vertex, coord, lines, this);
 	}
 	
 	public void back(){
 		System.out.println("LEFT");
-		int back = ((index-1)+myProblem.getSize())%myProblem.getSize();
-		init(back, PieceListView.pieceViews.get(back));
+		int nowAllIndex = PieceListView.pieceViews.indexOf(parent);
+		int back = ((nowAllIndex-1)+PieceListView.pieceViews.size())%PieceListView.pieceViews.size();
+		PieceViewPanel pvp = PieceListView.pieceViews.get(back);
+		init(pvp.getIndex(), pvp);
 		lines = makeLine2D(vertex);
 		visPanel.relaunchPanel(vertex, coord, lines, this);
 	}

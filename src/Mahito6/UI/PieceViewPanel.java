@@ -67,6 +67,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		pieceIndex = new JLabel("index:"+String.valueOf(index+1));
 		pieceVertex = new JLabel("Vertex:" + vertex.size());
 		String type = (Constants.modeWaku)?"Frame":"Piece";
+		if(type.equals("Frame"))this.setBackground(Color.GRAY.brighter());
 		pieceType = new JLabel("Type:"+type);
 		
 		pieceIndex.setBounds(0,0,100,17);
@@ -130,6 +131,10 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	
 	public Problem getProblem(){
 		return myProblem;
+	}
+	
+	public int getIndex(){
+		return index;
 	}
 	
 	public void updateEdges(List<Edge> updateEdges){

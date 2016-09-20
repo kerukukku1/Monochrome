@@ -25,6 +25,7 @@ public class PieceListView extends JFrame{
 	private JPanel paint;
 	private JPanel earth;
 	public static List<PieceViewPanel> pieceViews;
+	private int line = 4;
 	
 	public PieceListView(){
 		title = "ListViewer";
@@ -40,19 +41,20 @@ public class PieceListView extends JFrame{
 	
 	private void paintPiecePanel(List<Problem> problems){
 		List< List<Tuple2<Double, Double>> > vertex;
-		int count = 0;
+		int count = 4;
 		for(int loop = 0; loop < problems.size(); loop++){
+			int bias = 1;
 			Problem problem = problems.get(loop);
 			vertex = problem.getVertex();
+			if(problem.isWaku())bias = 0;
 			for(int i = 0; i < vertex.size(); i++){
-				//まだ変更してないよ〜〜〜〜バグるよ！！！！！！！！！！！！！！！！！！！！！！！！！
-				PieceViewPanel p = new PieceViewPanel((count%4)*205+5,(count/4)*255+5,200,250, i, problem);
+				PieceViewPanel p = new PieceViewPanel((count%line)*205+5,((bias*count)/line)*255+5,200,250, i, problem);
 				pieceViews.add(p);
 				paint.add(p);
 				++count;
 			}
 			//追加されたピースは改行されて表示されるようにする。
-			count += (4 - count%4);
+			if(count%line != 0)count += (line - count%line);
 		}
 		paint.setPreferredSize(new Dimension(830, 295+255*(count/4)));
 		this.revalidate();

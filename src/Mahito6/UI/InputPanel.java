@@ -138,36 +138,52 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		if(cmd.equals("Save")){
 			List<Problem> problems = ProblemManager.getProblems();
 			List<String> ansFrame = new ArrayList<String>();
+			ansFrame.add("dummy");
 			List<String> ansPiece = new ArrayList<String>();
+			ansPiece.add("dummy");
+			
+			int frameSize = 0;
+			int pieceSize = 0;
+			
 			for(int i = 0; i < problems.size(); i++){
 				Problem p = problems.get(i);
 				if(p.isWaku()){
 					List<List<Tuple2<Double, Double>>> v = p.getVertex();
-					ansFrame.add(String.valueOf(v.size()));
 					for(int j = 0; j < v.size(); j++){
 						List<Tuple2<Double, Double>> v2 = v.get(j);
+						if(v2.size() < 3){
+							//図形が構成されていない場合は除去
+							continue;
+						}
 						ansFrame.add(String.valueOf(v2.size()));
 						for(int k = 0; k < v2.size(); k++){
 							double x = v2.get(k).t1;
 							double y = v2.get(k).t2;
 							ansFrame.add(String.valueOf(x) + " " + String.valueOf(y));
 						}
+						frameSize++;
 					}
 				}else{
 					List<List<Tuple2<Double, Double>>> v = p.getVertex();
-					ansPiece.add(String.valueOf(v.size()));
 					for(int j = 0; j < v.size(); j++){
 						List<Tuple2<Double, Double>> v2 = v.get(j);
+						if(v2.size() < 3){
+							//図形が構成されていない場合は除去
+							continue;
+						}
 						ansPiece.add(String.valueOf(v2.size()));
 						for(int k = 0; k < v2.size(); k++){
 							double x = v2.get(k).t1;
 							double y = v2.get(k).t2;
 							ansPiece.add(String.valueOf(x) + " " + String.valueOf(y));
 						}
+						pieceSize++;
 					}
 				}
 			}
-
+			//dummyを個数に置き換え
+			ansFrame.set(0, String.valueOf(frameSize));
+			ansPiece.set(0, String.valueOf(pieceSize));
 			FolderManager.fileSave(ansFrame, ansPiece);
 
 		}else if(cmd.equals("Add")){
