@@ -43,6 +43,7 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.DiffPiece;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.MeasureTimer;
 
 public class VisualizePanel extends JPanel implements MouseListener, MouseMotionListener{
 	
@@ -70,6 +71,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private BasicStroke miniStroke;
     private BasicStroke maxiStroke;
     private VisualizeFrame parent;
+    private int mouseCounter = 0;
     
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
     	this.parent = parent;

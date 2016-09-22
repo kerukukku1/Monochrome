@@ -385,16 +385,16 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		boolean isOk = true;
 		double nowx = e.getX();
 		double nowy = e.getY();
-		for(int i = 0; i < focusPlots.size(); i++){
-			Tuple2<Double, Double> t = focusPlots.get(i);
-			double vx = t.t1;
-			double vy = t.t2;
-			double dist = Edge.distance(nowx, nowy, vx, vy);
-			if(dist <= 3.0){
-				isOk = false;
-				break;
-			}
-		}
+//		for(int i = 0; i < focusPlots.size(); i++){
+//			Tuple2<Double, Double> t = focusPlots.get(i);
+//			double vx = t.t1;
+//			double vy = t.t2;
+//			double dist = Edge.distance(nowx, nowy, vx, vy);
+//			if(dist <= 3.0){
+//				isOk = false;
+//				break;
+//			}
+//		}
 		
 //		for(int i = 0; i < focusLines.size(); i++){
 //			if(onLine(nowx, nowy, focusLines.get(i))){

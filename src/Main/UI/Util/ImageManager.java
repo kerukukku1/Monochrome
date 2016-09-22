@@ -17,6 +17,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.utils.Converters;
@@ -40,6 +41,7 @@ public class ImageManager{
 	public static List<String> data;
 	public List<List<Edge>> allEdges;
 	public Problem problem;
+	private Mat source;
 
 	public ImageManager(){
 		coords = new ArrayList<Coordinates>();
@@ -55,22 +57,28 @@ public class ImageManager{
 		vertex.clear();
 		data.clear();
 		allEdges.clear();
+		System.gc();
 	}
 
-	public void runAdaptiveThreshold(Mat source){
+	public void runAdaptiveThreshold(){
+		this.source = Highgui.imread(path);
+		Mat _source = source.clone();
+		Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));  
+		Imgproc.cvtColor(_source, _source, Imgproc.COLOR_RGB2GRAY);
         //枠のときの速度上げ専
         //if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
         //if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
-
-//		Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
-//		Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
-//		Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
-//		Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+		for(int i = 0; i < Constants.Nameraka; i++){
+			Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+			Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+			Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+			Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);	
+		}
 		//if(Constants.modeWaku)source = new Mat(source, new Rect(10, 10, 7000-10, 7000-10));
-		Mat binImage = source.clone();
-		Mat binImage2 = source.clone();
+		Mat binImage = _source.clone();
+		Mat binImage2 = _source.clone();
         //61 14 太いけど確実param　GAUSSIAN
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 71, 21);
@@ -80,10 +88,10 @@ public class ImageManager{
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 17, 8);
         	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
         	//nico nico
-        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
+//        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
 //            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
         }
-        Core.bitwise_and(binImage, binImage2, binImage);
+//        Core.bitwise_and(binImage, binImage2, binImage);
 //        Highgui.imwrite("and_image.png", dst);
         //枠専用
         if(Constants.modeWaku){
@@ -192,7 +200,7 @@ public class ImageManager{
 		problem = new Problem(Constants.modeWaku);
 		System.out.println("runAdaptiveThreshold");
 		MeasureTimer.start();
-		runAdaptiveThreshold(Highgui.imread(path, 0));
+		runAdaptiveThreshold();
 //		this.testSalesio(Highgui.imread(path));
 		if(Constants.isOutputDebugOval)try {confirm = ImageIO.read(new File(path));} catch (IOException e1) {e1.printStackTrace();}
 		MeasureTimer.end();
@@ -275,6 +283,7 @@ public class ImageManager{
 
 	public void clearAllNoise(){
 		int minx,miny,maxx,maxy,mat_h,mat_w;
+		Mat numbering = source.clone();
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates now = coords.get(i);
 			BFS.clearNoise(Constants.clearNoiseThreshold, now);
@@ -308,7 +317,12 @@ public class ImageManager{
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
+			
+			Core.putText(numbering, String.valueOf(i+1), new Point(maxx-300, (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 12f, new Scalar(86, 0, 255), 20);
 		}
+		Highgui.imwrite("numbering.png", numbering);
+		source = null;
+		numbering = null;
 		System.out.println("Noise cleared");
 	}
 
