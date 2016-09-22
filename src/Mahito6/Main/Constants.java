@@ -11,7 +11,7 @@ public class Constants{
     public static int clearNoiseThreshold = 200; //ノイズを除去する島の点の数の閾値 waku:1200 piece:200
     public static final int imagePositionOffset = 600;
 
-	public static final boolean isOutputDebugOval = true;
+	public static final boolean isOutputDebugOval = false;
 	public static final String uiTitle = "Monochrome";
 	public static final boolean debugImage = true;
 	public static final boolean outputStream = false;
@@ -31,5 +31,5 @@ public class Constants{
 	public static final int plotOvalRadius = 4;
 	//VisualizePanelで描画した線の長さを伸ばすオフセット
 	public static final int expandOffset = 7;
-	public static final int Nameraka = 2;
+	public static final int Nameraka = 1;
 }

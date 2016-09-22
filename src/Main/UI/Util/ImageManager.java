@@ -284,6 +284,7 @@ public class ImageManager{
 	public void clearAllNoise(){
 		int minx,miny,maxx,maxy,mat_h,mat_w;
 		Mat numbering = source.clone();
+		Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates now = coords.get(i);
 			BFS.clearNoise(Constants.clearNoiseThreshold, now);
@@ -310,13 +311,13 @@ public class ImageManager{
 				bim.setRGB(nx, ny, 0xff000000 | 255 <<16 | 255 <<8 | 255);
 			}
 			bufImages.add(bim);
-			File saves = new File(getPath(String.valueOf(i)+"_"));
-			try {
-				if(Constants.debugImage)ImageIO.write(bim, "png", saves);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			}
+//			File saves = new File(getPath(String.valueOf(i)+"_"));
+//			try {
+//				if(Constants.debugImage)ImageIO.write(bim, "png", saves);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				//e.printStackTrace();
+//			}
 			
 			Core.putText(numbering, String.valueOf(i+1), new Point(maxx-300, (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 12f, new Scalar(86, 0, 255), 20);
 		}

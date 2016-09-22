@@ -165,16 +165,16 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	}
 	
 	//頂点検出。humei 
-	public void updateVertex(){
-		System.out.println(image.getWidth() + "x" + image.getHeight());
-		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
-		solver2.solve();
-		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
-		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
-		this.vertex = ans;
-		for(Tuple2<Double,Double> t : ans){
-			System.out.println(t.t1+","+t.t2);
-		}
+	public void updateVertex(List<Tuple2<Double, Double>> list){
+//		System.out.println(image.getWidth() + "x" + image.getHeight());
+//		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
+//		solver2.solve();
+//		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
+//		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
+		this.vertex = list;
+//		for(Tuple2<Double,Double> t : ans){
+//			System.out.println(t.t1+","+t.t2);
+//		}
 		myProblem.setVertex(index, vertex);
 //		BufferedImage result3 = solver2.getAnswerImage();
 //		File ans_save = new File("ans.png");

@@ -94,6 +94,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		scaleLines = this.convertScaleLines(this.lines);
 		//スケールを合わせていないプロット
 		plots = vertex;
+		System.out.println("relaunch : " + vertex.size());
 		scaleLine = new Line2D.Double();
     	isSelect = false;
 	    drawLines(false);
@@ -124,14 +125,18 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		scaleLines = this.convertScaleLines(this.lines);
 		//スケールを合わせていないプロット
 		plots = vertex;
+		System.out.println("launch: "+plots.size());
 		scaleLine = new Line2D.Double();
     	isSelect = false;
 	    drawLines(false);
 	    drawPlots(false);
 	    
 	    if(isInit){
+	    	System.out.println("launch realtime");
 	    	realtimeDialog = new RealTimeDialog(0, 0, range, this, parent);
 	    	parent.setRealTimeDialog(realtimeDialog);
+	    }else{
+	    	realtimeDialog.setPlots(plots);
 	    }
 	    parent.repaint();
     }

@@ -150,9 +150,6 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		System.out.println("Save");
 		lines = visPanel.getLines();
 		for(int i = 0; i < lines.size(); i++){
-			lines.set(i, visPanel.expandLine(lines.get(i), 1));
-		}
-		for(int i = 0; i < lines.size(); i++){
 			Line2D l = lines.get(i);
 			edges.add(makeEdge(calcHoughParam(l), l));
 		}
@@ -161,7 +158,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		//エッジを更新
 		parent.updateEdges(edges);
 		//エッジを考慮して頂点を検出し更新
-		parent.updateVertex();
+		parent.updateVertex(visPanel.getVertex());
 		parent.paintPiece();
 	}
 
@@ -205,10 +202,11 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	//頂点を更新して再描画させる
 	public void relaunch(List<Tuple2<Double, Double>> vertex, boolean isInit){
-		this.vertex = vertex;
+		this.vertex = new ArrayList<>(vertex);
 		lines = makeLine2D(vertex);
 		edges = new ArrayList<Edge>();
 		visPanel.launchPanel(vertex, coord, lines, isInit);
+		System.out.println(vertex.size());
 	}
 
 	@Override

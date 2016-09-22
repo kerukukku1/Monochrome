@@ -96,6 +96,10 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 //		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 	
+	public void setPlots(List<Tuple2<Double, Double>> plots){
+		this.plots = plots;
+	}
+	
 	public void reloadPoints(int x, int y){
 		this.x = x;
 		this.y = y;

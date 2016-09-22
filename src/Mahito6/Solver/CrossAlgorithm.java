@@ -43,6 +43,10 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 	public BufferedImage getAnswerImage(){
 		return ansImage;
 	}
+	public void clearAnswerImage(){
+		ansImage = null;
+		System.gc();
+	}
 
 	private List<Tuple2<Double,Double>>[] memo;
 	private int n;
