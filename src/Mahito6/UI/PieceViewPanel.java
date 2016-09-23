@@ -139,7 +139,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	
 	public void updateEdges(List<Edge> updateEdges){
 //		System.out.println("before:" + edges.size());
-		edges = updateEdges;
+		edges = new ArrayList<>(updateEdges);
 		myProblem.setEdges(index, edges);
 //		for(int i = 0; i < edges.size(); i++){
 //			//エッジ伸ばす
@@ -171,7 +171,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 //		solver2.solve();
 //		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
 //		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
-		this.vertex = list;
+		this.vertex = new ArrayList<>(list);
 //		for(Tuple2<Double,Double> t : ans){
 //			System.out.println(t.t1+","+t.t2);
 //		}

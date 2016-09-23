@@ -478,16 +478,19 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		//Left Click
 		}else{
 			if(isLine){
-				for(int i = 0; i < scaleLines.size(); i++){
-					if(onLine(nowx, nowy, scaleLines.get(i))){
-						lines.set(i, this.expandLine(lines.get(i), -1));
-						scaleLines.set(i, this.expandLine(scaleLines.get(i), -1));
+				Line2D l = null;
+				int _index;
+				for(_index = 0; _index < scaleLines.size(); _index++){
+					if(onLine(nowx, nowy, scaleLines.get(_index))){
+						l = this.expandLine(lines.get(_index), -10);
 						break;
 					}
 				}
-				drawBackground(false);
-				drawLines(false);
-				drawPlots(true);				
+				parent.calcLeastSquare(l, _index);
+				
+//				drawBackground(false);
+//				drawLines(false);
+//				drawPlots(true);				
 			}else if(isSelect){				//点選択時
 				if(!isOn)return;
 				double cx = clickP.t1;

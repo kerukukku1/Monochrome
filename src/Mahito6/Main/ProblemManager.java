@@ -17,6 +17,7 @@ public class ProblemManager {
 	public static Problem problem;
 	public static List<Problem> problems;
 	public static SolverConstants consts;
+	public static double dpi = 0;
 	public ProblemManager(){
 //		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();

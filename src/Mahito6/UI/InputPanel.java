@@ -157,8 +157,8 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 						}
 						ansFrame.add(String.valueOf(v2.size()));
 						for(int k = 0; k < v2.size(); k++){
-							double x = v2.get(k).t1;
-							double y = v2.get(k).t2;
+							double x = v2.get(k).t1 * (Constants.unitInch / ProblemManager.dpi);
+							double y = v2.get(k).t2 * (Constants.unitInch / ProblemManager.dpi);
 							ansFrame.add(String.valueOf(x) + " " + String.valueOf(y));
 						}
 						frameSize++;
@@ -173,8 +173,8 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 						}
 						ansPiece.add(String.valueOf(v2.size()));
 						for(int k = 0; k < v2.size(); k++){
-							double x = v2.get(k).t1;
-							double y = v2.get(k).t2;
+							double x = v2.get(k).t1 * (Constants.unitInch / ProblemManager.dpi);
+							double y = v2.get(k).t2 * (Constants.unitInch / ProblemManager.dpi);
 							ansPiece.add(String.valueOf(x) + " " + String.valueOf(y));
 						}
 						pieceSize++;

@@ -89,6 +89,13 @@ public class ImageManager{
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 71, 21);
 		
+		if(binImage.rows() + binImage.cols() < 10000){
+			ProblemManager.dpi = 300;
+		}else{
+			ProblemManager.dpi = 600;
+		}
+		System.out.println(ProblemManager.dpi);
+		
         //有力
         if(!Constants.modeWaku){
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);

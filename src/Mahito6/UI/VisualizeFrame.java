@@ -11,10 +11,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,7 +27,10 @@ import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
+import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
+import Mahito6.Solver.EdgeFinder;
+import Mahito6.Solver.LeastSquareMethod;
 import Main.UI.Util.Coordinates;
 
 public class VisualizeFrame extends JFrame implements KeyListener{
@@ -148,7 +154,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	}
 	public void saveData(){
 		System.out.println("Save");
-		lines = visPanel.getLines();
+		lines = new ArrayList<>(visPanel.getLines());
 		for(int i = 0; i < lines.size(); i++){
 			Line2D l = lines.get(i);
 			edges.add(makeEdge(calcHoughParam(l), l));
@@ -160,6 +166,37 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		//エッジを考慮して頂点を検出し更新
 		parent.updateVertex(visPanel.getVertex());
 		parent.paintPiece();
+	}
+	
+	public void calcLeastSquare(Line2D line, int _index){
+		BufferedImage image = this.getImage();
+		EdgeFinder ef = new EdgeFinder(image, true, paramPanel.getConstants());
+		LeastSquareMethod lsm = new LeastSquareMethod(image, paramPanel.getConstants());
+		Edge e = makeEdge(calcHoughParam(line), line);
+		Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(e);///preAnsを最小二乗法によって精度上げる
+		if(ansConverted == null){
+			///最小二乗法 or split失敗により強制終了、無限ループ回避用
+			this.setTitle("LeastSquare Error!");
+			return;
+		}
+		Edge ans = ef.split(image,ansConverted.t1,ansConverted.t2);///正しい長さにスプリットする
+		BufferedImage result3 = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_BGR);
+		Graphics2D g = (Graphics2D)result3.getGraphics();
+		lines = visPanel.getLines();
+		for(int i = 0; i < lines.size(); i++){
+			if(_index == i){
+				g.draw(line);
+				edges.add(ans);
+			}else{
+				Line2D l = visPanel.expandLine(lines.get(i), 10);
+				g.draw(l);
+				edges.add(makeEdge(calcHoughParam(l), l));	
+			}
+		}
+		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
+		solver2.solve();
+		List<Tuple2<Double,Double>> answer = solver2.getAnswer();
+		relaunch(answer, false);
 	}
 
 	@Override

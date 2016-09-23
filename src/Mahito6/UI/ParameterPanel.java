@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -124,6 +125,11 @@ public class ParameterPanel extends JPanel implements ActionListener, ItemListen
 			}
 		}
 	}
+	
+	public SolverConstants getConstants(){
+		reloadConstants();
+		return consts;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -135,6 +141,7 @@ public class ParameterPanel extends JPanel implements ActionListener, ItemListen
 			parent.next();
 		}else if(cmd.equals("Store")){
 			parent.saveData();
+			parent.setTitle("Saved Data! [id]" + new Random().nextDouble());
 		}else if(cmd.equals("Run")){
 			reloadConstants();
 			BufferedImage tarImage = parent.getImage();
