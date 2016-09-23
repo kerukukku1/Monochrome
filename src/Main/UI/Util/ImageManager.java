@@ -95,7 +95,6 @@ public class ImageManager{
 			ProblemManager.dpi = 600;
 		}
 		System.out.println(ProblemManager.dpi);
-		System.exit(0);
 		
         //有力
         if(!Constants.modeWaku){
