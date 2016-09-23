@@ -96,19 +96,19 @@ public class EdgeFinder implements Runnable{
 //			ImageIO.write(save_image_line, "png", new File(c+".png"));///途中経過を出力
 			c++;
 		}
-		lsm.finish();///最小二乗法で抽出された白点をデバッグ
+//		lsm.finish();///最小二乗法で抽出された白点をデバッグ
 
-		for(int i = 0;i < edges.size();i++){
-			for(int j = i + 1;j < edges.size();j++){
-				///全てのエッジの交点を描画する。
-				Edge e1 = edges.get(i);
-				Edge e2 = edges.get(j);
-				Tuple2<Double,Double> cross = Edge.getCross(e1,e2);
-				if(e1.onLine(cross)&&e2.onLine(cross)){///両方のエッジ上にある
-					drawVertex(save_image_line,(int)cross.t1.doubleValue(),(int)cross.t2.doubleValue());
-				}
-			}
-		}
+//		for(int i = 0;i < edges.size();i++){
+//			for(int j = i + 1;j < edges.size();j++){
+//				///全てのエッジの交点を描画する。
+//				Edge e1 = edges.get(i);
+//				Edge e2 = edges.get(j);
+//				Tuple2<Double,Double> cross = Edge.getCross(e1,e2);
+//				if(e1.onLine(cross)&&e2.onLine(cross)){///両方のエッジ上にある
+//					drawVertex(save_image_line,(int)cross.t1.doubleValue(),(int)cross.t2.doubleValue());
+//				}
+//			}
+//		}
 		long end = System.currentTimeMillis();
 		System.out.println((end - start)+"ms");
 		finish();

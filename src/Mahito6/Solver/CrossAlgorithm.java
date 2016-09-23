@@ -23,7 +23,7 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 	private int w,h;
 	private List<Edge> edges;
 	private List<Tuple2<Double,Double>> answer;
-	private BufferedImage ansImage;
+//	private BufferedImage ansImage;
 	private List<Tuple2<Integer, Integer>> crossPoints;
 	private boolean isFinished = false;
 
@@ -40,13 +40,13 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 	public List<Tuple2<Double,Double>> getAnswer(){
 		return answer;
 	}
-	public BufferedImage getAnswerImage(){
-		return ansImage;
-	}
-	public void clearAnswerImage(){
-		ansImage = null;
-		System.gc();
-	}
+//	public BufferedImage getAnswerImage(){
+//		return ansImage;
+//	}
+//	public void clearAnswerImage(){
+//		ansImage = null;
+//		System.gc();
+//	}
 
 	private List<Tuple2<Double,Double>>[] memo;
 	private int n;
@@ -59,7 +59,7 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 
 	public void solve(){
 		answer = new ArrayList<Tuple2<Double,Double>>();
-		ansImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
+//		ansImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
 		n = edges.size();
 		memo = new ArrayList[n];
 		for(int i = 0;i < n;i++)memo[i] = new ArrayList<Tuple2<Double,Double>>();
@@ -151,7 +151,7 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 			}
 		}
 
-		Graphics2D g2d = (Graphics2D) ansImage.getGraphics();
+//		Graphics2D g2d = (Graphics2D) ansImage.getGraphics();
 		for(int i = 0;i < answer.size();i++){
 			int next = (i + 1)%answer.size();
 			//int nnext = (i + 2)%answer.size();
@@ -160,8 +160,8 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 			if(Constants.isOutputDebugOval)crossPoints.add(new Tuple2<Integer, Integer>(x,y));
 			int nx = (int)answer.get(next).t1.doubleValue();
 			int ny = (int)answer.get(next).t2.doubleValue();
-			g2d.setColor(Color.WHITE);
-			g2d.drawLine(x,y,nx,ny);
+//			g2d.setColor(Color.WHITE);
+//			g2d.drawLine(x,y,nx,ny);
 		}
 		double ccw0 = 0.0;
 		for(int i = 0;i < answer.size();i++){
@@ -186,10 +186,10 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 			result *= 100;
 			result = (int)result;
 			result /= 100;
-			g2d.setColor(Color.WHITE);
-			g2d.drawString(String.valueOf(result), (int)nx, (int)ny);
+//			g2d.setColor(Color.WHITE);
+//			g2d.drawString(String.valueOf(result), (int)nx, (int)ny);
 		}
-		g2d.dispose();
+//		g2d.dispose();
 		finish();
 	}
 

@@ -53,35 +53,42 @@ public class ImageManager{
 
 	public void clear(){
 		coords.clear();
-		bufImages.clear();
 		vertex.clear();
 		data.clear();
 		allEdges.clear();
+		for(;bufImages.size() != 0;){
+			Object obj = bufImages.remove(0);
+			obj = null;
+		}
 		System.gc();
 	}
 
 	public void runAdaptiveThreshold(){
 		this.source = Highgui.imread(path);
 		Mat _source = source.clone();
-		Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));  
+		if(!Constants.modeWaku)Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));  
 		Imgproc.cvtColor(_source, _source, Imgproc.COLOR_RGB2GRAY);
         //枠のときの速度上げ専
         //if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
         //微妙?
         //Imgproc.medianBlur(src, src, 1);
         //if(!modeWaku)Imgproc.GaussianBlur(src, src, new Size(), 0.025);
-		for(int i = 0; i < Constants.Nameraka; i++){
-			Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
-			Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
-			Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
-			Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);	
+		if(!Constants.modeWaku){
+			for(int i = 0; i < Constants.Nameraka; i++){
+				Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+				Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+				Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+				Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);	
+			}	
 		}
+		
 		//if(Constants.modeWaku)source = new Mat(source, new Rect(10, 10, 7000-10, 7000-10));
 		Mat binImage = _source.clone();
-		Mat binImage2 = _source.clone();
+//		Mat binImage2 = _source.clone();
         //61 14 太いけど確実param　GAUSSIAN
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 71, 21);
+		
         //有力
         if(!Constants.modeWaku){
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
@@ -91,15 +98,19 @@ public class ImageManager{
 //        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
 //            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
         }
+        
+//andとってゴミ消す
 //        Core.bitwise_and(binImage, binImage2, binImage);
 //        Highgui.imwrite("and_image.png", dst);
+        
         //枠専用
         if(Constants.modeWaku){
-        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
+//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
+        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
         }
 
         bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
-        binImage = binImage2 = null;
+        binImage = null;
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 0.25, 0.25, Imgproc.INTER_LINEAR);
         //Imgproc.resize(binaryAdaptive, binaryAdaptive, new Size(), 4.0, 4.0, Imgproc.INTER_LINEAR);
         //黄色いプロット確認
@@ -228,35 +239,33 @@ public class ImageManager{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		outputData();
 		MeasureTimer.end();
 		MeasureTimer.call();
 
 		System.out.println("end get piece");
 
-
-		try {
-			if(Constants.isOutputDebugOval){
-				File yellowP = new File(getPath(String.valueOf(0)+"yellow"));
-				Graphics2D g = confirm.createGraphics();
-				for(int i = 0; i < vertex.size(); i++){
-					List<Tuple2<Double, Double>> v = vertex.get(i);
-					Coordinates c = coords.get(i);
-					c.calc();
-					for(int j = 0; j < v.size(); j++){
-						Tuple2<Double, Double> tmp = v.get(j);
-						double x = tmp.t1;
-						double y = tmp.t2;
-						g.setColor(Color.yellow);
-						g.drawOval((int)x-2+c.minx-Constants.imagePositionOffset/2, (int)y-2+c.miny-Constants.imagePositionOffset/2, 4, 4);
-						System.out.println(x + "," + y);
+		if(Constants.isOutputDebugOval){
+			try {
+					File yellowP = new File(getPath(String.valueOf(0)+"yellow"));
+					Graphics2D g = confirm.createGraphics();
+					for(int i = 0; i < vertex.size(); i++){
+						List<Tuple2<Double, Double>> v = vertex.get(i);
+						Coordinates c = coords.get(i);
+						c.calc();
+						for(int j = 0; j < v.size(); j++){
+							Tuple2<Double, Double> tmp = v.get(j);
+							double x = tmp.t1;
+							double y = tmp.t2;
+							g.setColor(Color.yellow);
+							g.drawOval((int)x-2+c.minx-Constants.imagePositionOffset/2, (int)y-2+c.miny-Constants.imagePositionOffset/2, 4, 4);
+							System.out.println(x + "," + y);
+						}
 					}
-				}
-				ImageIO.write(confirm, "png", yellowP);
+					ImageIO.write(confirm, "png", yellowP);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		problem.setData(allEdges, vertex, coords);
@@ -352,23 +361,6 @@ public class ImageManager{
 	    int idx = path.lastIndexOf(".");
 	    String spieces = path.substring(idx).substring(1);
 	    return spieces.equals("png") ||	spieces.equals("jpg") || spieces.equals("jpeg") || spieces.equals("JPG");
-	}
-
-	private void outputData(){
-		data.add("0");
-		System.out.println(vertex.size());
-		data.add(String.valueOf(vertex.size()));
-		for(int i = 0; i < vertex.size(); i++){
-			List< Tuple2<Double, Double> > now = vertex.get(i);
-			System.out.println(now.size());
-			data.add(String.valueOf(now.size()));
-			for(int j = 0; j < now.size(); j++){
-				System.out.println(now.get(j).t1 + " " + now.get(j).t2);
-				String x = String.valueOf(now.get(j).t1);
-				String y = String.valueOf(now.get(j).t2);
-				data.add(x+" "+y);
-			}
-		}
 	}
 
 	public List< List<Tuple2<Double, Double>> > getVertex(){
