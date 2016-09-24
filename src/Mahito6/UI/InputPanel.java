@@ -24,6 +24,7 @@ import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.SolverConstants;
 import Mahito6.Main.Tuple2;
+import Main.UI.Util.Coordinates;
 import Main.UI.Util.FolderManager;
 import Main.UI.Util.MyKeyListener;
 
@@ -155,10 +156,11 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 							//図形が構成されていない場合は除去
 							continue;
 						}
+						Coordinates c = p.getCoord(j);
 						ansFrame.add(String.valueOf(v2.size()));
 						for(int k = 0; k < v2.size(); k++){
-							double x = v2.get(k).t1 * (Constants.unitInch / ProblemManager.dpi);
-							double y = v2.get(k).t2 * (Constants.unitInch / ProblemManager.dpi);
+							double x = (v2.get(k).t1+c.minx) * (Constants.unitInch / ProblemManager.dpi);
+							double y = (v2.get(k).t2+c.miny) * (Constants.unitInch / ProblemManager.dpi);
 							ansFrame.add(String.valueOf(x) + " " + String.valueOf(y));
 						}
 						frameSize++;
