@@ -160,7 +160,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 						ansFrame.add(String.valueOf(v2.size()));
 						for(int k = 0; k < v2.size(); k++){
 							double x = (v2.get(k).t1+c.minx) * (Constants.unitInch / ProblemManager.dpi);
-							double y = (v2.get(k).t2+c.miny) * (Constants.unitInch / ProblemManager.dpi);
+							double y = v2.get(k).t2 * (Constants.unitInch / ProblemManager.dpi);
 							ansFrame.add(String.valueOf(x) + " " + String.valueOf(y));
 						}
 						frameSize++;
@@ -272,7 +272,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 			consts.lrAddition = 100;
 
 			Constants.clearNoiseThreshold = 1200;
-			Constants.dividePixelLookingForDist = 3;
+			Constants.dividePixelLookingForDist = 1;
 			Constants.modeWaku = true;
 		}
 	}

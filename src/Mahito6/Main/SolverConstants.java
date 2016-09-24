@@ -12,12 +12,12 @@ public class SolverConstants {
 	
 	public SolverConstants(){
 	    kAngleSplits = 1024; 
-	    kMinCount = 15;
-	    edgeWidth = 6;
-		MethodWidth = 12;
+	    kMinCount = 60;
+	    edgeWidth = 5;
+		MethodWidth = 5;
 	    lrAddition = 30;
 	    doubleLineDetect = 40;
-		LongEdge = 300.0;
-		ShorteningLength = 60.0;
+		LongEdge = 70.0;
+		ShorteningLength = 20.0;
 	}
 }
