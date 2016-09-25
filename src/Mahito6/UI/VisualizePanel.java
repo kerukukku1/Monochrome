@@ -43,6 +43,7 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.DiffPiece;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.MeasureTimer;
 
 public class VisualizePanel extends JPanel implements MouseListener, MouseMotionListener{
 	
@@ -70,10 +71,39 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private BasicStroke miniStroke;
     private BasicStroke maxiStroke;
     private VisualizeFrame parent;
+    private int mouseCounter = 0;
     
     public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
     	this.parent = parent;
     	launchPanel(vertex, coord, lines, true);
+    }
+    
+    public void relaunchPanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
+    	this.parent = parent;
+    	this.vertex = vertex;
+    	this.coord = coord;
+    	this.lines = lines;
+		//スケールの計算。これしないとバグる
+		calcScale();
+		//二値化されたピースをペイント
+		paintPiece();
+		
+		//頂点データをスケールに合わせてプロットに変換。このときint型に丸め込まれる
+		scalePlots = this.convertVertexToScalePlots(vertex);
+		//線をスケールを合わせて描画。これはdoubleのまま保持される。
+		scaleLines = this.convertScaleLines(this.lines);
+		//スケールを合わせていないプロット
+		plots = vertex;
+		System.out.println("relaunch : " + vertex.size());
+		scaleLine = new Line2D.Double();
+    	isSelect = false;
+	    drawLines(false);
+	    drawPlots(false);
+	    
+	    //一端パネルを削除
+	    parent.removeRealTimeDialog();
+	    realtimeDialog = new RealTimeDialog(0, 0, range, this, parent);
+	    parent.setRealTimeDialog(realtimeDialog);
     }
     
     public void launchPanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, boolean isInit){
@@ -95,13 +125,19 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		scaleLines = this.convertScaleLines(this.lines);
 		//スケールを合わせていないプロット
 		plots = vertex;
+		System.out.println("launch: "+plots.size());
 		scaleLine = new Line2D.Double();
     	isSelect = false;
 	    drawLines(false);
 	    drawPlots(false);
 	    
-	    if(isInit)parent.setRealTimeDialog(new RealTimeDialog(0, 0, range, this, parent));
-	    if(isInit)realtimeDialog = parent.getRealTimeDialog();
+	    if(isInit){
+	    	System.out.println("launch realtime");
+	    	realtimeDialog = new RealTimeDialog(0, 0, range, this, parent);
+	    	parent.setRealTimeDialog(realtimeDialog);
+	    }else{
+	    	realtimeDialog.setPlots(plots);
+	    }
 	    parent.repaint();
     }
 	
@@ -442,16 +478,19 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		//Left Click
 		}else{
 			if(isLine){
-				for(int i = 0; i < scaleLines.size(); i++){
-					if(onLine(nowx, nowy, scaleLines.get(i))){
-						lines.set(i, this.expandLine(lines.get(i), -1));
-						scaleLines.set(i, this.expandLine(scaleLines.get(i), -1));
+				Line2D l = null;
+				int _index;
+				for(_index = 0; _index < scaleLines.size(); _index++){
+					if(onLine(nowx, nowy, scaleLines.get(_index))){
+						l = this.expandLine(lines.get(_index), -10);
 						break;
 					}
 				}
-				drawBackground(false);
-				drawLines(false);
-				drawPlots(true);				
+				parent.calcLeastSquare(l, _index);
+				
+//				drawBackground(false);
+//				drawLines(false);
+//				drawPlots(true);				
 			}else if(isSelect){				//点選択時
 				if(!isOn)return;
 				double cx = clickP.t1;

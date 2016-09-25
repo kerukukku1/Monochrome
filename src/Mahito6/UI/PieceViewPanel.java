@@ -67,6 +67,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		pieceIndex = new JLabel("index:"+String.valueOf(index+1));
 		pieceVertex = new JLabel("Vertex:" + vertex.size());
 		String type = (Constants.modeWaku)?"Frame":"Piece";
+		if(type.equals("Frame"))this.setBackground(Color.GRAY.brighter());
 		pieceType = new JLabel("Type:"+type);
 		
 		pieceIndex.setBounds(0,0,100,17);
@@ -132,9 +133,13 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		return myProblem;
 	}
 	
+	public int getIndex(){
+		return index;
+	}
+	
 	public void updateEdges(List<Edge> updateEdges){
 //		System.out.println("before:" + edges.size());
-		edges = updateEdges;
+		edges = new ArrayList<>(updateEdges);
 		myProblem.setEdges(index, edges);
 //		for(int i = 0; i < edges.size(); i++){
 //			//エッジ伸ばす
@@ -160,16 +165,16 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	}
 	
 	//頂点検出。humei 
-	public void updateVertex(){
-		System.out.println(image.getWidth() + "x" + image.getHeight());
-		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
-		solver2.solve();
-		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
-		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
-		this.vertex = ans;
-		for(Tuple2<Double,Double> t : ans){
-			System.out.println(t.t1+","+t.t2);
-		}
+	public void updateVertex(List<Tuple2<Double, Double>> list){
+//		System.out.println(image.getWidth() + "x" + image.getHeight());
+//		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
+//		solver2.solve();
+//		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
+//		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
+		this.vertex = new ArrayList<>(list);
+//		for(Tuple2<Double,Double> t : ans){
+//			System.out.println(t.t1+","+t.t2);
+//		}
 		myProblem.setVertex(index, vertex);
 //		BufferedImage result3 = solver2.getAnswerImage();
 //		File ans_save = new File("ans.png");

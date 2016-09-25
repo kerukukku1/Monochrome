@@ -2,7 +2,6 @@ package Mahito6.Thread;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import Mahito6.Main.ProblemManager;
@@ -12,15 +11,14 @@ import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
 
 public class SolverThreadingAgent {
-	
+
 	private int threadNum;
 	private int pieceNum;
 	private List<BufferedImage> sourceImages;
 	private List<List<Tuple2<Double,Double>>> allAnswer;
-	private List<BufferedImage> allAnswerImage;
 	private List<Boolean> isErrorList;
 	private List<List<Edge>> allEdges;
-	
+
 	/*
 	 * threadNum:スレッドの数
 	 * sourceImages:2値化された画像
@@ -31,22 +29,17 @@ public class SolverThreadingAgent {
 		this.pieceNum = sourceImages.size();
 		System.out.println(pieceNum);
 		this.allAnswer = new ArrayList<List<Tuple2<Double,Double>>>(pieceNum);
-		this.allAnswerImage = new ArrayList<BufferedImage>(pieceNum);
 		this.allEdges = new ArrayList<List<Edge>>(pieceNum);
 		this.isErrorList = new ArrayList<Boolean>(pieceNum);
 		for(int i = 0; i < pieceNum; i++){
 			allAnswer.add(null);
-			allAnswerImage.add(null);
 			allEdges.add(null);
 			isErrorList.add(null);
 		}
 	}
-	
+
 	public List<Tuple2<Double, Double>> getCrossAnswer(int id){
 		return allAnswer.get(id);
-	}
-	public BufferedImage getAnswerImage(int id){
-		return allAnswerImage.get(id);
 	}
 	public boolean isError(int id){
 		return isErrorList.get(id);
@@ -54,11 +47,10 @@ public class SolverThreadingAgent {
 	public List<List<Edge>> getAllEdges(){
 		return allEdges;
 	}
-	
+
 	private synchronized void endMethod(int id,List<Tuple2<Double, Double>> answerEdges,
-			   BufferedImage image,boolean isError){
+			   boolean isError){
 		///解をぶちこむためのメソッド、衝突防止
-		allAnswerImage.set(id, image);
 		isErrorList.set(id, isError);
 		allAnswer.set(id, answerEdges);
 
@@ -70,7 +62,7 @@ public class SolverThreadingAgent {
 		}
 		allEdges.set(id, edges);
 	}
-	
+
 	public void run() throws Exception{///並列化のすべてを投げる
 		int split;///各スレッドの担当数
 		if(threadNum <= pieceNum){
@@ -79,7 +71,7 @@ public class SolverThreadingAgent {
 			split = 1;
 		}
 		int imageCount = 0;
-		List<Thread> runningThread = new ArrayList<Thread>();
+//		List<Thread> runningThread = new ArrayList<Thread>();
 		for(int i = 0;i < threadNum;i++){
 			final List<BufferedImage> target = new ArrayList<BufferedImage>();
 			final List<Integer> ids = new ArrayList<Integer>();
@@ -91,7 +83,7 @@ public class SolverThreadingAgent {
 				imageCount++;
 			}
 			if(target.size() == 0)break;
-			
+
 			Thread newThread = new Thread(new Runnable(){
 				///中身
 				public void run() {
@@ -109,18 +101,19 @@ public class SolverThreadingAgent {
 						CrossAlgorithm crossAlgorithm = new CrossAlgorithm(edges, w, h);
 						crossAlgorithm.solve();
 						List<Tuple2<Double, Double>> answerEdges = crossAlgorithm.getAnswer();
-						BufferedImage answerImage = crossAlgorithm.getAnswerImage();
 						boolean isError = crossAlgorithm.isErrorCross();
-						endMethod(id,answerEdges,answerImage,isError);
+						endMethod(id,answerEdges,isError);
 					}
+//					target.clear();
 				}
 			});
 			newThread.start();
-			runningThread.add(newThread);
+			newThread.join();
+//			runningThread.add(newThread);
 		}
-		
-		for(int i = 0;i < runningThread.size();i++){
-			runningThread.get(i).join();
-		}
+
+//		for(int i = 0;i < runningThread.size();i++){
+//			runningThread.get(i).join();
+//		}
 	}
 }

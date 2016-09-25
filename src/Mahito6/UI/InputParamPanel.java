@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class InputParamPanel extends JPanel{
-	private String type, title;
+	public String type, title;
 	private JTextField tf;
 	private JLabel label;
 	private Object value;
@@ -34,6 +34,10 @@ public class InputParamPanel extends JPanel{
 		tf.setText(String.valueOf(value));
 		tf.setBounds(parent_width/2, 0, parent_width/2 - 5, 30);
 		this.add(tf);
+	}
+	
+	public void reloadTextField(Object obj){
+		tf.setText(String.valueOf(obj));
 	}
 
 	private void setLabel() {

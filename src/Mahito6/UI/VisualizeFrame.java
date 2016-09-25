@@ -11,10 +11,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,7 +27,10 @@ import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
+import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
+import Mahito6.Solver.EdgeFinder;
+import Mahito6.Solver.LeastSquareMethod;
 import Main.UI.Util.Coordinates;
 
 public class VisualizeFrame extends JFrame implements KeyListener{
@@ -44,17 +50,21 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private Problem myProblem;
 	
 	public VisualizeFrame(int index, PieceViewPanel parent){
-		this.index = index;
-		this.myProblem = parent.getProblem();
-		this.vertex = myProblem.getVertex(index);
-		this.coord = myProblem.getCoord(index);
-		this.parent = parent;
+		init(index, parent);
 		VisualizeFrame.mine = this;
 		title = "Visualize";
 		launchUI();
 		this.requestFocusInWindow();
 		this.setVisible(true);
 		this.addKeyListener(this);
+	}
+	
+	private void init(int index, PieceViewPanel parent){
+		this.index = index;
+		this.myProblem = parent.getProblem();
+		this.vertex = myProblem.getVertex(index);
+		this.coord = myProblem.getCoord(index);
+		this.parent = parent;
 	}
 	
 	private void launchUI() {
@@ -99,6 +109,10 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		this.add(realtimeDialog);
 	}
 	
+	public void removeRealTimeDialog(){
+		this.remove(realtimeDialog);
+	}
+	
 	public static void changeTitle(String title){
 		VisualizeFrame.mine.setTitle("Visualizer" + title);
 	}
@@ -140,10 +154,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	}
 	public void saveData(){
 		System.out.println("Save");
-		lines = visPanel.getLines();
-		for(int i = 0; i < lines.size(); i++){
-			lines.set(i, visPanel.expandLine(lines.get(i), 1));
-		}
+		lines = new ArrayList<>(visPanel.getLines());
 		for(int i = 0; i < lines.size(); i++){
 			Line2D l = lines.get(i);
 			edges.add(makeEdge(calcHoughParam(l), l));
@@ -153,8 +164,39 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		//エッジを更新
 		parent.updateEdges(edges);
 		//エッジを考慮して頂点を検出し更新
-		parent.updateVertex();
+		parent.updateVertex(visPanel.getVertex());
 		parent.paintPiece();
+	}
+	
+	public void calcLeastSquare(Line2D line, int _index){
+		BufferedImage image = this.getImage();
+		EdgeFinder ef = new EdgeFinder(image, true, paramPanel.getConstants());
+		LeastSquareMethod lsm = new LeastSquareMethod(image, paramPanel.getConstants());
+		Edge e = makeEdge(calcHoughParam(line), line);
+		Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(e);///preAnsを最小二乗法によって精度上げる
+		if(ansConverted == null){
+			///最小二乗法 or split失敗により強制終了、無限ループ回避用
+			this.setTitle("LeastSquare Error!");
+			return;
+		}
+		Edge ans = ef.split(image,ansConverted.t1,ansConverted.t2);///正しい長さにスプリットする
+		BufferedImage result3 = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_BGR);
+		Graphics2D g = (Graphics2D)result3.getGraphics();
+		lines = visPanel.getLines();
+		for(int i = 0; i < lines.size(); i++){
+			if(_index == i){
+				g.draw(line);
+				edges.add(ans);
+			}else{
+				Line2D l = visPanel.expandLine(lines.get(i), 10);
+				g.draw(l);
+				edges.add(makeEdge(calcHoughParam(l), l));	
+			}
+		}
+		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
+		solver2.solve();
+		List<Tuple2<Double,Double>> answer = solver2.getAnswer();
+		relaunch(answer, false);
 	}
 
 	@Override
@@ -165,16 +207,30 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		}else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
 			saveData();
 		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-			System.out.println("RIGHT");
-			int next = (index+1)%myProblem.getSize();
-			mine.dispose();
-			VisualizeFrame.mine = new VisualizeFrame(next, PieceListView.pieceViews.get(next));
+			next();
 		}else if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			System.out.println("LEFT");
-			int back = ((index-1)+myProblem.getSize())%myProblem.getSize();
-			mine.dispose();
-			VisualizeFrame.mine = new VisualizeFrame(back, PieceListView.pieceViews.get(back));
+			back();
 		}
+	}
+	
+	public void next(){
+		System.out.println("RIGHT");
+		int nowAllIndex = PieceListView.pieceViews.indexOf(parent);
+		int next = (nowAllIndex+1)%PieceListView.pieceViews.size();
+		PieceViewPanel pvp = PieceListView.pieceViews.get(next);
+		init(pvp.getIndex(), pvp);
+		lines = makeLine2D(vertex);
+		visPanel.relaunchPanel(vertex, coord, lines, this);
+	}
+	
+	public void back(){
+		System.out.println("LEFT");
+		int nowAllIndex = PieceListView.pieceViews.indexOf(parent);
+		int back = ((nowAllIndex-1)+PieceListView.pieceViews.size())%PieceListView.pieceViews.size();
+		PieceViewPanel pvp = PieceListView.pieceViews.get(back);
+		init(pvp.getIndex(), pvp);
+		lines = makeLine2D(vertex);
+		visPanel.relaunchPanel(vertex, coord, lines, this);
 	}
 	
 	public BufferedImage getImage(){
@@ -182,11 +238,12 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	}
 	
 	//頂点を更新して再描画させる
-	public void relaunch(List<Tuple2<Double, Double>> vertex){
-		this.vertex = vertex;
+	public void relaunch(List<Tuple2<Double, Double>> vertex, boolean isInit){
+		this.vertex = new ArrayList<>(vertex);
 		lines = makeLine2D(vertex);
 		edges = new ArrayList<Edge>();
-		visPanel.launchPanel(vertex, coord, lines, false);
+		visPanel.launchPanel(vertex, coord, lines, isInit);
+		System.out.println(vertex.size());
 	}
 
 	@Override

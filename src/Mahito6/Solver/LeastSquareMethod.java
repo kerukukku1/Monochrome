@@ -18,26 +18,27 @@ import Mahito6.Main.SolverConstants;
 import Mahito6.Main.Tuple2;
 
 public class LeastSquareMethod {
-	public static final File saveFile4 = new File("leastsquare.png");///デバッグ用
+//	public static final File saveFile4 = new File("leastsquare.png");///デバッグ用
 	public static final long hashkey = 100000;
 	private BufferedImage sourceImage;
-	private BufferedImage tester = null;
+//	private BufferedImage tester = null;
 	private SolverConstants consts;
 
 	public LeastSquareMethod(BufferedImage sourceImage, SolverConstants consts){
 		this.sourceImage = sourceImage;
-		this.tester = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), BufferedImage.TYPE_INT_BGR);
+//		this.tester = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), BufferedImage.TYPE_INT_BGR);
 		this.consts = consts;
 	}
 
 	public void finish(){
-		try {
-			ImageIO.write(tester, "png", saveFile4);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			ImageIO.write(tester, "png", saveFile4);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		System.out.println("SAVE");
+		sourceImage = null;
 	}
 
 	public double calcSumR(Tuple2<Double,Double> line,ArrayList<Tuple2<Integer,Integer>> target){
@@ -111,7 +112,6 @@ public class LeastSquareMethod {
             			}
             		}
             	}
-
             }
         }
         if(Constants.outputStream)System.out.println("nn = "+set.size());
@@ -128,10 +128,10 @@ public class LeastSquareMethod {
         	next.add(new Tuple2<Integer,Integer>((int)x,(int)y));
         	nextRotated.add(new Tuple2<Integer,Integer>((int)-y,(int)x));///90°rotation
 
-        	Graphics2D g2d = (Graphics2D) tester.getGraphics();
-        	g2d.setColor(Color.RED);
-        	g2d.fillRect((int)x, (int)y, 1, 1);
-        	g2d.dispose();
+//        	Graphics2D g2d = (Graphics2D) tester.getGraphics();
+//        	g2d.setColor(Color.RED);
+//        	g2d.fillRect((int)x, (int)y, 1, 1);
+//        	g2d.dispose();
 //        	System.out.println(x+","+y);
         }
         Tuple2<Double,Double> ans1 = solve(next);
@@ -153,10 +153,10 @@ public class LeastSquareMethod {
 
         ans2 = convertLine(new Tuple2(tx1,ty1),new Tuple2(tx2,ty2));
 
-        Graphics2D g2d = (Graphics2D) tester.getGraphics();
-        g2d.setColor(Color.BLUE);
-        g2d.drawLine((int)tx1, (int)ty1, (int)tx2, (int)ty2);
-        g2d.dispose();
+//        Graphics2D g2d = (Graphics2D) tester.getGraphics();
+//        g2d.setColor(Color.BLUE);
+//        g2d.drawLine((int)tx1, (int)ty1, (int)tx2, (int)ty2);
+//        g2d.dispose();
 
         return ans2;
 	}

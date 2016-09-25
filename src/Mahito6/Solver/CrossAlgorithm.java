@@ -23,16 +23,15 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 	private int w,h;
 	private List<Edge> edges;
 	private List<Tuple2<Double,Double>> answer;
-	private BufferedImage ansImage;
+//	private BufferedImage ansImage;
 	private List<Tuple2<Integer, Integer>> crossPoints;
-	
 	private boolean isFinished = false;
-	
+
 	public CrossAlgorithm(List<Edge> input,int w,int h){
 		this.edges = input;
 		this.w = w;
 		this.h = h;
-		crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
+		if(Constants.isOutputDebugOval)crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
 	}
 	public boolean isFinished(){
 		return this.isFinished;
@@ -41,22 +40,26 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 	public List<Tuple2<Double,Double>> getAnswer(){
 		return answer;
 	}
-	public BufferedImage getAnswerImage(){
-		return ansImage;
-	}
+//	public BufferedImage getAnswerImage(){
+//		return ansImage;
+//	}
+//	public void clearAnswerImage(){
+//		ansImage = null;
+//		System.gc();
+//	}
 
 	private List<Tuple2<Double,Double>>[] memo;
 	private int n;
 	private int first;
 	private boolean isErrorCross = true;
-	
+
 	public boolean isErrorCross(){
 		return isErrorCross;
 	}
-	
+
 	public void solve(){
 		answer = new ArrayList<Tuple2<Double,Double>>();
-		ansImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
+//		ansImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
 		n = edges.size();
 		memo = new ArrayList[n];
 		for(int i = 0;i < n;i++)memo[i] = new ArrayList<Tuple2<Double,Double>>();
@@ -71,7 +74,7 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 			memo[j].add(cp);
 		}
 		List<Integer> ones = new ArrayList<Integer>();///1������_�����Ȃ��G�b�W
-		
+
 		for(int i = 0;i < n;i++){
 			if(memo[i].size() <= 1){///交点1以下
 				if(memo[i].size() == 1){
@@ -79,9 +82,9 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 					continue;
 				}
 				memo[i].clear();
-			} 
+			}
 		}
-		
+
 		//交点1個のやつらがちょんぎれてる奴らを繋ぐ場合の処理
 		for(int i = 0;i < ones.size();i++)
 		for(int j = i + 1;j < ones.size();j++){
@@ -99,7 +102,7 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 			memo[t1].add(c2);
 			memo[t2].clear();///�Е��͏���
 		}
-		
+
 		for(int i = 0;i < n;i++){
 			if(memo[i].size() <= 1){///交点1以下
 				if(memo[i].size() == 1){
@@ -110,9 +113,9 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 					continue;
 				}
 				memo[i].clear();
-			} 
+			}
 		}
-		
+
 		for(int i = 0;i < n;i++){
 			if(memo[i].size() <= 2){
 				continue;
@@ -147,20 +150,18 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 				answer = tmp;
 			}
 		}
-		
-		Graphics2D g2d = (Graphics2D) ansImage.getGraphics();
+
+//		Graphics2D g2d = (Graphics2D) ansImage.getGraphics();
 		for(int i = 0;i < answer.size();i++){
 			int next = (i + 1)%answer.size();
 			//int nnext = (i + 2)%answer.size();
 			int x = (int)answer.get(i).t1.doubleValue();
 			int y = (int)answer.get(i).t2.doubleValue();
-			g2d.setColor(Color.YELLOW);
-			g2d.fillOval(x-2, y-2, 4, 4);
 			if(Constants.isOutputDebugOval)crossPoints.add(new Tuple2<Integer, Integer>(x,y));
 			int nx = (int)answer.get(next).t1.doubleValue();
 			int ny = (int)answer.get(next).t2.doubleValue();
-			g2d.setColor(Color.WHITE);
-			g2d.drawLine(x,y,nx,ny);
+//			g2d.setColor(Color.WHITE);
+//			g2d.drawLine(x,y,nx,ny);
 		}
 		double ccw0 = 0.0;
 		for(int i = 0;i < answer.size();i++){
@@ -185,10 +186,10 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 			result *= 100;
 			result = (int)result;
 			result /= 100;
-			g2d.setColor(Color.WHITE);
-			g2d.drawString(String.valueOf(result), (int)nx, (int)ny);
+//			g2d.setColor(Color.WHITE);
+//			g2d.drawString(String.valueOf(result), (int)nx, (int)ny);
 		}
-		g2d.dispose();
+//		g2d.dispose();
 		finish();
 	}
 
@@ -244,10 +245,10 @@ public class CrossAlgorithm implements Runnable{///�G�b�W�����_�
 		return deg;
 	}
 
-	public List<Tuple2<Integer, Integer>> getCrossPoints(){
+	public List<Tuple2<Integer, Integer>> gtCrossPoints(){
 		return crossPoints;
 	}
-	
+
 	private void finish(){
 		this.isFinished = true;
 	}

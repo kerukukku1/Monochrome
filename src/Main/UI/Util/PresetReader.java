@@ -31,6 +31,10 @@ public class PresetReader {
 		return consts;
 	}
 	
+	public Object getValue(String hash){
+		return memo.get(hash);
+	}
+	
 	private void createHash(){
 		memo = new HashMap<String, Object>();
 		List<String> list = new ArrayList<String>();
@@ -41,7 +45,7 @@ public class PresetReader {
 			e.printStackTrace();
 		}
 		for(String tar : list){
-			String[] spl = tar.split(":");
+			String[] spl = tar.split(",");
 			Object obj = new Object();
 			if(spl[0].equals("int")){
 				obj = (Object)Integer.valueOf(spl[2]);

@@ -15,7 +15,6 @@ import Mahito6.Main.Tuple2;
 public class EdgeFinder implements Runnable{
     // �ｽﾏ撰ｿｽ
     private ArrayList<Double> sin_table, cos_table;  ///探索処理高速化のためにsin,cosは全て単位角度で前計算
-    private ArrayList<Integer> cross;
 	private BufferedImage image,             ///入力画像
 							save_image,      ///tmp画像(エッジ消したりするやつ)
 							save_image_line; ///ans画像
@@ -24,9 +23,8 @@ public class EdgeFinder implements Runnable{
 				diagonal, ///対角線
 				d2;       ///対角線の２倍
 
-	private boolean[][] binary_image;///２値情報([w][h]、false:黒  true:白)
 	private ArrayList<Edge> edges;///検出したエッジを入れる(つまりans)
-	private int[][] dst_image;
+	private long[][] dst_image;
 	private SolverConstants consts;
 	private boolean isFinished = false;///全ての処理が終了するとtrueになる
 
@@ -34,7 +32,6 @@ public class EdgeFinder implements Runnable{
 		this.image = image;
 		this.w = image.getWidth();
 		this.h = image.getHeight();
-		cross = new ArrayList<Integer>();
 		this.consts = consts;
 		if(!isThreading)init();
 	}
@@ -51,6 +48,7 @@ public class EdgeFinder implements Runnable{
 	
 	private void finish(){
 		this.isFinished = true;
+		dst_image = null;
 	}
 	public boolean isFinished(){
 		return this.isFinished;
@@ -98,19 +96,19 @@ public class EdgeFinder implements Runnable{
 //			ImageIO.write(save_image_line, "png", new File(c+".png"));///途中経過を出力
 			c++;
 		}
-		lsm.finish();///最小二乗法で抽出された白点をデバッグ
+//		lsm.finish();///最小二乗法で抽出された白点をデバッグ
 
-		for(int i = 0;i < edges.size();i++){
-			for(int j = i + 1;j < edges.size();j++){
-				///全てのエッジの交点を描画する。
-				Edge e1 = edges.get(i);
-				Edge e2 = edges.get(j);
-				Tuple2<Double,Double> cross = Edge.getCross(e1,e2);
-				if(e1.onLine(cross)&&e2.onLine(cross)){///両方のエッジ上にある
-					drawVertex(save_image_line,(int)cross.t1.doubleValue(),(int)cross.t2.doubleValue());
-				}
-			}
-		}
+//		for(int i = 0;i < edges.size();i++){
+//			for(int j = i + 1;j < edges.size();j++){
+//				///全てのエッジの交点を描画する。
+//				Edge e1 = edges.get(i);
+//				Edge e2 = edges.get(j);
+//				Tuple2<Double,Double> cross = Edge.getCross(e1,e2);
+//				if(e1.onLine(cross)&&e2.onLine(cross)){///両方のエッジ上にある
+//					drawVertex(save_image_line,(int)cross.t1.doubleValue(),(int)cross.t2.doubleValue());
+//				}
+//			}
+//		}
 		long end = System.currentTimeMillis();
 		System.out.println((end - start)+"ms");
 		finish();
@@ -133,7 +131,7 @@ public class EdgeFinder implements Runnable{
             cos_table.add(Math.cos((Math.PI / consts.kAngleSplits) * t));
         }
         long s = System.currentTimeMillis();
-        dst_image = new int[d2][consts.kAngleSplits];
+        dst_image = new long[d2][consts.kAngleSplits];
         for(int r = 0; r < d2; r++)
         for(int t = 0; t < consts.kAngleSplits; t++){
             dst_image[r][t] = 0;
@@ -344,12 +342,12 @@ public class EdgeFinder implements Runnable{
     }
 
     private Tuple2<Double,Double> calcHoughLine(boolean save_flg){///ハフ変換で最も評価値の高い直線を返す
-        int[][] counter = dst_image;
-        int max_count = 0;
+        long[][] counter = dst_image;
+        long max_count = 0;
         int t_max = 0, r_max = 0;
         for(int r = 0; r < d2; r++){
             for(int t = 0; t < consts.kAngleSplits; t++){
-                int cnt = counter[r][t];
+                long cnt = counter[r][t];
                 if(max_count < cnt){
                     max_count = cnt;
                     t_max = t;
@@ -419,6 +417,5 @@ public class EdgeFinder implements Runnable{
 		}
 		finish();
 	}
-
 }
 
