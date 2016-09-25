@@ -9,6 +9,7 @@ public class Main {
 	
 	public Main(){
 		initUI();
+		mainFrame.setVisible(true);
 	}
 	
 	public void initUI(){

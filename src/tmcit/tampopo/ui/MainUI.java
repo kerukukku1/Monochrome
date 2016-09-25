@@ -28,7 +28,6 @@ public class MainUI extends JFrame{
 	public void initJFrame(){
 		this.setSize(new Dimension(MAINFRAME_WIDTH,MAINFRAME_HEIGHT));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);
 	}
 	
 	public void makePanels(){
