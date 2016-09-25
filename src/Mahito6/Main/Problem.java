@@ -8,7 +8,7 @@ import java.util.List;
 import org.opencv.core.Mat;
 
 import Mahito6.Solver.Edge;
-import Mahito6.UI.VisualizeFrame;
+import Mahito6.UI.HandlSummaryPanel;
 import Main.UI.Util.Coordinates;
 
 public class Problem {

@@ -68,12 +68,12 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 //    private int[] xpoints;
 	private BasicStroke maxiStroke;
 	private BasicStroke miniStroke;
-    private VisualizeFrame owner;
+    private HandlSummaryPanel owner;
     private Map<Integer, Boolean> isWhite;
 //    private int imgHeight, imgWidth;
 //    private byte[] pixels;
     
-	public RealTimeDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
+	public RealTimeDialog(int x, int y, int range, VisualizePanel parent, HandlSummaryPanel owner){
 		this.x = x;
 		this.y = y;
 		this.owner = owner;
@@ -112,8 +112,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		this.setVisible(true);
 		this.setLayout(null);
 		this.setSize(this.range*2,this.range*2);
-		int wd = VisualizeFrame.visualizeWidth;
-		int ht = VisualizeFrame.visualizeHeight;
+		int wd = HandlSummaryPanel.visualizeWidth;
+		int ht = HandlSummaryPanel.visualizeHeight;
 		wd = (int)((double)wd/scale);
 		ht = (int)((double)ht/scale);
 		img = new BufferedImage(wd+range*2, ht+range*2, BufferedImage.TYPE_INT_ARGB);

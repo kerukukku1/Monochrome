@@ -23,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import Mahito6.Main.Main;
 import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
@@ -33,8 +34,8 @@ import Mahito6.Solver.EdgeFinder;
 import Mahito6.Solver.LeastSquareMethod;
 import Main.UI.Util.Coordinates;
 
-public class VisualizeFrame extends JFrame implements KeyListener{
-	private static VisualizeFrame mine;
+public class HandlSummaryPanel extends JPanel implements KeyListener{
+	private static HandlSummaryPanel mine;
 	private VisualizePanel visPanel;
 	private String title;
 	private List<Tuple2<Double, Double>> vertex;
@@ -45,14 +46,14 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	private RealTimeDialog realtimeDialog;
 	private ParameterPanel paramPanel;
 	private int index;
-	public static final int visualizeWidth = 600;
-	public static final int visualizeHeight = Toolkit.getDefaultToolkit().getScreenSize().height-100;
+	public static final int visualizeWidth = Main.pieceView.getTabSize().width - 330;
+	public static final int visualizeHeight = Main.pieceView.getTabSize().height - 50;
 	private Problem myProblem;
 	
-	public VisualizeFrame(int index, PieceViewPanel parent){
+	public HandlSummaryPanel(int index, PieceViewPanel parent){
 		init(index, parent);
-		VisualizeFrame.mine = this;
-		title = "Visualize";
+		HandlSummaryPanel.mine = this;
+//		title = "Visualize";
 		launchUI();
 		this.requestFocusInWindow();
 		this.setVisible(true);
@@ -68,11 +69,12 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	}
 	
 	private void launchUI() {
-		this.setTitle(title);
-		this.setSize(VisualizeFrame.visualizeWidth + 300+15, VisualizeFrame.visualizeHeight+35);
-		this.setResizable(false);
+//		this.setTitle(title);
+		this.setSize(HandlSummaryPanel.visualizeWidth + 300+15, HandlSummaryPanel.visualizeHeight+35);
+//		this.setResizable(false);
 		this.setLayout(null);
-	    this.getContentPane().setBackground(Color.BLUE.darker().darker());
+//	    this.getContentPane().setBackground(Color.BLUE.darker().darker());
+		this.setBackground(Color.BLUE.darker().darker());
 		lines = makeLine2D(this.vertex);
 		edges = new ArrayList<Edge>();
 		
@@ -99,13 +101,13 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	
 	private void setVisualizePanel(){
 		visPanel = new VisualizePanel(vertex, coord, lines, this);
-		visPanel.setBounds(5, 5, VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight);
+		visPanel.setBounds(5, 5, HandlSummaryPanel.visualizeWidth, HandlSummaryPanel.visualizeHeight);
 		this.add(visPanel);
 	}
 	
 	public void setRealTimeDialog(RealTimeDialog realtimeDialog){
 		this.realtimeDialog = realtimeDialog;
-		this.realtimeDialog.setBounds(VisualizeFrame.visualizeWidth+10, 5, realtimeDialog.range*2, realtimeDialog.range*2);
+		this.realtimeDialog.setBounds(HandlSummaryPanel.visualizeWidth+10, 5, realtimeDialog.range*2, realtimeDialog.range*2);
 		this.add(realtimeDialog);
 	}
 	
@@ -114,11 +116,11 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	}
 	
 	public static void changeTitle(String title){
-		VisualizeFrame.mine.setTitle("Visualizer" + title);
+//		VisualizeFrame.mine.setTitle("Visualizer" + title);
 	}
 	
 	public static void setVisibleFrame(boolean flag){
-		VisualizeFrame.mine.setVisible(flag);
+		HandlSummaryPanel.mine.setVisible(flag);
 	}
 	
 	private Tuple2<Double, Double> calcHoughParam(Line2D source){
@@ -176,7 +178,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 		Tuple2<Double,Double> ansConverted = lsm.detectAndConvert(e);///preAnsを最小二乗法によって精度上げる
 		if(ansConverted == null){
 			///最小二乗法 or split失敗により強制終了、無限ループ回避用
-			this.setTitle("LeastSquare Error!");
+//			this.setTitle("LeastSquare Error!");
 			return;
 		}
 		Edge ans = ef.split(image,ansConverted.t1,ansConverted.t2);///正しい長さにスプリットする
@@ -203,7 +205,7 @@ public class VisualizeFrame extends JFrame implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_W){
-			this.dispose();
+//			this.dispose();
 		}else if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
 			saveData();
 		}else if(e.getKeyCode() == KeyEvent.VK_RIGHT){

@@ -70,15 +70,15 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
     private int range = 150;
     private BasicStroke miniStroke;
     private BasicStroke maxiStroke;
-    private VisualizeFrame parent;
+    private HandlSummaryPanel parent;
     private int mouseCounter = 0;
     
-    public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
+    public VisualizePanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, HandlSummaryPanel parent){
     	this.parent = parent;
     	launchPanel(vertex, coord, lines, true);
     }
     
-    public void relaunchPanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, VisualizeFrame parent){
+    public void relaunchPanel(List<Tuple2<Double, Double>> vertex, Coordinates coord, List<Line2D> lines, HandlSummaryPanel parent){
     	this.parent = parent;
     	this.vertex = vertex;
     	this.coord = coord;
@@ -148,10 +148,10 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 		this.setTransferHandler(new DropFileHandler());
 
 		//スクリーンサイズ以上のピースは存在しないようにスケールを合わせる
-		gPiece = new BufferedImage(VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight, BufferedImage.TYPE_INT_ARGB);
-		paint = new BufferedImage(VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight, BufferedImage.TYPE_INT_ARGB);
+		gPiece = new BufferedImage(HandlSummaryPanel.visualizeWidth, HandlSummaryPanel.visualizeHeight, BufferedImage.TYPE_INT_ARGB);
+		paint = new BufferedImage(HandlSummaryPanel.visualizeWidth, HandlSummaryPanel.visualizeHeight, BufferedImage.TYPE_INT_ARGB);
 		earth = new JLabel(new ImageIcon(paint));
-		earth.setBounds(0, 0, VisualizeFrame.visualizeWidth, VisualizeFrame.visualizeHeight);
+		earth.setBounds(0, 0, HandlSummaryPanel.visualizeWidth, HandlSummaryPanel.visualizeHeight);
 		earth.addMouseListener(this);
 		earth.addMouseMotionListener(this);
 		this.add(earth);
@@ -173,7 +173,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //		g.setPaint(Color.BLACK);
 		
 		g.setColor(Constants.backgroundColor);
-		g.clearRect(0, 0, (int)(VisualizeFrame.visualizeWidth), (int)(VisualizeFrame.visualizeHeight));
+		g.clearRect(0, 0, (int)(HandlSummaryPanel.visualizeWidth), (int)(HandlSummaryPanel.visualizeHeight));
 		
 //	    g.setStroke(maxiStroke);
 //		polygon = new Polygon(xpoints, ypoints, xpoints.length);
@@ -185,11 +185,11 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //        // アルファ値をセット（以後の描画は半透明になる）
 //        g.setComposite(composite);
 	    g.setColor(Constants.coordColor);
-	    boolean[][] memo = new boolean[VisualizeFrame.visualizeWidth][VisualizeFrame.visualizeHeight];
+	    boolean[][] memo = new boolean[HandlSummaryPanel.visualizeWidth][HandlSummaryPanel.visualizeHeight];
 	    for(int i = 0; i < coord.size(); i++){
 	    	int x = (int)((coord.getVisX(i)+Constants.imagePositionOffset/2)*scale);
 	    	int y = (int)((coord.getVisY(i)+Constants.imagePositionOffset/2)*scale);
-	    	if(x < 0 || y < 0 || x >= VisualizeFrame.visualizeWidth || y >= VisualizeFrame.visualizeHeight)continue;
+	    	if(x < 0 || y < 0 || x >= HandlSummaryPanel.visualizeWidth || y >= HandlSummaryPanel.visualizeHeight)continue;
 	    	if(memo[x][y])continue;
 	    	memo[x][y] = true;
 	    	g.fillRect(x, y, 1, 1);
@@ -346,8 +346,8 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 //	    	double y = d.t2;
 //	    }
 //	    
-	    double w = VisualizeFrame.visualizeWidth - Constants.imagePositionOffset/4;
-	    double h = VisualizeFrame.visualizeHeight - Constants.imagePositionOffset/4;
+	    double w = HandlSummaryPanel.visualizeWidth - Constants.imagePositionOffset/4;
+	    double h = HandlSummaryPanel.visualizeHeight - Constants.imagePositionOffset/4;
 	    //System.out.println("w:" + w + " h:" + h);
 	    coord.calc();
 	    maxx = coord.maxx - coord.minx + Constants.imagePositionOffset/2;
@@ -520,7 +520,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 					try {
 						Robot r = new Robot();
 						Point p = MouseInfo.getPointerInfo().getLocation();
-						r.mouseMove(p.x-e.getX()+(int)((double)VisualizeFrame.visualizeWidth)+range, p.y-e.getY()+range);
+						r.mouseMove(p.x-e.getX()+(int)((double)HandlSummaryPanel.visualizeWidth)+range, p.y-e.getY()+range);
 					} catch (AWTException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
