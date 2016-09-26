@@ -55,17 +55,36 @@ public class SolverPanel extends JPanel implements MouseListener{
 	private void leftDetailClick(DetailPanel detailPanel,int button){
 		String title = detailPanel.title;
 		List<Answer> answers = detailPanel.answers;
-		if(button == 1){
+		if(button == 1 || button == 2){
 			///解が1個ならビッグ、複数ならリスト表示
+			JPanel newPanel;
 			if(detailPanel.answers.size() == 1){
-				BigImagePanel newPanel = new BigImagePanel(title,answers.get(0));
-				center.addTab(title,newPanel);
+				newPanel = new BigImagePanel(title,answers.get(0));
 			}else{
-				MiniListPanel newPanel = new MiniListPanel(title, answers);
+				MiniListPanel newMiniListPanel = new MiniListPanel(title, answers,this);
+				title = newMiniListPanel.getTabTitle();
+				newPanel = newMiniListPanel;
+			}
+			if(button == 1){
+				center.addTabAndSelect(title, newPanel);
+			}else if(button == 2){
 				center.addTab(title, newPanel);
 			}
 		}else{
 			///右クリックなら要素削除
+		}
+	}
+	private void centerMiniImageClick(MiniImagePanel miniImagePanel,int button){
+		String title = miniImagePanel.getTabTitle();
+		Answer answer = miniImagePanel.answer;
+		if(button == 1 || button == 2){
+			///解が1個ならビッグ、複数ならリスト表示
+			BigImagePanel newPanel = new BigImagePanel(title,answer);
+			if(button == 1){
+				center.addTabAndSelect(title,newPanel);
+			}else if(button == 2){
+				center.addTab(title, newPanel);
+			}
 		}
 	}
 
@@ -75,6 +94,8 @@ public class SolverPanel extends JPanel implements MouseListener{
 		System.out.println(button);
 		if(e.getSource() instanceof DetailPanel){
 			leftDetailClick((DetailPanel)e.getSource(), button);
+		}else if(e.getSource() instanceof MiniImagePanel){
+			centerMiniImageClick((MiniImagePanel)e.getSource(), button);
 		}
 	}
 

@@ -13,15 +13,25 @@ import tmcit.tampopo.util.PuzzleImage;
 
 public class MiniImagePanel extends JPanel{
 	
-	public Answer answer;
+	public MiniListPanel source;
+	public int index;
 	public int IMAGESIZE;
+	public Answer answer;
 	public JLabel imageLabel;
 	
-	public MiniImagePanel(Answer answer,int IMAGESIZE){
+	public MiniImagePanel(Answer answer,int index,int IMAGESIZE,MiniListPanel source){
+		this.source = source;
 		this.answer = answer;
+		this.index = index;
 		this.IMAGESIZE = IMAGESIZE;
 		initPanel();
 		makePanel();
+	}
+	
+	public String getTabTitle(){
+		///タブに追加するときのタイトルをここで決める、難しい
+		String ret = "(" + (index+1) + "/" + source.miniPanelNum + ")";
+		return ret;
 	}
 	
 	public void makePanel(){

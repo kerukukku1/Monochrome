@@ -16,14 +16,18 @@ public class MiniListPanel extends JPanel{
 	public static final int HEIGHT = SolverPanel.CENTER_HEIGHT - 26;
 	public static final int IMAGESIZE = SolverPanel.CENTER_MINIIMAGE_SIZE;
 	
+	public SolverPanel root;
 	public String title;
 	public List<Answer> answers;
 	public PanelListManager panelListManager;
+	public int miniPanelNum;
 	
-	public MiniListPanel(String title,List<Answer> answers){
+	public MiniListPanel(String title,List<Answer> answers,SolverPanel root){
+		this.root = root;
 		///answerは必ずコピーする
 		this.answers = new ArrayList<Answer>();
 		this.title = title;
+		this.miniPanelNum = 0;
 		initPanel();
 		makePanel();
 		for(Answer answer : answers){
@@ -31,11 +35,18 @@ public class MiniListPanel extends JPanel{
 		}
 	}
 	
+	public String getTabTitle(){
+		String ret = title + "[" + miniPanelNum + "]";
+		return ret;
+	}
+	
 	public void addAnswer(Answer answer){
 		///1個画像を追加する
 		this.answers.add(answer);
-		MiniImagePanel miniImagePanel = new MiniImagePanel(answer, IMAGESIZE);
+		MiniImagePanel miniImagePanel = new MiniImagePanel(answer,miniPanelNum,IMAGESIZE,this);
+		miniImagePanel.addMouseListener(root);
 		panelListManager.addPanel(miniImagePanel);
+		miniPanelNum++;
 	}
 	
 	public void makePanel(){
