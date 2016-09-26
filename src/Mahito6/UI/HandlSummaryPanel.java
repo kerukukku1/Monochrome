@@ -148,6 +148,10 @@ public class HandlSummaryPanel extends JPanel implements KeyListener{
 		double y2 = source.getY2();
 		return new Edge(r,theta,x1,y1,x2,y2);
 	}
+	
+	public Problem getProblem(){
+		return myProblem;
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {

@@ -15,6 +15,7 @@ public class Problem {
 	private List<Coordinates> coords;
 	private List<List<Edge>> allEdges;
 	private List<List<Tuple2<Double, Double>>> vertex;
+	private BufferedImage binImage;
 	private boolean modeWaku;
 	public Problem(boolean modeWaku){
 		this.modeWaku = modeWaku;
@@ -82,5 +83,14 @@ public class Problem {
 			bim.setRGB(c.getVisX(j) + Constants.imagePositionOffset/2, c.getVisY(j) + Constants.imagePositionOffset/2, 0xff000000 | 255 <<16 | 255 <<8 | 255);
 		}
 		return bim;
+	}
+
+	public void setBufferedImage(BufferedImage bufBinImage) {
+		// TODO Auto-generated method stub
+		this.binImage = bufBinImage;
+	}
+	
+	public BufferedImage getSubImage(int x, int y, int range){
+		return binImage.getSubimage(Math.max(0, x-range), Math.max(0, y-range), range*2, range*2);
 	}
 }

@@ -185,7 +185,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		int nowx = (int)((double)x/scale);
 		int nowy = (int)((double)y/scale);
 //		BufferedImage output = img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2);
-		g.drawImage(img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2), 0, 0, earth);
+//		g.drawImage(img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2), 0, 0, earth);
+		g.drawImage(owner.getProblem().getSubImage(nowx + coord.minx - Constants.imagePositionOffset/2, nowy + coord.miny - Constants.imagePositionOffset/2, range), 0, 0, earth);
 		g.dispose();
 		if(isRepaint)owner.repaint();
 	}
