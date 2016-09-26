@@ -25,7 +25,7 @@ public class AnswerListPanel extends JPanel{
 		
 		panelListManager.addPanel(new DetailPanel("test", Answer.makeDebugAnswer(),source));
 		List<Answer> ansList = new ArrayList<Answer>();
-		for(int i = 0;i < 100;i++)
+		for(int i = 0;i < 5;i++)
 			ansList.add(Answer.makeDebugAnswer());
 		panelListManager.addPanel(new DetailPanel("any", ansList,source));
 	}
