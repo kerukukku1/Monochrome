@@ -6,6 +6,7 @@ import java.util.List;
 public class Piece {
 	
 	private List<Point> points;///座標セット
+	private List<Double> angleSet = null;///角度セット
 	
 	private Piece(List<Point> points){
 		this.points = points;
@@ -25,6 +26,25 @@ public class Piece {
 	public Segment getSegment(int index){
 		int next = (index+1)%points.size();
 		return new Segment(points.get(index), points.get(next));
+	}
+	
+	public double getSegmentLength(int index){
+		Segment ret = getSegment(index);
+		return ret.length;
+	}
+	
+	public double getAngle(int index){
+		if(angleSet == null)calcAllAngle();
+		return angleSet.get(index);
+	}
+	
+	private void calcAllAngle(){
+		AngleUtil angleUtil = new AngleUtil(points);
+		try {
+			angleSet = angleUtil.calc();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static class PieceBuilder{

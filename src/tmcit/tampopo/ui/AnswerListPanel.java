@@ -11,22 +11,23 @@ import javax.swing.border.BevelBorder;
 import tmcit.tampopo.util.Answer;
 
 public class AnswerListPanel extends JPanel{
-	
+	public SolverPanel source;
 	public PanelListManager panelListManager;
 	public int WIDTH,HEIGHT;
 	
-	public AnswerListPanel(int WIDTH,int HEIGHT){
+	public AnswerListPanel(int WIDTH,int HEIGHT,SolverPanel source){
+		this.source = source;
 		this.WIDTH = WIDTH;
 		this.HEIGHT = HEIGHT;
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		initPanel();
 		makePanel();
 		
-		panelListManager.addPanel(new DetailPanel("test", Answer.makeDebugAnswer()));
+		panelListManager.addPanel(new DetailPanel("test", Answer.makeDebugAnswer(),source));
 		List<Answer> ansList = new ArrayList<Answer>();
 		for(int i = 0;i < 100;i++)
 			ansList.add(Answer.makeDebugAnswer());
-		panelListManager.addPanel(new DetailPanel("any", ansList));
+		panelListManager.addPanel(new DetailPanel("any", ansList,source));
 	}
 	
 	public void makePanel(){

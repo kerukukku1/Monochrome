@@ -124,12 +124,12 @@ public class PuzzleImage {
 				double ty = (edge.p2.y - slidey) * realper;
 				g2d.drawLine((int)x, (int)y, (int)tx, (int)ty);
 				if(pieceDegree){
-					//g2d.drawString(getShortDouble(piece.getAngle(i),hvalue)+"��", (int)x, (int)y);
+					g2d.drawString(getShortDouble(piece.getAngle(i),hvalue)+"d", (int)x, (int)y);
 				}
 				if(pieceLength){
 					double hx = (x + tx)/2.0;
 					double hy = (y + ty)/2.0;
-					//g2d.drawString(getShortDouble(piece.getVerLength(i),hvalue), (int)hx, (int)hy);
+					g2d.drawString(getShortDouble(piece.getSegmentLength(i),hvalue), (int)hx, (int)hy);
 				}
 				if(pieceIndex){
 					g2d.setColor(Color.RED);
@@ -150,12 +150,12 @@ public class PuzzleImage {
 				double ty = (edge.p2.y - slidey) * realper;
 				g2d.drawLine((int)x, (int)y, (int)tx, (int)ty);
 				if(frameDegree){
-					//g2d.drawString(getShortDouble(frame.getAngle(i),hvalue)+"��", (int)x, (int)y);
+					g2d.drawString(getShortDouble(frame.getAngle(i),hvalue)+"d", (int)x, (int)y);
 				}
 				if(frameLength){
 					double hx = (x + tx)/2.0;
 					double hy = (y + ty)/2.0;
-					//g2d.drawString(getShortDouble(frame.getVerLength(i),hvalue), (int)hx, (int)hy);
+					g2d.drawString(getShortDouble(frame.getSegmentLength(i),hvalue), (int)hx, (int)hy);
 				}
 				if(frameIndex){
 					g2d.setColor(Color.RED);

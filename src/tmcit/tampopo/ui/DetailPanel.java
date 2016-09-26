@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
+import javax.swing.border.Border; 
 import javax.swing.border.LineBorder;
 
 import tmcit.tampopo.util.Answer;
@@ -27,12 +27,14 @@ public class DetailPanel extends JPanel implements MouseListener{
 	public static final int IMAGESIZE = SolverPanel.LEFT_IMAGE_SIZE;
 	public static final int TITLE_OFFSET = 20;
 	
+	public SolverPanel source;
 	public String title;
 	public List<Answer> answers;///1個でもこっち使う
 	
 	public JLabel titleLabel;
 	
-	public DetailPanel(String title,Answer answer){
+	public DetailPanel(String title,Answer answer,SolverPanel source){
+		this.source = source;
 		this.answers = new ArrayList<Answer>();
 		this.answers.add(answer);
 		this.title = title;
@@ -40,7 +42,8 @@ public class DetailPanel extends JPanel implements MouseListener{
 		makePanel();
 		addLabels();
 	}
-	public DetailPanel(String title,List<Answer> answers){
+	public DetailPanel(String title,List<Answer> answers,SolverPanel source){
+		this.source = source;
 		this.answers = answers;
 		this.title = title;
 		initPanel();
@@ -50,7 +53,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 	
 	public void addLabels(){
 		titleLabel = new JLabel(title);
-		titleLabel.setBounds(2, 2, SolverPanel.LEFT_WIDTH, TITLE_OFFSET);
+		titleLabel.setBounds(2, 2, SolverPanel.LEFT_WIDTH - 20, TITLE_OFFSET);
 		titleLabel.setHorizontalAlignment(JLabel.CENTER);
 		titleLabel.addMouseListener(this);
 		this.add(titleLabel);
@@ -76,6 +79,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		JLabel imgLabel = new JLabel();
 		imgLabel.setIcon(new ImageIcon(getImage()));
 		imgLabel.setBounds(2, 2 + TITLE_OFFSET, IMAGESIZE -4, IMAGESIZE -4);
+		this.addMouseListener(source);
 		this.add(imgLabel);
 	}
 	

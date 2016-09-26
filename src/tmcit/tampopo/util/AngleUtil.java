@@ -1,21 +1,22 @@
 package tmcit.tampopo.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AngleUtil {
 	
-	private ArrayList<Point> target;
+	private List<Point> target;
 	
-	public AngleUtil(ArrayList<Point> target){
+	public AngleUtil(List<Point> target){
 		this.target = target;
 	}
 	
-	public ArrayList<Double> calc() throws Exception{
+	public List<Double> calc() throws Exception{
 		ArrayList<Double> ret = new ArrayList<Double>(target.size());
 		for(int i = 0;i < target.size();i++){
 			ret.add(0.0);
 		}
-		ArrayList<Point> tar = target;///�S���W�擾
+		List<Point> tar = target;///�S���W�擾
 		double degsum = 0.0;
 		//double ccw0 = ccw(tar.get(0),tar.get(1),tar.get(2));
 		int n = tar.size();
