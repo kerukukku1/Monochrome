@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -16,44 +15,52 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import Mahito6.UI.PieceListView;
+
 public class MainUI extends JFrame implements ActionListener{
-	
+
 	public static final int MAINFRAME_WIDTH = 1000;
 	public static final int MAINFRAME_HEIGHT = 770;
-	
+
 	public static final int MAINTABPANE_WIDTH = 980;
 	public static final int MAINTABPANE_HEIGHT = 700;
-	
+
+	public Mahito6.Main.Main mahitoMain;
+
+	public PieceListView pieceListView;
 	public SolverPanel solverPanel;
-	
+
 	public JPanel mainPanel;///ここに全体のタブ貼ったりする
 	public MainTabPane tabPane;
-	
-	public MainUI(){
+
+	public MainUI(Mahito6.Main.Main mahitoMain){
+		this.mahitoMain = mahitoMain;
 		initJFrame();
 		setMenuBar();
 		makePanels();
 	}
-	
+
 	public void initJFrame(){
 		this.setSize(new Dimension(MAINFRAME_WIDTH,MAINFRAME_HEIGHT));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+
 	public void makePanels(){
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new FlowLayout());
 		mainPanel.setBackground(Color.BLACK);
-		
+
 		tabPane = new MainTabPane(MAINTABPANE_WIDTH,MAINTABPANE_HEIGHT);
-		
+
+		pieceListView = mahitoMain.pieceView;
 		solverPanel = new SolverPanel();
-		
+
+		tabPane.addTab("Scanner", pieceListView);
 		tabPane.addTab("SOLVER", solverPanel);
 		mainPanel.add(tabPane);
 		this.add(mainPanel);
 	}
-	
+
 	private void setMenuBar() {
 		JMenuBar menubar = new JMenuBar();
 		JMenu menu1 = new JMenu("File");

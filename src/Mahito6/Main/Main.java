@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 /**
  * @author fujinomahito
@@ -11,9 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
@@ -24,33 +22,31 @@ import org.opencv.imgproc.Imgproc;
 
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.CrossAlgorithm;
-import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
 import Mahito6.UI.MainFrame;
 import Mahito6.UI.PieceListView;
-import Mahito6.UI.HandlSummaryPanel;
 import Main.UI.Util.FolderManager;
 
 public class Main {
 	private static MainFrame mainFrame;
 	public static PieceListView pieceView;
 	public Main(){
+		//queue先に確保
+		System.out.println(System.getProperty("java.library.path"));
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		BFS.initQueue();
 		//mainFrame = new MainFrame(Constants.uiTitle);
 		new ProblemManager();
 		new FolderManager().buildDirectory();
 		pieceView = new PieceListView();
 	}
-	
+
 	public static void main(String[] args){
-		//queue先に確保
-		System.out.println(System.getProperty("java.library.path"));
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		BFS.initQueue();
 		new Main();
 //		debug();
 //		outputImages();
 	}
-	
+
 	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/public/SCAN/08_23_SCAN/t/7_piece1_600.JPG");
 	public static void debug(){///EdgeFinderのデバッグ用
 		BufferedImage tarImage = null;
@@ -79,7 +75,7 @@ public class Main {
 		if(crossAlgorithm.isErrorCross()){
 			System.out.println("cross error!!");
 		}
-		
+
 		List<Tuple2<Double,Double>> ans2 = crossAlgorithm.getAnswer();///�S�Ă̒��_���擾
 		List<String> tmpOut = new ArrayList<String>();
 		System.out.println(ans2.size());
@@ -94,7 +90,7 @@ public class Main {
 //		//VisualizeFrame vis = new VisualizeFrame(vertex, null);
 //		PieceListView view = new PieceListView(vertex, null, null);
 	}
-	
+
 	private static String testImagePath = "/Users/fujinomahito/Desktop/_test3/test.JPG";
 	private static void outputImages(){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -114,7 +110,7 @@ public class Main {
         	}
         }
 	}
-	
+
 	private static String getPath(String head){
         File f = new File(testImagePath);
         String filename = f.getName();
