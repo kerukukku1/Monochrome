@@ -31,7 +31,7 @@ public class AnswerListPanel extends JPanel{
 	}
 	
 	public void makePanel(){
-		panelListManager = new PanelListManager(WIDTH, HEIGHT);
+		panelListManager = new PanelListManager(WIDTH, HEIGHT,false);
 		panelListManager.setBounds(0, 0, WIDTH, HEIGHT);
 		this.add(panelListManager);
 	}

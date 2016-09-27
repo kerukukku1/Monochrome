@@ -42,9 +42,9 @@ public class SolverPanel extends JPanel implements MouseListener{
 		center = new AnswerListTab(CENTER_WIDTH,CENTER_HEIGHT);
 		right = new SolverDetailPanel(RIGHT_WIDTH,RIGHT_HEIGHT);
 		
-		this.add(left);
-		this.add(center);
 		this.add(right);
+		this.add(center);
+		this.add(left);
 	}
 	
 	public void tabClose(){

@@ -1,6 +1,7 @@
 package tmcit.tampopo.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +18,24 @@ public class PanelListManager extends JScrollPane{
 	private PanelListManager own;
 	private int WIDTH,HEIGHT;
 	public JPanel mainPanel;
-	public List<JPanel> jPanels;
+	public List<Component> jComponents;
 	public int heightSum;
 	public int widthSum;
 	public int heightMax;
 	
-	public PanelListManager(int WIDTH,int HEIGHT){
+	public PanelListManager(int WIDTH,int HEIGHT,boolean VERTICAL_NEVER){
 		this.own = this;
 		this.WIDTH = WIDTH;
 		this.HEIGHT = HEIGHT;
-		this.jPanels = new ArrayList<JPanel>();
+		this.jComponents = new ArrayList<Component>();
 		this.heightSum = 0;
 		this.widthSum = 0;
 		this.heightMax = 0;
 		this.mainPanel = new JPanel(null);
 		this.setViewportView(mainPanel);
 		this.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		if(VERTICAL_NEVER)
+			this.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		this.getVerticalScrollBar().setUnitIncrement(SCROLLBARINCREMENT);
 		resize();
 	}
@@ -52,8 +55,8 @@ public class PanelListManager extends JScrollPane{
 		mainPanel.setBackground(backGround);
 	}
 	
-	public void addPanel(JPanel panel){
-		jPanels.add(panel);
+	public void addPanel(Component panel){
+		jComponents.add(panel);
 		int height = panel.getPreferredSize().height;
 		int width = panel.getPreferredSize().width;
 		System.out.println(width+","+height);
