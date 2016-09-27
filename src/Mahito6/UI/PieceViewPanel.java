@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.Main;
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
@@ -36,7 +37,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private List<Tuple2<Double, Double>> vertex;
 	private Polygon polygon;
 	private Coordinates coord;
-	private VisualizeFrame vis = null;
+	private HandlSummaryPanel vis = null;
 	private List<Edge> edges;
 	private Problem myProblem;
 	
@@ -196,7 +197,8 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		vis = new VisualizeFrame(index, this);
+		vis = new HandlSummaryPanel(index, this);
+		Main.pieceView.setVisualizePanel(vis);
 	}
 
 	@Override

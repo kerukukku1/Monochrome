@@ -37,7 +37,7 @@ public class ImageManager{
 	private List<Coordinates> coords;
 	private List<BufferedImage> bufImages;
 	private List< List<Tuple2<Double, Double>> > vertex;
-	private BufferedImage confirm, bufBinImage;
+	private BufferedImage confirm, bufBinImage, grayImage;
 	public static List<String> data;
 	public List<List<Edge>> allEdges;
 	public Problem problem;
@@ -68,6 +68,7 @@ public class ImageManager{
 		Mat _source = source.clone();
 		if(!Constants.modeWaku)Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));  
 		Imgproc.cvtColor(_source, _source, Imgproc.COLOR_RGB2GRAY);
+		grayImage = this.MatToBufferedImageBGR(_source);
         //枠のときの速度上げ専
         //if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
         //微妙?
@@ -228,7 +229,7 @@ public class ImageManager{
 		MeasureTimer.start();
 		Act act = new Act(bufBinImage, Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
-		bufBinImage = null;
+		problem.setBufferedImage(grayImage);
 		MeasureTimer.end();
 		MeasureTimer.call();
 

@@ -25,7 +25,7 @@ public class PieceListView extends JFrame{
 	private String title;
 	private JPanel paint;
 	private JPanel earth;
-	private JPanel viewer;
+	private HandlSummaryPanel viewer;
 	private JTabbedPane summary;
 	public static List<PieceViewPanel> pieceViews;
 	private int line = 4;
@@ -40,6 +40,13 @@ public class PieceListView extends JFrame{
 	
 	public void launchPiecePanel(){
 		paintPiecePanel(ProblemManager.getProblems());
+	}
+	
+	public void setVisualizePanel(HandlSummaryPanel vf){
+		viewer = vf;
+		summary.setComponentAt(1, viewer);
+		summary.setSelectedIndex(1);
+		summary.revalidate();
 	}
 	
 	private void paintPiecePanel(List<Problem> problems){
@@ -64,31 +71,36 @@ public class PieceListView extends JFrame{
 		this.repaint();
 	}
 	
+	public Dimension getTabSize(){
+		return summary.getSize();
+	}
+	
 	private void launchUI() {
 		this.setTitle(title);
 		this.setResizable(false);
-		this.setSize(950, 700);
+		this.setSize(950, 800);
 		earth = new JPanel();
 		paint = new JPanel();
-		viewer = new JPanel();
+		viewer = null;
 		this.setLayout(null);
 		paint.setLayout(null);
 	    JScrollPane scrollpane = new JScrollPane();
-	    scrollpane.setPreferredSize(new Dimension(950, 650));
+	    scrollpane.setPreferredSize(new Dimension(950, 750));
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);
 	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
 	    earth.add(scrollpane);
-	    earth.setBounds(0, 0, 950, 650);
+	    earth.setBounds(0, 0, 950, 750);
 	    
 	    summary = new JTabbedPane();
 	    summary.addTab("List", earth);
-	    summary.addTab("Viewer", viewer);
-	    summary.setBounds(0, 0, 950, 650);
+	    summary.addTab("Viewer", new JPanel());
+	    summary.setPreferredSize(new Dimension(950, 750));
+	    summary.setBounds(0, 0, 950, 750);
 	    this.add(summary);
 	    
-	    InputPanel inputPanel = new InputPanel(0, 650, 950, 30);
+	    InputPanel inputPanel = new InputPanel(0, 750, 950, 30);
 	    this.add(inputPanel);
 	    
 	    pieceViews = new ArrayList<PieceViewPanel>();

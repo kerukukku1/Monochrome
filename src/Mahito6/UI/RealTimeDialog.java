@@ -68,12 +68,12 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 //    private int[] xpoints;
 	private BasicStroke maxiStroke;
 	private BasicStroke miniStroke;
-    private VisualizeFrame owner;
+    private HandlSummaryPanel owner;
     private Map<Integer, Boolean> isWhite;
 //    private int imgHeight, imgWidth;
 //    private byte[] pixels;
     
-	public RealTimeDialog(int x, int y, int range, VisualizePanel parent, VisualizeFrame owner){
+	public RealTimeDialog(int x, int y, int range, VisualizePanel parent, HandlSummaryPanel owner){
 		this.x = x;
 		this.y = y;
 		this.owner = owner;
@@ -112,8 +112,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		this.setVisible(true);
 		this.setLayout(null);
 		this.setSize(this.range*2,this.range*2);
-		int wd = VisualizeFrame.visualizeWidth;
-		int ht = VisualizeFrame.visualizeHeight;
+		int wd = HandlSummaryPanel.visualizeWidth;
+		int ht = HandlSummaryPanel.visualizeHeight;
 		wd = (int)((double)wd/scale);
 		ht = (int)((double)ht/scale);
 		img = new BufferedImage(wd+range*2, ht+range*2, BufferedImage.TYPE_INT_ARGB);
@@ -185,7 +185,8 @@ public class RealTimeDialog extends JPanel implements MouseListener, MouseMotion
 		int nowx = (int)((double)x/scale);
 		int nowy = (int)((double)y/scale);
 //		BufferedImage output = img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2);
-		g.drawImage(img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2), 0, 0, earth);
+//		g.drawImage(img.getSubimage(Math.max(0, nowx-range), Math.max(0, nowy-range), range*2, range*2), 0, 0, earth);
+		g.drawImage(owner.getProblem().getSubImage(nowx + coord.minx - Constants.imagePositionOffset/2, nowy + coord.miny - Constants.imagePositionOffset/2, range), 0, 0, earth);
 		g.dispose();
 		if(isRepaint)owner.repaint();
 	}

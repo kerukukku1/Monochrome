@@ -27,16 +27,16 @@ import Main.UI.Util.FolderManager;
 import Main.UI.Util.PresetReader;
 
 public class ParameterPanel extends JPanel implements ActionListener, ItemListener{
-	private VisualizeFrame parent;
+	private HandlSummaryPanel parent;
 	private JButton run, save, next, back;
 	private JPanel paramField;
 	private List<InputParamPanel> params;
 	private SolverConstants consts;
 	private JComboBox pulldown;
-	public ParameterPanel(VisualizeFrame parent){
+	public ParameterPanel(HandlSummaryPanel parent){
 		this.parent = parent;
 		this.setLayout(null);
-		this.setSize(300, VisualizeFrame.visualizeHeight-300);
+		this.setSize(300, HandlSummaryPanel.visualizeHeight-300);
 		this.setBackground(new Color(51,149,230));
 		launchItems();
 	}
@@ -141,7 +141,7 @@ public class ParameterPanel extends JPanel implements ActionListener, ItemListen
 			parent.next();
 		}else if(cmd.equals("Store")){
 			parent.saveData();
-			parent.setTitle("Saved Data! [id]" + new Random().nextDouble());
+//			parent.setTitle("Saved Data! [id]" + new Random().nextDouble());
 		}else if(cmd.equals("Run")){
 			reloadConstants();
 			BufferedImage tarImage = parent.getImage();

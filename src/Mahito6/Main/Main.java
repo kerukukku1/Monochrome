@@ -28,7 +28,7 @@ import Mahito6.Solver.Edge;
 import Mahito6.Solver.EdgeFinder;
 import Mahito6.UI.MainFrame;
 import Mahito6.UI.PieceListView;
-import Mahito6.UI.VisualizeFrame;
+import Mahito6.UI.HandlSummaryPanel;
 import Main.UI.Util.FolderManager;
 
 public class Main {
