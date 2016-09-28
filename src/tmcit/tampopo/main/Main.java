@@ -1,6 +1,5 @@
 package tmcit.tampopo.main;
 
-
 import tmcit.tampopo.ui.MainUI;
 
 public class Main {
@@ -10,6 +9,7 @@ public class Main {
 
 	public Main(){
 		mahitoMain = new Mahito6.Main.Main();
+		new tmcit.tampopo.util.IconUtil("resources");
 		initUI();
 		mainFrame.setVisible(true);
 	}

@@ -9,11 +9,29 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import tmcit.tampopo.util.Answer;
+
 public class AnswerListTab extends JTabbedPane{
 	
 	public AnswerListTab(int WIDTH,int HEIGHT){
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		initTab();
+	}
+	
+	public Answer getViewingAnswer(){
+		if(!(this.getSelectedComponent() instanceof BigImagePanel)){
+			System.out.println("表示して！");
+			return null;
+		}
+		BigImagePanel bigImagePanel = (BigImagePanel) this.getSelectedComponent();
+		return bigImagePanel.answer;
+	}
+	
+	public void clearPanels(){
+		///クリアする
+		while(this.getTabCount() != 0){
+			deleteOpeningTab();
+		}
 	}
 	
 	public void addTabAndSelect(String title,Component component){
@@ -26,6 +44,16 @@ public class AnswerListTab extends JTabbedPane{
 		///表示中のコンポーネントをタブから削除
 		int nowTab = this.getSelectedIndex();
 		if(nowTab == -1)return;
+		if(this.getSelectedComponent() instanceof MiniListPanel){
+			MiniListPanel miniListPanel = (MiniListPanel) this.getSelectedComponent();
+			if(miniListPanel.detailPanel != null)
+				miniListPanel.detailPanel.listOff();
+		}
+		if(this.getSelectedComponent() instanceof BigImagePanel){
+			BigImagePanel bigImagePanel = (BigImagePanel) this.getSelectedComponent();
+			if(bigImagePanel.detailPanel != null)
+				bigImagePanel.detailPanel.listOff();
+		}
 		this.remove(nowTab);
 	}
 	

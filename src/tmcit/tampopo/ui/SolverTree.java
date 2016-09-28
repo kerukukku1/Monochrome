@@ -10,10 +10,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 
 import tmcit.api.ISolver;
+import tmcit.procon27.main.Solver;
 import tmcit.tampopo.util.FolderNode;
+import tmcit.tampopo.util.MyTreeCellRenderer;
 import tmcit.tampopo.util.ParameterNode;
 
 public class SolverTree extends JTree implements MouseListener , ActionListener{
@@ -21,16 +25,21 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 	public static final Color backGround = new Color(230, 230, 240);
 	private static FolderNode rootNode = new FolderNode("ROOT");
 	public static String[] solvers = {"YASUKIN","YAMADA"};
+	
+	public SolverDetailPanel tabPane;
 	public DefaultTreeModel model;
 
-	public SolverTree(){
+	public SolverTree(SolverDetailPanel tabPane){
 		super(rootNode);
+		this.tabPane = tabPane;
 		initPanel();
 		initTree();
 	}
 
 	public void initTree(){
 		this.model = (DefaultTreeModel)this.getModel();
+		TreeCellRenderer renderer = this.getCellRenderer();
+		this.setCellRenderer(new MyTreeCellRenderer());
 		this.addMouseListener(this);
 	}
 
@@ -58,10 +67,9 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 			System.out.println("SOLVER NULL");
 			return;
 		}
-		ParameterNode node = new ParameterNode(title, solver);
+		ParameterNode node = new ParameterNode(title, solver,tabPane);
 		targetNode.add(node);
 		model.nodeStructureChanged(targetNode);
-		node.showDetail();
 	}
 
 	public void addFolder(FolderNode targetNode){
@@ -106,12 +114,9 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 		item3.addActionListener(this);
 		menu.show(this, x, y);
 	}
-
-	@Override
-	public void mousePressed(MouseEvent event) {
-		int button = event.getButton();
-		if(button != 3)return;
-		int tarRow = this.getRowForLocation(event.getX(), event.getY());
+	
+	private void rightClick(int x,int y){
+		int tarRow = this.getRowForLocation(x, y);
 		if(tarRow == -1)return;
 		boolean folder = true;
 		boolean root = false;
@@ -124,7 +129,31 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 				root = true;
 			}
 		}
-		showPopup(event.getX(), event.getY(), folder,root);
+		showPopup(x, y, folder,root);
+	}
+	
+	private void leftDoubleClick(int x,int y){
+		int tarRow = this.getRowForLocation(x, y);
+		if(tarRow == -1)return;
+		if(this.getSelectionPaths() != null&&this.getSelectionPaths().length != 1)return;
+		this.setSelectionRow(tarRow);
+		if(this.getSelectionPath().getLastPathComponent() instanceof ParameterNode){
+			ParameterNode parameterNode = (ParameterNode) this.getSelectionPath().getLastPathComponent();
+			parameterNode.showDetail();
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent event) {
+		int button = event.getButton();
+		if(button == 3){
+			///右クリ
+			rightClick(event.getX(), event.getY());
+		}else if(button == 1 && event.getClickCount() == 2){
+			///左ダブルクリック
+			leftDoubleClick(event.getX(), event.getY());
+		}
+		
 	}
 
 

@@ -70,12 +70,17 @@ public class MainUI extends JFrame implements ActionListener{
 		JMenuItem menuitem3 = new JMenuItem("Tab_Close");
 		menuitem3.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_D, 0));
+		JMenuItem menuitem4 = new JMenuItem("MERGE(TEST)");
+		menuitem4.setAccelerator(KeyStroke.getKeyStroke(
+				  KeyEvent.VK_M, 0));
 		JMenuItem menuitem1 = new JMenuItem("Exit");
 		menuitem1.addActionListener(this);
 		menuitem2.addActionListener(this);
 		menuitem3.addActionListener(this);
+		menuitem4.addActionListener(this);
 		menu1.add(menuitem2);
 		menu1.add(menuitem3);
+		menu1.add(menuitem4);
 		menu1.add(menuitem1);
 		menubar.add(menu1);
 		this.setJMenuBar(menubar);
@@ -90,6 +95,8 @@ public class MainUI extends JFrame implements ActionListener{
 			solverPanel.tabClose();
 		}else if(value.equalsIgnoreCase("Exit")){
 			System.exit(0);
+		}else if(value.equalsIgnoreCase("MERGE(TEST)")){
+			solverPanel.doMergeForMaster();
 		}
 	}
 

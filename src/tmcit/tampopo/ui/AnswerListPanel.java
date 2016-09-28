@@ -8,6 +8,8 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import tmcit.api.AnswerChangeEvent;
+import tmcit.api.AnswerChangeListener;
 import tmcit.tampopo.util.Answer;
 
 public class AnswerListPanel extends JPanel{
@@ -22,16 +24,38 @@ public class AnswerListPanel extends JPanel{
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		initPanel();
 		makePanel();
-		
-		panelListManager.addPanel(new DetailPanel("test", Answer.makeDebugAnswer(),source));
-		List<Answer> ansList = new ArrayList<Answer>();
-		for(int i = 0;i < 5;i++)
-			ansList.add(Answer.makeDebugAnswer());
-		panelListManager.addPanel(new DetailPanel("any", ansList,source));
+	}
+	
+	public void clearPanels(){
+		///クリアする
+		panelListManager.allClear();
+	}
+	
+	public DetailPanel addAnswer(String title,Answer answer){
+		DetailPanel detailPanel = new DetailPanel(title, answer, source);
+		panelListManager.addPanel(detailPanel);
+		return detailPanel;
+	}
+	
+	public DetailPanel addAnswer(String title,List<Answer> answers){
+		DetailPanel detailPanel = new DetailPanel(title, answers, source);
+		panelListManager.addPanel(detailPanel);
+		return detailPanel;
+	}
+	public DetailPanel addAnswer(String title, Answer answer, int index) {
+		///割り込み
+		DetailPanel detailPanel = new DetailPanel(title, answer, source);
+		panelListManager.addPanel(detailPanel,0);
+		return detailPanel;
+	}
+
+	
+	public void removeAnswerPanel(DetailPanel component){
+		panelListManager.removePanel(component);
 	}
 	
 	public void makePanel(){
-		panelListManager = new PanelListManager(WIDTH, HEIGHT,false);
+		panelListManager = new PanelListManager(WIDTH, HEIGHT,false,this);
 		panelListManager.setBounds(0, 0, WIDTH, HEIGHT);
 		this.add(panelListManager);
 	}
@@ -40,5 +64,6 @@ public class AnswerListPanel extends JPanel{
 		this.setLayout(null);
 		this.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.white, Color.black));
 	}
+
 
 }

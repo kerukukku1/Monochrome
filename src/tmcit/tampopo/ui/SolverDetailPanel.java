@@ -6,32 +6,32 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.border.EtchedBorder;
 
-public class SolverDetailPanel extends JPanel{
+public class SolverDetailPanel extends JTabbedPane{
 	
 	
 	public SolverTree solverTree;///パラメータ管理用のツリー
-	int WIDTH,HEIGHT;
+	public int WIDTH,HEIGHT;
 	
 	public SolverDetailPanel(int WIDTH,int HEIGHT){
 		this.HEIGHT = HEIGHT;
 		this.WIDTH = WIDTH;
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		initPanel();
-		makePanel();
+		addParameterPanel();
 	}
 	
-	public void makePanel(){
-		solverTree = new SolverTree();
+	public void addParameterPanel(){
+		solverTree = new SolverTree(this);
 		solverTree.setBounds(0, 0, WIDTH, HEIGHT);
-		this.add(solverTree);
+		this.addTab("Parameter",solverTree);
 	}
 	
 	public void initPanel(){
 		this.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-		this.setLayout(null);
 	}
 
 }

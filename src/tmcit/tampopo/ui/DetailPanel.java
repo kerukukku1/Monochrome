@@ -33,6 +33,8 @@ public class DetailPanel extends JPanel implements MouseListener{
 	
 	public JLabel titleLabel;
 	
+	private boolean listOn = false;///中央のリストに追加されているか
+	
 	public DetailPanel(String title,Answer answer,SolverPanel source){
 		this.source = source;
 		this.answers = new ArrayList<Answer>();
@@ -49,6 +51,16 @@ public class DetailPanel extends JPanel implements MouseListener{
 		initPanel();
 		makePanel();
 		addLabels();
+	}
+	
+	public boolean isListOn(){
+		return listOn;
+	}
+	public void listOn(){
+		listOn = true;
+	}
+	public void listOff(){
+		listOn = false;
 	}
 	
 	public void addLabels(){

@@ -106,7 +106,8 @@ public class PuzzleImage {
 		polygons = new Polygon[pieces.size()];
 		int id = 0;
 		for(Piece piece : pieces){
-			g2d.setColor(colorDef[id%colorDef.length]);
+			int pieceID = piece.getID();
+			g2d.setColor(colorDef[pieceID%colorDef.length]);
 			Polygon fill = new Polygon();
 			for(int i = 0;i < piece.getPointSize();i++){
 				Segment edge = piece.getSegment(i);

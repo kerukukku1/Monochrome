@@ -24,6 +24,8 @@ public class BigImagePanel extends JPanel implements ChangeListener{
 	
 	public static final int IMAGESIZE = SolverPanel.CENTER_BIGIMAGE_SIZE;
 	public static final Color backGround = new Color(230, 230, 240);
+	
+	public DetailPanel detailPanel;
 	public String title;
 	public Answer answer;
 	public JLabel imageLabel;
@@ -35,7 +37,8 @@ public class BigImagePanel extends JPanel implements ChangeListener{
 				  ,frameIndex = false
 				  ,pieceIndex = false;
 	
-	public BigImagePanel(String title,Answer answer){
+	public BigImagePanel(String title,Answer answer, DetailPanel detailPanel){
+		this.detailPanel = detailPanel;
 		this.title = title;
 		this.answer = answer;
 		initPanel();
@@ -92,9 +95,9 @@ public class BigImagePanel extends JPanel implements ChangeListener{
 		JCheckBox cb2 = new JCheckBox("Length", frameLength);
 		JCheckBox cb3 = new JCheckBox("Index", frameIndex);
 		JLabel label2 = new JLabel("                                                                                         Piece:");
-		JCheckBox cb4 = new JCheckBox("Degree", frameDegree);
-		JCheckBox cb5 = new JCheckBox("Length", frameLength);
-		JCheckBox cb6 = new JCheckBox("Index", frameIndex);
+		JCheckBox cb4 = new JCheckBox("Degree", pieceDegree);
+		JCheckBox cb5 = new JCheckBox("Length", pieceLength);
+		JCheckBox cb6 = new JCheckBox("Index", pieceIndex);
 		cb1.setName("frameDegree");
 		cb2.setName("frameLength");
 		cb3.setName("frameIndex");

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.xml.soap.Detail;
 
 import tmcit.tampopo.util.Answer;
 
@@ -17,13 +18,15 @@ public class MiniListPanel extends JPanel{
 	public static final int IMAGESIZE = SolverPanel.CENTER_MINIIMAGE_SIZE;
 	
 	public SolverPanel root;
+	public DetailPanel detailPanel;
 	public String title;
 	public List<Answer> answers;
 	public PanelListManager panelListManager;
 	public int miniPanelNum;
 	
-	public MiniListPanel(String title,List<Answer> answers,SolverPanel root){
+	public MiniListPanel(String title,List<Answer> answers,SolverPanel root, DetailPanel detailPanel){
 		this.root = root;
+		this.detailPanel = detailPanel;
 		///answerは必ずコピーする
 		this.answers = new ArrayList<Answer>();
 		this.title = title;
@@ -50,7 +53,7 @@ public class MiniListPanel extends JPanel{
 	}
 	
 	public void makePanel(){
-		panelListManager = new PanelListManager(WIDTH, HEIGHT,false);
+		panelListManager = new PanelListManager(WIDTH, HEIGHT,false,this);
 		panelListManager.setBounds(0, 0, WIDTH, HEIGHT);
 		panelListManager.setPanelBackgroundColor(backGround);
 		this.add(panelListManager);

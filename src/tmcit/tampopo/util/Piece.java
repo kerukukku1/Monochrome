@@ -5,11 +5,31 @@ import java.util.List;
 
 public class Piece {
 	
+	private int id;
 	private List<Point> points;///座標セット
 	private List<Double> angleSet = null;///角度セット
 	
-	private Piece(List<Point> points){
+	private Piece(int id,List<Point> points){
+		this.id = id;
 		this.points = points;
+	}
+	
+	public Piece getCopy(){
+		PieceBuilder pieceBuilder = new PieceBuilder();
+		pieceBuilder.setID(id);
+		for(Point point : points){
+			pieceBuilder.addPoint(point.x, point.y);
+		}
+		try {
+			return pieceBuilder.build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public int getID(){
+		return id;
 	}
 	
 	public Point getPoint(int index){
@@ -48,13 +68,20 @@ public class Piece {
 	}
 	
 	public static class PieceBuilder{
+		public int id;
 		public List<Point> points;
 		public PieceBuilder(){
+			id = -1;
 			points = new ArrayList<Point>();
 		}
 		
-		public Piece build(){
-			return new Piece(points);
+		public Piece build() throws Exception{
+			if(id == -1 || points.size() <= 2)throw new Exception("PIECE DAME DESU.");
+			return new Piece(id,points);
+		}
+		
+		public void setID(int id){
+			this.id = id;
 		}
 		
 		public PieceBuilder addPoint(Point point){
