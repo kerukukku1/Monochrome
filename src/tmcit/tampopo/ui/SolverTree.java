@@ -52,7 +52,7 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 		if(solverName.equalsIgnoreCase("YASUKIN")){
 			solver = new tmcit.tampopo.edgeSolver.main.BeamEdgeMain();
 		}else if(solverName.equalsIgnoreCase("YAMADA")){
-			solver = new tmcit.procon27.main.Main();
+			solver = new tmcit.procon27.main.RotSolverMain();
 		}
 		if(solver == null){
 			System.out.println("SOLVER NULL");
