@@ -1,4 +1,4 @@
-package tmcit.tampopo.util;
+package tmcit.tampopo.ui.util;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,6 +12,7 @@ import javax.swing.tree.TreeCellRenderer;
 
 import tmcit.tampopo.ui.SolverPanel;
 import tmcit.tampopo.ui.SolverTree;
+import tmcit.tampopo.util.IconUtil;
 
 public class MyTreeCellRenderer implements TreeCellRenderer{
 	

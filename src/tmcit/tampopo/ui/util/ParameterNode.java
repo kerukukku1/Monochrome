@@ -1,4 +1,4 @@
-package tmcit.tampopo.util;
+package tmcit.tampopo.ui.util;
 
 import java.util.ArrayList;
 import java.util.List;

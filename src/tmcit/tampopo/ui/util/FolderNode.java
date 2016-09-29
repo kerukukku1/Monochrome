@@ -1,4 +1,4 @@
-package tmcit.tampopo.util;
+package tmcit.tampopo.ui.util;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

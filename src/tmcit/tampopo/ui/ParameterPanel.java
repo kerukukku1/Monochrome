@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 
 import tmcit.api.Parameter;
 import tmcit.api.Parameter.ValueType;
-import tmcit.tampopo.util.ParameterNode;
+import tmcit.tampopo.ui.util.ParameterNode;
 
 public class ParameterPanel extends JPanel{
 	

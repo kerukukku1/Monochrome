@@ -8,6 +8,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import tmcit.tampopo.geometry.util.Piece;
+import tmcit.tampopo.geometry.util.Point;
+import tmcit.tampopo.geometry.util.Segment;
+
 public class PuzzleImage {
 	
 	private static Color[] colorDef = {	//�s�[�X�̐F�̎��

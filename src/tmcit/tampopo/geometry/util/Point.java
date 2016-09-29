@@ -1,4 +1,4 @@
-package tmcit.tampopo.util;
+package tmcit.tampopo.geometry.util;
 
 public class Point {
 	

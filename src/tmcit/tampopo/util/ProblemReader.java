@@ -8,8 +8,10 @@ import java.util.Scanner;
 import tmcit.api.AnswerChangeEvent;
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
+import tmcit.tampopo.geometry.util.Piece;
+import tmcit.tampopo.geometry.util.Point;
+import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 import tmcit.tampopo.ui.SolverPanel;
-import tmcit.tampopo.util.Piece.PieceBuilder;
 
 public class ProblemReader {
 

@@ -15,8 +15,8 @@ import javax.swing.plaf.basic.BasicCheckBoxMenuItemUI;
 import tmcit.api.AnswerChangeEvent;
 import tmcit.api.AnswerChangeListener;
 import tmcit.procon27.main.Solver;
+import tmcit.tampopo.ui.util.DropFileHandler;
 import tmcit.tampopo.util.Answer;
-import tmcit.tampopo.util.DropFileHandler;
 import tmcit.tampopo.util.Problem;
 import tmcit.tampopo.util.ProblemReader;
 

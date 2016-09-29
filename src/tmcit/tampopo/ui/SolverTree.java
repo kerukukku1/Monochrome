@@ -16,9 +16,9 @@ import javax.swing.tree.TreeCellRenderer;
 
 import tmcit.api.ISolver;
 import tmcit.procon27.main.Solver;
-import tmcit.tampopo.util.FolderNode;
-import tmcit.tampopo.util.MyTreeCellRenderer;
-import tmcit.tampopo.util.ParameterNode;
+import tmcit.tampopo.ui.util.FolderNode;
+import tmcit.tampopo.ui.util.MyTreeCellRenderer;
+import tmcit.tampopo.ui.util.ParameterNode;
 
 public class SolverTree extends JTree implements MouseListener , ActionListener{
 

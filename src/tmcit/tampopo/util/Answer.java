@@ -3,7 +3,8 @@ package tmcit.tampopo.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import tmcit.tampopo.util.Piece.PieceBuilder;
+import tmcit.tampopo.geometry.util.Piece;
+import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 
 public class Answer {
 	

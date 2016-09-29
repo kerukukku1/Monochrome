@@ -3,6 +3,8 @@ package tmcit.tampopo.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import tmcit.tampopo.geometry.util.Piece;
+
 public class Problem {
 	
 	public List<Piece> frames;
