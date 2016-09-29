@@ -190,10 +190,10 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 			//dummyを個数に置き換え
 			ansFrame.set(0, String.valueOf(frameSize));
 			ansPiece.set(0, String.valueOf(pieceSize));
-			FolderManager.fileSave(ansFrame, ansPiece);
+			FolderManager.questSave(ansFrame, ansPiece);
 
 		}else if(cmd.equals("Add")){
-		    String selectvalues[] = {"Piece", "Frame", "Cancel"};
+		    String selectvalues[] = {"Piece1", "Piece2", "Frame", "Cancel"};
 
 		    int select = JOptionPane.showOptionDialog(this,
 		      "Select Type : ",
@@ -207,11 +207,11 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    if (select == JOptionPane.CLOSED_OPTION || selectvalues[select].equals("Cancel")){
 		    	return;
 		    }else{
-		    	if(selectvalues[select].equals("Piece")){
-		    		stateChangePiece();
+		    	if(selectvalues[select].equals("Piece1") || selectvalues[select].equals("Piece2")){
+		    		stateChangePiece(select);
 //		    		piece.setSelected(true);
 		    	}else{
-		    		stateChangeFrame();
+		    		stateChangeFrame(select);
 //		    		frame.setSelected(true);
 		    	}
 		    }
@@ -288,7 +288,8 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 //		}
 	}
 
-	private void stateChangeFrame() {
+	private void stateChangeFrame(int type) {
+		ProblemManager.setSwitchType(type);
 		SolverConstants consts = ProblemManager.getConstants();
 		consts.edgeWidth = 6;
 		consts.lrAddition = 100;
@@ -298,7 +299,8 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		Constants.modeWaku = true;
 	}
 
-	private void stateChangePiece(){
+	private void stateChangePiece(int type){
+		ProblemManager.setSwitchType(type);
 		SolverConstants consts = ProblemManager.getConstants();
 		consts.edgeWidth = 6;
 		//consts.lrAddition = 50;

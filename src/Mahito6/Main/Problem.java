@@ -12,6 +12,7 @@ public class Problem {
 	private List<List<Edge>> allEdges;
 	private List<List<Tuple2<Double, Double>>> vertex;
 	private BufferedImage binImage;
+	private int type;
 	private boolean modeWaku;
 	public Problem(boolean modeWaku){
 		this.modeWaku = modeWaku;
@@ -101,5 +102,10 @@ public class Problem {
 		BufferedImage thumb = new BufferedImage(dw, dh, BufferedImage.TYPE_INT_BGR);
 		thumb.getGraphics().drawImage(image.getScaledInstance(dw, dh, image.SCALE_AREA_AVERAGING), 0, 0, dw, dh, null);
 		return thumb;
+	}
+
+	public void addType(int type) {
+		// TODO Auto-generated method stub
+		this.type = type;
 	}
 }

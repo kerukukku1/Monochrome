@@ -5,10 +5,12 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
+import javax.swing.UIManager;
 
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
@@ -46,21 +48,43 @@ public class PieceListView extends JPanel{
 
 	private void paintPiecePanel(List<Problem> problems){
 		List< List<Tuple2<Double, Double>> > vertex;
-		int count = 4;
+		int count = 0;
+		paint.removeAll();
 		for(int loop = 0; loop < problems.size(); loop++){
-			int bias = 1;
 			Problem problem = problems.get(loop);
+			if(!problem.isWaku())continue;
 			vertex = problem.getVertex();
-			if(problem.isWaku())bias = 0;
 			for(int i = 0; i < vertex.size(); i++){
-				PieceViewPanel p = new PieceViewPanel((count%line)*205+10,((bias*count)/line)*255+5,200,250, i, problem);
+				PieceViewPanel p = new PieceViewPanel((count%line)*205+10,((count)/line)*255+5,200,250, i, problem);
 				pieceViews.add(p);
 				paint.add(p);
 				++count;
 			}
-			//追加されたピースは改行されて表示されるようにする。
 			if(count%line != 0)count += (line - count%line);
+			JLabel label = new JLabel();
+			label.setBounds(0,((count)/line)*255+2, 1000, 3);
+			label.setBackground(Color.BLACK);
+			label.setOpaque(true);
+			paint.add(label);
 		}
+		for(int loop = 0; loop < problems.size(); loop++){
+			Problem problem = problems.get(loop);
+			if(problem.isWaku())continue;
+			vertex = problem.getVertex();
+			for(int i = 0; i < vertex.size(); i++){
+				PieceViewPanel p = new PieceViewPanel((count%line)*205+10,((count)/line)*255+5,200,250, i, problem);
+				pieceViews.add(p);
+				paint.add(p);
+				++count;
+			}
+			if(count%line != 0)count += (line - count%line);
+			JLabel label = new JLabel();
+			label.setBounds(0,((count)/line)*255+2, 1000, 3);
+			label.setBackground(Color.BLACK);
+			label.setOpaque(true);
+			paint.add(label);
+		}		
+		//追加されたピースは改行されて表示されるようにする。
 		paint.setPreferredSize(new Dimension(tabWidth, 295+255*(count/4)));
 		this.revalidate();
 		this.repaint();
@@ -73,6 +97,13 @@ public class PieceListView extends JPanel{
 	private void launchUI() {
 //		this.setTitle(title);
 //		this.setResizable(false);
+	    try
+	    {
+	            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+	            UIManager.put("TabbedPane.selected",Color.GREEN);
+	    } catch (Exception ee){
+	        ee.printStackTrace();
+	    }
 		this.setPreferredSize(new Dimension(tabWidth, tabHeight));
 		earth = new JPanel();
 		paint = new JPanel();

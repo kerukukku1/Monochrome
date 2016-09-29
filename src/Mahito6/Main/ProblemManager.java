@@ -18,6 +18,9 @@ public class ProblemManager {
 	public static List<Problem> problems;
 	public static SolverConstants consts;
 	public static double dpi = 0;
+	
+	//0 : frame   1 : piece1   2: piece2
+	public static int switch_index = 0;
 	public ProblemManager(){
 //		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();
@@ -34,10 +37,15 @@ public class ProblemManager {
 	}
 	
 	public static void resetImageManager(){
-		imageManager.clear();
+		imageManager.clearAll();
+	}
+	
+	public static void setSwitchType(int type){
+		switch_index = type;
 	}
 	
 	public static void addProblem(Problem problem){
+		problem.addType(switch_index);
 		ProblemManager.problem = problem;
 		problems.add(problem);
 	}

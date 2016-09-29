@@ -42,6 +42,8 @@ public class ImageManager{
 	public List<List<Edge>> allEdges;
 	public Problem problem;
 	private Mat source;
+	private static int piece_indexes = 0;
+	private static int piece_load_index = 0;
 
 	public ImageManager(){
 		coords = new ArrayList<Coordinates>();
@@ -61,6 +63,14 @@ public class ImageManager{
 			obj = null;
 		}
 		System.gc();
+	}
+	
+	public void clearAll(){
+		clear();
+		problem = null;
+		source = null;
+		ImageManager.piece_indexes = 0;
+		ImageManager.piece_load_index = 0;
 	}
 
 	public void runAdaptiveThreshold(){
@@ -335,12 +345,15 @@ public class ImageManager{
 //				//e.printStackTrace();
 //			}
 
-			Core.putText(numbering, String.valueOf(i+1), new Point(maxx-150, (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(86, 0, 255), 20);
+			if(!Constants.modeWaku){Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(maxx-150, (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(86, 0, 255), 20);
+				ImageManager.piece_indexes++;
+			}
 		}
-		Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
-		Highgui.imwrite("numbering.png", numbering);
-		source = null;
-		numbering = null;
+		if(!Constants.modeWaku){
+			Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+			ImageManager.piece_load_index++;
+			Highgui.imwrite("numbering" + String.valueOf(ImageManager.piece_load_index) + ".png", numbering);
+		}
 		System.out.println("Noise cleared");
 	}
 

@@ -1,5 +1,9 @@
 package tmcit.tampopo.main;
 
+import java.awt.Color;
+
+import javax.swing.UIManager;
+
 import tmcit.tampopo.ui.MainUI;
 
 public class Main {
@@ -15,6 +19,13 @@ public class Main {
 	}
 
 	public void initUI(){
+	    try
+	    {
+	            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+	            UIManager.put("TabbedPane.selected",Color.GREEN);
+	    } catch (Exception ee){
+	        ee.printStackTrace();
+	    }
 		this.mainFrame = new MainUI(mahitoMain);
 	}
 

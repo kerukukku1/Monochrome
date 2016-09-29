@@ -28,7 +28,7 @@ public class FolderManager {
 		}
 	}
 
-	public static void fileSave(List<String> ansFrame,List<String> ansPiece){
+	public static void questSave(List<String> ansFrame,List<String> ansPiece){
 		try {
 			File quest = new File(currentPath+"quest.txt");
 			if(quest.exists())quest.delete();
