@@ -15,6 +15,7 @@ public class Problem {
 	private String image_path;
 	private int type;
 	private boolean modeWaku;
+	
 	public Problem(boolean modeWaku){
 		this.modeWaku = modeWaku;
 	}
