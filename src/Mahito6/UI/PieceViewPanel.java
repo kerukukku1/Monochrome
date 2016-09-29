@@ -1,20 +1,15 @@
 package Mahito6.UI;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,12 +17,9 @@ import javax.swing.JPanel;
 import Mahito6.Main.Constants;
 import Mahito6.Main.Main;
 import Mahito6.Main.Problem;
-import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
-import Mahito6.Solver.EdgeFinder;
-import Mahito6.Solver.LeastSquareMethod;
 import Main.UI.Util.Coordinates;
 
 public class PieceViewPanel extends JPanel implements MouseListener{
@@ -40,7 +32,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private HandlSummaryPanel vis = null;
 	private List<Edge> edges;
 	private Problem myProblem;
-	
+
 	public PieceViewPanel(int x, int y, int width, int height, int index, Problem problem){
 		this.width = width;
 		this.height = height;
@@ -54,38 +46,38 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.image = myProblem.getImage(index);
 		setUtil();
 		launchItems();
-		paintPiece();
+//		paintPiece();
 	}
-	
+
 	private void setUtil(){
 		this.setLayout(null);
 		this.setBackground(Color.WHITE);
 		this.setBounds(x, y, width, height);
 		this.setOpaque(true);
 	}
-	
+
 	private void launchItems(){
 		pieceIndex = new JLabel("index:"+String.valueOf(index+1));
 		pieceVertex = new JLabel("Vertex:" + vertex.size());
 		String type = (Constants.modeWaku)?"Frame":"Piece";
 		if(type.equals("Frame"))this.setBackground(Color.GRAY.brighter());
 		pieceType = new JLabel("Type:"+type);
-		
+
 		pieceIndex.setBounds(0,0,100,17);
 		pieceVertex.setBounds(0,15,100,17);
 		pieceType.setBounds(0,30,100,17);
-		
+
 		this.add(pieceIndex);
 		this.add(pieceVertex);
 		this.add(pieceType);
-		
-		
-		gPiece = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+
+//		gPiece = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+		paintPiece();
 		paintArea = new JLabel(new ImageIcon(gPiece));
 		paintArea.setBounds(0, 50, 200, 200);
 		paintArea.addMouseListener(this);
 		this.add(paintArea);
-		
+
 		errorType = new JLabel();
 		errorType.setOpaque(true);
 		errorType.setBounds(150, 0, 50, 50);
@@ -93,11 +85,14 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		errorType.setBackground(c);
 		this.add(errorType);
 	}
-	
+
 	public void paintPiece(){
+		BufferedImage buf = myProblem.getGrayImage(index);
+		double scale = 200 / (double)(Math.max(buf.getWidth(), buf.getHeight()));
+		gPiece = myProblem.rescaleImage(scale, buf);
 		Graphics2D g = (Graphics2D)gPiece.getGraphics();
-		g.setColor(Constants.backgroundColor);
-		g.clearRect(0, 0, 200, 200);		
+//		g.setColor(Constants.backgroundColor);
+//		g.clearRect(0, 0, 200, 200);
 	    List<Tuple2<Double,Double>> data = vertex;
 	    double maxx = 0.0;
 	    double maxy = 0.0;
@@ -105,39 +100,41 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	    int[] ypoints = new int[data.size()];
 	    for(int i = 0; i < data.size(); i++){
 	    	Tuple2<Double, Double> d = data.get(i);
-	    	double x = d.t1 - Constants.imagePositionOffset/4;
-	    	double y = d.t2 - Constants.imagePositionOffset/4;;
+	    	double x = d.t1;
+	    	double y = d.t2;
 	    	maxx = (x < maxx)?maxx:x;
 	    	maxy = (y < maxy)?maxy:y;
 	    	xpoints[i] = (int)x;
 	    	ypoints[i] = (int)y;
 	    }
-	    
-	    g.setColor(Constants.polyColor);
-	    double scale = width/Math.max(maxx, maxy);
+
+	    g.setColor(Color.RED);
+//	    double scale = 200.0/(double)(Math.min(gPiece.getWidth(), gPiece.getHeight()));
+	    System.out.println("scale : " + scale);
     	for(int i = 0 ; i < data.size(); i++){
 	    	Tuple2<Double, Double> d1 = data.get(i);
 	    	Tuple2<Double, Double> d2 = data.get((i+1)%data.size());
-	    	double x1 = (d1.t1 - Constants.imagePositionOffset/3)*scale;
-	    	double y1 = (d1.t2 - Constants.imagePositionOffset/3)*scale;
-	    	double x2 = (d2.t1 - Constants.imagePositionOffset/3)*scale;
-	    	double y2 = (d2.t2 - Constants.imagePositionOffset/3)*scale;
+	    	double x1 = (d1.t1 - Constants.imagePositionOffset/2)*scale;
+	    	double y1 = (d1.t2 - Constants.imagePositionOffset/2)*scale;
+	    	double x2 = (d2.t1 - Constants.imagePositionOffset/2)*scale;
+	    	double y2 = (d2.t2 - Constants.imagePositionOffset/2)*scale;
 	    	g.draw(new Line2D.Double(x1, y1, x2, y2));
+	    	//System.out.println(x1 + "," + y1 + " " + x2 + "," + y2);
     	}
 
 //		polygon = new Polygon(xpoints, ypoints, xpoints.length);
 //		g.drawPolygon(polygon);
 	    this.repaint();
 	}
-	
+
 	public Problem getProblem(){
 		return myProblem;
 	}
-	
+
 	public int getIndex(){
 		return index;
 	}
-	
+
 	public void updateEdges(List<Edge> updateEdges){
 //		System.out.println("before:" + edges.size());
 		edges = new ArrayList<>(updateEdges);
@@ -164,13 +161,13 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 //			e.printStackTrace();
 //		}
 	}
-	
-	//頂点検出。humei 
+
+	//頂点検出。humei
 	public void updateVertex(List<Tuple2<Double, Double>> list){
 //		System.out.println(image.getWidth() + "x" + image.getHeight());
-//		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
-//		solver2.solve();
-//		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
+		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
+		solver2.solve();
+		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
 //		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
 		this.vertex = new ArrayList<>(list);
 //		for(Tuple2<Double,Double> t : ans){
@@ -189,7 +186,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 //		}
 		errorType.setBackground(Color.ORANGE);
 	}
-	
+
 	public List<Edge> getEdges(){
 		return edges;
 	}
@@ -204,24 +201,24 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

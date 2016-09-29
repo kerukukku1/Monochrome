@@ -1,5 +1,6 @@
 package Mahito6.UI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,9 @@ public class PieceListView extends JPanel{
 	private HandlSummaryPanel viewer;
 	private JTabbedPane summary;
 	public static List<PieceViewPanel> pieceViews;
+	public static int tabWidth = 980;
+	public static int tabHeight = 700;
 	private int line = 4;
-	private static final int tabWidth = 980;
-	private static final int tabHeight = 680;
 
 	public PieceListView(){
 		title = "ListViewer";
@@ -78,25 +79,39 @@ public class PieceListView extends JPanel{
 		viewer = null;
 		this.setLayout(null);
 		paint.setLayout(null);
+		earth.setLayout(null);
 	    JScrollPane scrollpane = new JScrollPane();
 	    scrollpane.setPreferredSize(new Dimension(tabWidth, tabHeight-50));
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);
 	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
-	    earth.add(scrollpane);
-	    earth.setBounds(0, 0, tabWidth, tabHeight-50);
+	    paint.setPreferredSize(new Dimension(tabWidth-50, tabHeight));
+//	    scrollpane.setBounds(0, 0, tabWidth, tabHeight-50);
+	    JPanel p = new JPanel();
+	    p.setBounds(0, 0, tabWidth, tabHeight-60);
+	    p.add(scrollpane);
+	    earth.add(p);
+	    earth.setBounds(0, 0, tabWidth, tabHeight);
+	    earth.setBackground(Color.BLACK);
+
+	    InputPanel inputPanel = new InputPanel(0, tabHeight-60, tabWidth, 30);
+	    earth.add(inputPanel);
 
 	    summary = new JTabbedPane();
 	    summary.addTab("List", earth);
 	    summary.addTab("Viewer", new JPanel());
-	    summary.setPreferredSize(new Dimension(tabWidth, tabHeight-50));
-	    summary.setBounds(0, 0, tabWidth, tabHeight-50);
+	    summary.setPreferredSize(new Dimension(tabWidth, tabHeight));
+	    summary.setBounds(0, 0, tabWidth, tabHeight);
 	    this.add(summary);
 
-	    InputPanel inputPanel = new InputPanel(0, tabHeight-50, tabWidth, 30);
-	    this.add(inputPanel);
-
 	    pieceViews = new ArrayList<PieceViewPanel>();
+	    this.repaint();
+	}
+
+	public void initializePanel(){
+		paint.removeAll();
+		viewer.removeAll();
+		launchUI();
 	}
 }

@@ -66,7 +66,7 @@ public class ImageManager{
 	public void runAdaptiveThreshold(){
 		this.source = Highgui.imread(path);
 		Mat _source = source.clone();
-		if(!Constants.modeWaku)Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));  
+		if(!Constants.modeWaku)Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));
 		Imgproc.cvtColor(_source, _source, Imgproc.COLOR_RGB2GRAY);
 		grayImage = this.MatToBufferedImageBGR(_source);
         //枠のときの速度上げ専
@@ -79,24 +79,24 @@ public class ImageManager{
 				Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 				Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
 				Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
-				Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);	
-			}	
+				Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+			}
 		}
-		
+
 		//if(Constants.modeWaku)source = new Mat(source, new Rect(10, 10, 7000-10, 7000-10));
 		Mat binImage = _source.clone();
 //		Mat binImage2 = _source.clone();
         //61 14 太いけど確実param　GAUSSIAN
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
         //Imgproc.adaptiveThreshold(binaryAdaptive, binaryAdaptive, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 71, 21);
-		
+
 		if(binImage.rows() + binImage.cols() < 10000){
 			ProblemManager.dpi = 300;
 		}else{
 			ProblemManager.dpi = 600;
 		}
 		System.out.println(ProblemManager.dpi);
-		
+
         //有力
         if(!Constants.modeWaku){
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
@@ -106,11 +106,11 @@ public class ImageManager{
 //        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
 //            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
         }
-        
+
 //andとってゴミ消す
 //        Core.bitwise_and(binImage, binImage2, binImage);
 //        Highgui.imwrite("and_image.png", dst);
-        
+
         //枠専用
         if(Constants.modeWaku){
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
@@ -301,7 +301,6 @@ public class ImageManager{
 	public void clearAllNoise(){
 		int minx,miny,maxx,maxy,mat_h,mat_w;
 		Mat numbering = source.clone();
-		Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates now = coords.get(i);
 			BFS.clearNoise(Constants.clearNoiseThreshold, now);
@@ -335,9 +334,10 @@ public class ImageManager{
 //				// TODO Auto-generated catch block
 //				//e.printStackTrace();
 //			}
-			
-			Core.putText(numbering, String.valueOf(i+1), new Point(maxx-300, (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 12f, new Scalar(86, 0, 255), 20);
+
+			Core.putText(numbering, String.valueOf(i+1), new Point(maxx-150, (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(86, 0, 255), 20);
 		}
+		Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 		Highgui.imwrite("numbering.png", numbering);
 		source = null;
 		numbering = null;
@@ -382,7 +382,7 @@ public class ImageManager{
 	public List<Coordinates> getCoord(){
 		return coords;
 	}
-	
+
 	public static BufferedImage booleanToBufferedImage(boolean[][] state){
 		return null;
 	}

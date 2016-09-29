@@ -1,14 +1,10 @@
 package Mahito6.Main;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencv.core.Mat;
-
 import Mahito6.Solver.Edge;
-import Mahito6.UI.HandlSummaryPanel;
 import Main.UI.Util.Coordinates;
 
 public class Problem {
@@ -89,8 +85,21 @@ public class Problem {
 		// TODO Auto-generated method stub
 		this.binImage = bufBinImage;
 	}
-	
+
 	public BufferedImage getSubImage(int x, int y, int range){
 		return binImage.getSubimage(Math.max(0, x-range), Math.max(0, y-range), range*2, range*2);
+	}
+
+	public BufferedImage getGrayImage(int index){
+		Coordinates c = coords.get(index);
+		return binImage.getSubimage(c.minx, c.miny, c.maxx - c.minx, c.maxy - c.miny);
+	}
+
+	public BufferedImage rescaleImage(double scale, BufferedImage image){
+		int dw = (int)(image.getWidth() * scale);
+		int dh = (int)(image.getHeight() * scale);
+		BufferedImage thumb = new BufferedImage(dw, dh, BufferedImage.TYPE_INT_BGR);
+		thumb.getGraphics().drawImage(image.getScaledInstance(dw, dh, image.SCALE_AREA_AVERAGING), 0, 0, dw, dh, null);
+		return thumb;
 	}
 }

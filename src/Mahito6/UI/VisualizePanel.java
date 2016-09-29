@@ -440,7 +440,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		Tuple2<Double, Double> nowOn = null;
 		int nowx = e.getX();
@@ -477,7 +477,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 			}
 		//Left Click
 		}else{
-			if(isLine){
+			if(isLine && e.isControlDown()){
 				Line2D l = null;
 				int _index;
 				for(_index = 0; _index < scaleLines.size(); _index++){
@@ -554,7 +554,7 @@ public class VisualizePanel extends JPanel implements MouseListener, MouseMotion
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

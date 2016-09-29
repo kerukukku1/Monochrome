@@ -10,10 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.event.ChangeEvent;
@@ -30,11 +29,11 @@ import Main.UI.Util.MyKeyListener;
 
 public class InputPanel extends JPanel implements ActionListener, ChangeListener{
 	public int x, y, width, height;
-	public static JButton loadButton, runButton, addButton, saveButton;
+	public static JButton loadButton, clearButton, addButton, saveButton, scanButton;
 	public JTextField inputForm;
-	public ButtonGroup switType = new ButtonGroup();
-	private JRadioButton piece;
-	private JRadioButton frame;
+//	public ButtonGroup switType = new ButtonGroup();
+//	private JRadioButton piece;
+//	private JRadioButton frame;
 	public InputPanel(int x, int y, int width, int height){
 		this.x = x;
 		this.y = y;
@@ -48,7 +47,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	private void setInputForm(){
 		inputForm = new JTextField();
 		inputForm.addActionListener(this);
-		inputForm.setBounds(0, 0, width-480, height);
+		inputForm.setBounds(0, 0, width-400, height);
 		inputForm.setTransferHandler(new DropFileHandler());
 		this.add(inputForm);
 	}
@@ -69,14 +68,19 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		addButton.addActionListener(this);
 		this.add(addButton);
 
-		runButton = new JButton("Run");
-		runButton.setBounds(width-80, 0, 80, height);
-		runButton.addActionListener(this);
-		this.add(runButton);
+		clearButton = new JButton("Clear");
+		clearButton.setBounds(width-80, 0, 80, height);
+		clearButton.addActionListener(this);
+		this.add(clearButton);
+
+		scanButton = new JButton("Scan");
+		scanButton.setBounds(width-400, 0, 80, height);
+		scanButton.addActionListener(this);
+		this.add(scanButton);
 	}
 
 	private void launchItems(){
-		setRadioButton();
+//		setRadioButton();
 		setButtons();
 		setInputForm();
 	}
@@ -142,10 +146,10 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 			ansFrame.add("dummy");
 			List<String> ansPiece = new ArrayList<String>();
 			ansPiece.add("dummy");
-			
+
 			int frameSize = 0;
 			int pieceSize = 0;
-			
+
 			for(int i = 0; i < problems.size(); i++){
 				Problem p = problems.get(i);
 				if(p.isWaku()){
@@ -189,30 +193,49 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 			FolderManager.fileSave(ansFrame, ansPiece);
 
 		}else if(cmd.equals("Add")){
+		    String selectvalues[] = {"Piece", "Frame", "Cancel"};
+
+		    int select = JOptionPane.showOptionDialog(this,
+		      "Select Type : ",
+		      "!!!Warning!!!",
+		      JOptionPane.YES_NO_OPTION,
+		      JOptionPane.QUESTION_MESSAGE,
+		      null,
+		      selectvalues,
+		      selectvalues[0]
+		    );
+		    if (select == JOptionPane.CLOSED_OPTION || selectvalues[select].equals("Cancel")){
+		    	return;
+		    }else{
+		    	if(selectvalues[select].equals("Piece")){
+		    		stateChangePiece();
+//		    		piece.setSelected(true);
+		    	}else{
+		    		stateChangeFrame();
+//		    		frame.setSelected(true);
+		    	}
+		    }
 			System.out.println("All Noise Clear");
 			long start = System.nanoTime();
 			InputPanel.loadButton.setEnabled(false);
-			InputPanel.runButton.setEnabled(false);
+			InputPanel.clearButton.setEnabled(false);
 			ProblemManager.generatePieceDatas();
 			InputPanel.loadButton.setEnabled(true);
-			InputPanel.runButton.setEnabled(true);
+			InputPanel.clearButton.setEnabled(true);
 			long end = System.nanoTime();
 			System.out.println((end - start) / 1000000f + "ms");
 		}else if(cmd.equals("Load")){
 			LoadFiles(inputForm.getText());
-		}else if(cmd.equals("Run")){
-			System.out.println("All Noise Clear");
-			long start = System.nanoTime();
-			InputPanel.loadButton.setEnabled(false);
-			InputPanel.runButton.setEnabled(false);
+		}else if(cmd.equals("Clear")){
 			//runの時は保持されているproblemデータを全てリセット
+		    int option = JOptionPane.showConfirmDialog(this, "Clear Problem?",
+		    	      "!!!Warning!!!", JOptionPane.YES_NO_OPTION,
+		    	      JOptionPane.WARNING_MESSAGE);
+		    if(option == JOptionPane.NO_OPTION){
+		    	return;
+		    }
 			ProblemManager.resetImageManager();
-			ProblemManager.generatePieceDatas();
-			InputPanel.loadButton.setEnabled(true);
-			InputPanel.runButton.setEnabled(true);
-			long end = System.nanoTime();
-			System.out.println((end - start) / 1000000f + "ms");
-
+			Mahito6.Main.Main.pieceView.initializePanel();
 //			new Thread(new Runnable(){
 //				@Override
 //				public void run(){
@@ -230,51 +253,59 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		}
 	}
 
-	private void setRadioButton(){
-		piece = new JRadioButton("Piece");
-		frame = new JRadioButton("Frame");
-		piece.setOpaque(false);
-		frame.setOpaque(false);
-
-
-		piece.setBounds(width-480, 0, 80, height);
-		frame.setBounds(width-400, 0, 80, height);
-
-		piece.setForeground(Color.red);
-		frame.setForeground(Color.red);
-
-		piece.addChangeListener(this);
-		frame.addChangeListener(this);
-
-		piece.setSelected(true);
-
-		switType.add(piece);
-		switType.add(frame);
-
-		this.add(piece);
-		this.add(frame);
-	}
+//	private void setRadioButton(){
+//		piece = new JRadioButton("Piece");
+//		frame = new JRadioButton("Frame");
+//		piece.setOpaque(false);
+//		frame.setOpaque(false);
+//
+//
+//		piece.setBounds(width-480, 0, 80, height);
+//		frame.setBounds(width-400, 0, 80, height);
+//
+//		piece.setForeground(Color.red);
+//		frame.setForeground(Color.red);
+//
+//		piece.addChangeListener(this);
+//		frame.addChangeListener(this);
+//
+//		piece.setSelected(true);
+//
+//		switType.add(piece);
+//		switType.add(frame);
+//
+//		this.add(piece);
+//		this.add(frame);
+//	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
-		SolverConstants consts = ProblemManager.getConstants();
-		if(piece.isSelected()){
-			consts.edgeWidth = 6;
-			//consts.lrAddition = 50;
-			consts.lrAddition = 60;
-
-			Constants.dividePixelLookingForDist = 20;
-			Constants.clearNoiseThreshold = 200;
-			Constants.modeWaku = false;
-		}else{
-			consts.edgeWidth = 6;
-			consts.lrAddition = 100;
-
-			Constants.clearNoiseThreshold = 1200;
-			Constants.dividePixelLookingForDist = 1;
-			Constants.modeWaku = true;
-		}
+//		if(piece.isSelected()){
+//			stateChangePiece();
+//		}else{
+//			stateChangeFrame();
+//		}
 	}
 
+	private void stateChangeFrame() {
+		SolverConstants consts = ProblemManager.getConstants();
+		consts.edgeWidth = 6;
+		consts.lrAddition = 100;
+
+		Constants.clearNoiseThreshold = 1200;
+		Constants.dividePixelLookingForDist = 1;
+		Constants.modeWaku = true;
+	}
+
+	private void stateChangePiece(){
+		SolverConstants consts = ProblemManager.getConstants();
+		consts.edgeWidth = 6;
+		//consts.lrAddition = 50;
+		consts.lrAddition = 60;
+
+		Constants.dividePixelLookingForDist = 20;
+		Constants.clearNoiseThreshold = 200;
+		Constants.modeWaku = false;
+	}
 }
