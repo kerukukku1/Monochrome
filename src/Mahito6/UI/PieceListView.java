@@ -89,13 +89,13 @@ public class PieceListView extends JPanel{
 	    paint.setPreferredSize(new Dimension(tabWidth-50, tabHeight));
 //	    scrollpane.setBounds(0, 0, tabWidth, tabHeight-50);
 	    JPanel p = new JPanel();
-	    p.setBounds(0, 0, tabWidth, tabHeight-60);
+	    p.setBounds(0, 0, tabWidth, tabHeight-100);
 	    p.add(scrollpane);
 	    earth.add(p);
 	    earth.setBounds(0, 0, tabWidth, tabHeight);
 	    earth.setBackground(Color.BLACK);
 
-	    InputPanel inputPanel = new InputPanel(0, tabHeight-60, tabWidth, 30);
+	    InputPanel inputPanel = new InputPanel(0, tabHeight-100, tabWidth, 30);
 	    earth.add(inputPanel);
 
 	    summary = new JTabbedPane();
