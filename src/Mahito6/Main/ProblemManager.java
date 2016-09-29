@@ -45,7 +45,7 @@ public class ProblemManager {
 	}
 	
 	public static void addProblem(Problem problem){
-		problem.addType(switch_index);
+		problem.setType(switch_index);
 		ProblemManager.problem = problem;
 		problems.add(problem);
 	}

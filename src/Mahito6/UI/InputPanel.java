@@ -141,57 +141,9 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
 		if(cmd.equals("Save")){
-			List<Problem> problems = ProblemManager.getProblems();
-			List<String> ansFrame = new ArrayList<String>();
-			ansFrame.add("dummy");
-			List<String> ansPiece = new ArrayList<String>();
-			ansPiece.add("dummy");
-
-			int frameSize = 0;
-			int pieceSize = 0;
-
-			for(int i = 0; i < problems.size(); i++){
-				Problem p = problems.get(i);
-				if(p.isWaku()){
-					List<List<Tuple2<Double, Double>>> v = p.getVertex();
-					for(int j = 0; j < v.size(); j++){
-						List<Tuple2<Double, Double>> v2 = v.get(j);
-						if(v2.size() < 3){
-							//図形が構成されていない場合は除去
-							continue;
-						}
-						Coordinates c = p.getCoord(j);
-						ansFrame.add(String.valueOf(v2.size()));
-						for(int k = 0; k < v2.size(); k++){
-							double x = (v2.get(k).t1+c.minx) * (Constants.unitInch / ProblemManager.dpi);
-							double y = v2.get(k).t2 * (Constants.unitInch / ProblemManager.dpi);
-							ansFrame.add(String.valueOf(x) + " " + String.valueOf(y));
-						}
-						frameSize++;
-					}
-				}else{
-					List<List<Tuple2<Double, Double>>> v = p.getVertex();
-					for(int j = 0; j < v.size(); j++){
-						List<Tuple2<Double, Double>> v2 = v.get(j);
-						if(v2.size() < 3){
-							//図形が構成されていない場合は除去
-							continue;
-						}
-						ansPiece.add(String.valueOf(v2.size()));
-						for(int k = 0; k < v2.size(); k++){
-							double x = v2.get(k).t1 * (Constants.unitInch / ProblemManager.dpi);
-							double y = v2.get(k).t2 * (Constants.unitInch / ProblemManager.dpi);
-							ansPiece.add(String.valueOf(x) + " " + String.valueOf(y));
-						}
-						pieceSize++;
-					}
-				}
-			}
-			//dummyを個数に置き換え
-			ansFrame.set(0, String.valueOf(frameSize));
-			ansPiece.set(0, String.valueOf(pieceSize));
-			FolderManager.questSave(ansFrame, ansPiece);
-
+			FolderManager.questSave();
+			FolderManager.indexSave();
+			
 		}else if(cmd.equals("Add")){
 		    String selectvalues[] = {"Piece1", "Piece2", "Frame", "Cancel"};
 

@@ -8,6 +8,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import Mahito6.Main.Constants;
+import Mahito6.Main.Problem;
+import Mahito6.Main.ProblemManager;
+import Mahito6.Main.Tuple2;
+
 public class FolderManager {
 	public static final String currentPath = System.getProperty("user.home")+File.separator+"procon27" + File.separator;
 	public static final String presetsPath = currentPath + File.separator + "presets" + File.separator;
@@ -28,7 +33,56 @@ public class FolderManager {
 		}
 	}
 
-	public static void questSave(List<String> ansFrame,List<String> ansPiece){
+	public static void questSave(){
+		List<Problem> problems = ProblemManager.getProblems();
+		List<String> ansFrame = new ArrayList<String>();
+		ansFrame.add("dummy");
+		List<String> ansPiece = new ArrayList<String>();
+		ansPiece.add("dummy");
+
+		int frameSize = 0;
+		int pieceSize = 0;
+
+		for(int i = 0; i < problems.size(); i++){
+			Problem p = problems.get(i);
+			if(p.isWaku()){
+				List<List<Tuple2<Double, Double>>> v = p.getVertex();
+				for(int j = 0; j < v.size(); j++){
+					List<Tuple2<Double, Double>> v2 = v.get(j);
+					if(v2.size() < 3){
+						//図形が構成されていない場合は除去
+						continue;
+					}
+					Coordinates c = p.getCoord(j);
+					ansFrame.add(String.valueOf(v2.size()));
+					for(int k = 0; k < v2.size(); k++){
+						double x = (v2.get(k).t1+c.minx - Constants.imagePositionOffset/2) * (Constants.unitInch / ProblemManager.dpi);
+						double y = (v2.get(k).t2+c.miny - Constants.imagePositionOffset/2) * (Constants.unitInch / ProblemManager.dpi);
+						ansFrame.add(String.valueOf(x) + " " + String.valueOf(y));
+					}
+					frameSize++;
+				}
+			}else{
+				List<List<Tuple2<Double, Double>>> v = p.getVertex();
+				for(int j = 0; j < v.size(); j++){
+					List<Tuple2<Double, Double>> v2 = v.get(j);
+					if(v2.size() < 3){
+						//図形が構成されていない場合は除去
+						continue;
+					}
+					ansPiece.add(String.valueOf(v2.size()));
+					for(int k = 0; k < v2.size(); k++){
+						double x = (v2.get(k).t1 - Constants.imagePositionOffset/2) * (Constants.unitInch / ProblemManager.dpi);
+						double y = (v2.get(k).t2 - Constants.imagePositionOffset/2) * (Constants.unitInch / ProblemManager.dpi);
+						ansPiece.add(String.valueOf(x) + " " + String.valueOf(y));
+					}
+					pieceSize++;
+				}
+			}
+		}
+		//dummyを個数に置き換え
+		ansFrame.set(0, String.valueOf(frameSize));
+		ansPiece.set(0, String.valueOf(pieceSize));
 		try {
 			File quest = new File(currentPath+"quest.txt");
 			if(quest.exists())quest.delete();
@@ -72,5 +126,58 @@ public class FolderManager {
 	        ret.add(files[i].getName());
 	    }
 	    return ret;
+	}
+
+	public static void indexSave() {
+		// TODO Auto-generated method stub
+		List<Problem> problems = ProblemManager.getProblems();
+		List<String> ansPiece = new ArrayList<String>();
+		ansPiece.add("dummy");
+		String piece2_dir = "";
+		int pieceSize = 0;
+
+		for(int i = 0; i < problems.size(); i++){
+			Problem p = problems.get(i);
+			if(p.isWaku())continue;
+			//piece2のディレクトリ取得
+			if(p.getType() == 1){
+				piece2_dir = p.getPath();
+			}
+			List<List<Tuple2<Double, Double>>> v = p.getVertex();
+			for(int j = 0; j < v.size(); j++){
+				List<Tuple2<Double, Double>> v2 = v.get(j);
+				if(v2.size() < 3){
+					//図形が構成されていない場合は除去
+					continue;
+				}
+				if(p.getType() == 0){
+					ansPiece.add(String.valueOf(0));
+				}else{
+					ansPiece.add(String.valueOf(v2.size()));
+					for(int k = 0; k < v2.size(); k++){
+						double x = (v2.get(k).t1+p.getCoord(j).minx);
+						double y = (v2.get(k).t2+p.getCoord(j).miny);
+						ansPiece.add(String.valueOf(x) + " " + String.valueOf(y));
+					}	
+				}
+				pieceSize++;
+			}
+		}
+		//dummyを個数に置き換え
+		ansPiece.set(0, String.valueOf(pieceSize));
+		try {
+			File tar = new File(currentPath+"index.txt");
+			if(tar.exists())tar.delete();
+			tar.createNewFile();
+            FileWriter fw = new FileWriter(currentPath+"index.txt", false);
+            PrintWriter pw = new PrintWriter(new BufferedWriter(fw));
+            pw.println(piece2_dir);
+			for(int i = 0; i < ansPiece.size(); i++)pw.println(ansPiece.get(i));
+
+            pw.close();
+            System.out.println("File Saved");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 	}
 }

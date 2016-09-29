@@ -12,6 +12,7 @@ public class Problem {
 	private List<List<Edge>> allEdges;
 	private List<List<Tuple2<Double, Double>>> vertex;
 	private BufferedImage binImage;
+	private String image_path;
 	private int type;
 	private boolean modeWaku;
 	public Problem(boolean modeWaku){
@@ -104,8 +105,20 @@ public class Problem {
 		return thumb;
 	}
 
-	public void addType(int type) {
+	public void setType(int type) {
 		// TODO Auto-generated method stub
 		this.type = type;
+	}
+	
+	public int getType(){
+		return type;
+	}
+	
+	public void setPath(String path){
+		this.image_path = path;
+	}
+	
+	public String getPath(){
+		return image_path;
 	}
 }

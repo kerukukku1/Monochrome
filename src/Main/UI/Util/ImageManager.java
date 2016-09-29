@@ -287,6 +287,7 @@ public class ImageManager{
 		}
 
 		problem.setData(allEdges, vertex, coords);
+		problem.setPath(path);
 //		problem.setBufferedImages(bufImages);
 		ProblemManager.addProblem(problem);
 
