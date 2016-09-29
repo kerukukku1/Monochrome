@@ -199,7 +199,6 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int button = e.getButton();
-		System.out.println(button);
 		if(e.getSource() instanceof DetailPanel){
 			leftDetailClick((DetailPanel)e.getSource(), button);
 		}else if(e.getSource() instanceof MiniImagePanel){

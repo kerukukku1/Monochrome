@@ -28,6 +28,22 @@ public class Piece {
 		}
 	}
 	
+	public Piece getReversePiece(){
+		///頂点の回転方向を反転したピースを返す
+		PieceBuilder pieceBuilder = new PieceBuilder();
+		pieceBuilder.setID(id);
+		for(int i = getPointSize()-1;i != -1;i--){
+			Point point = getPoint(i);
+			pieceBuilder.addPoint(point.x, point.y);
+		}
+		try {
+			return pieceBuilder.build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public int getID(){
 		return id;
 	}
@@ -77,7 +93,13 @@ public class Piece {
 		
 		public Piece build() throws Exception{
 			if(id == -1 || points.size() <= 2)throw new Exception("PIECE DAME DESU.");
-			return new Piece(id,points);
+			Piece ret = new Piece(id, points);
+			int rotation = Geometry.checkRotationDire(ret);
+			if(rotation == Geometry.COUNTER_CLOCKWISE){
+				///反時計回りのピースはすべて時計回りにする
+				ret = ret.getReversePiece();
+			}
+			return ret;
 		}
 		
 		public void setID(int id){
