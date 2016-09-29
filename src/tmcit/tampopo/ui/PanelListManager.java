@@ -12,9 +12,9 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 public class PanelListManager extends JScrollPane{
-	
+
 	public static final int SCROLLBARINCREMENT = 15;
-	
+
 	private Component root;
 	private PanelListManager own;
 	private int WIDTH,HEIGHT;
@@ -22,7 +22,7 @@ public class PanelListManager extends JScrollPane{
 	public int heightSum;
 	public int widthSum;
 	public int heightMax;
-	
+
 	public PanelListManager(int WIDTH,int HEIGHT,boolean VERTICAL_NEVER,Component root){
 		this.root = root;
 		this.own = this;
@@ -42,7 +42,7 @@ public class PanelListManager extends JScrollPane{
 		this.getVerticalScrollBar().setUnitIncrement(SCROLLBARINCREMENT);
 		resize();
 	}
-	
+
 	public void allClear(){
 		mainPanel.removeAll();
 		widthSum = 0;
@@ -50,11 +50,11 @@ public class PanelListManager extends JScrollPane{
 		heightMax = 0;
 		resize();
 	}
-	
+
 	public void resize(){
 		int newheight = Math.max(HEIGHT, heightSum + heightMax);
 		Dimension newSize = new Dimension(WIDTH, newheight);
-		System.out.println("RESIZE:"+WIDTH+","+newheight);
+//		System.out.println("RESIZE:"+WIDTH+","+newheight);
 		mainPanel.setPreferredSize(newSize);
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -63,15 +63,15 @@ public class PanelListManager extends JScrollPane{
 			}
 		});
 	}
-	
+
 	public void setPanelBackgroundColor(Color backGround){
 		mainPanel.setBackground(backGround);
 	}
-	
+
 	public void addPanel(Component panel){
 		int height = panel.getPreferredSize().height;
 		int width = panel.getPreferredSize().width;
-		System.out.println(width+","+height);
+//		System.out.println(width+","+height);
 		heightMax = Math.max(heightMax, height);
 		if((widthSum + width) > WIDTH){
 			///改行
@@ -84,7 +84,7 @@ public class PanelListManager extends JScrollPane{
 		widthSum += width;
 		resize();
 	}
-	
+
 	public void removePanel(Component panel){
 		List<Component> components = new ArrayList<Component>();
 		for(Component comp : mainPanel.getComponents()){

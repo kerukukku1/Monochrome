@@ -1,51 +1,48 @@
 package tmcit.tampopo.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 import tmcit.api.AnswerChangeEvent;
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
-import tmcit.procon27.main.Solver;
 import tmcit.tampopo.ui.SolverPanel;
 import tmcit.tampopo.util.Piece.PieceBuilder;
 
 public class ProblemReader {
-	
+
 	public File file;
 	public Problem problem;
 	public static SolverPanel solverPanel;///アクセスを簡易に
-	
+
 	public ProblemReader(File file){
 		this.file = file;
 		this.problem = null;
 	}
-	
+
 	public static void stopAllSolver(){
-		
+
 	}
-	
+
 	public static Thread runSolver(String problemText,ISolver solver, List<Parameter> useParameters,int solverId){
 		///ソルバーをThreadにして走らせる,Threadを返す
-		
+
 		solver.setParameters(useParameters);
 		solver.load(problemText);
 		solver.init(solverId);
-		
+
 		Thread solverThread = new Thread(solver);
 		solverThread.start();
 		AnswerChangeEvent.addListener(solverId, solverPanel);
 		return solverThread;
 	}
-	
+
 	public static void setSolverPanel(SolverPanel solverPanel){
 		ProblemReader.solverPanel = solverPanel;
 	}
-	
+
 	public static Answer convertSolvedAnswer(String answerText){
 		///ソルバーで帰ってきたStringをまたAnswerに直す
 		Problem problem = solverPanel.getProblem();
@@ -54,7 +51,7 @@ public class ProblemReader {
 		for(Piece frame : problem.frames){
 			frames.add(frame.getCopy());
 		}
-		
+
 		List<Piece> pieces = new ArrayList<Piece>();
 		Scanner scan = new Scanner(answerText);
 		int N = scan.nextInt();
@@ -76,9 +73,10 @@ public class ProblemReader {
 		}
 		scan.close();
 		Answer answer = new Answer(frames, pieces);
+//		System.out.println(answerText);
 		return answer;
 	}
-	
+
 	public static String makeMixProblemText(){
 		String ret = "";
 		Problem problem = solverPanel.getProblem();
@@ -88,8 +86,8 @@ public class ProblemReader {
 		List<Piece> frames = problem.frames;
 		List<Piece> pieces = problem.pieces;
 		List<Piece> mixPieces = mixAnswer.pieces;
-		
-		
+
+
 		int frameNum = frames.size();
 		ret += ""+frameNum+"\n";
 		for(Piece frame : frames){
@@ -124,7 +122,7 @@ public class ProblemReader {
 		}
 		return ret;
 	}
-	
+
 	public Problem load() throws Exception{
 		List<Piece> frames = new ArrayList<Piece>();
 		List<Piece> pieces = new ArrayList<Piece>();
@@ -156,7 +154,7 @@ public class ProblemReader {
 			pieces.add(piece);
 		}
 		scan.close();
-		
+
 		this.problem = new Problem(pieces, frames);
 		return this.problem;
 	}
