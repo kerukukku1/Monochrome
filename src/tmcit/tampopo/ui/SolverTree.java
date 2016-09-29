@@ -19,12 +19,13 @@ import tmcit.procon27.main.Solver;
 import tmcit.tampopo.ui.util.FolderNode;
 import tmcit.tampopo.ui.util.MyTreeCellRenderer;
 import tmcit.tampopo.ui.util.ParameterNode;
+import tmcit.tampopo.util.ParameterLoader;
 
 public class SolverTree extends JTree implements MouseListener , ActionListener{
 
 	public static final Color backGround = new Color(230, 230, 240);
 	private static FolderNode rootNode = new FolderNode("ROOT");
-	public static String[] solvers = {"YASUKIN","YAMADA"};
+	public static String[] solvers = {"EdgeSolver","RotSolver"};
 	
 	public SolverDetailPanel tabPane;
 	public DefaultTreeModel model;
@@ -41,6 +42,12 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 		TreeCellRenderer renderer = this.getCellRenderer();
 		this.setCellRenderer(new MyTreeCellRenderer());
 		this.addMouseListener(this);
+		try {
+			ParameterLoader.loadAllParameter(rootNode);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		expandAllNodes(this, 0, this.getRowCount());
 	}
 
 	public void initPanel(){
@@ -58,18 +65,19 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 
 		String solverName = (String)ret;
 		ISolver solver = null;
-		if(solverName.equalsIgnoreCase("YASUKIN")){
+		if(solverName.equalsIgnoreCase("EdgeSolver")){
 			solver = new tmcit.tampopo.edgeSolver.main.BeamEdgeMain();
-		}else if(solverName.equalsIgnoreCase("YAMADA")){
+		}else if(solverName.equalsIgnoreCase("RotSolver")){
 			solver = new tmcit.procon27.main.RotSolverMain();
 		}
 		if(solver == null){
 			System.out.println("SOLVER NULL");
 			return;
 		}
-		ParameterNode node = new ParameterNode(title, solver,tabPane);
+		ParameterNode node = new ParameterNode(title, solver);
 		targetNode.add(node);
 		model.nodeStructureChanged(targetNode);
+		node.save();///ツリーにaddした後じゃないと意味ない
 	}
 
 	public void addFolder(FolderNode targetNode){
@@ -139,7 +147,7 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 		this.setSelectionRow(tarRow);
 		if(this.getSelectionPath().getLastPathComponent() instanceof ParameterNode){
 			ParameterNode parameterNode = (ParameterNode) this.getSelectionPath().getLastPathComponent();
-			parameterNode.showDetail();
+			parameterNode.showDetail(tabPane);
 		}
 	}
 
@@ -154,6 +162,16 @@ public class SolverTree extends JTree implements MouseListener , ActionListener{
 			leftDoubleClick(event.getX(), event.getY());
 		}
 		
+	}
+	
+	private void expandAllNodes(JTree tree, int startingIndex, int rowCount){
+	    for(int i=startingIndex;i<rowCount;++i){
+	        tree.expandRow(i);
+	    }
+
+	    if(tree.getRowCount()!=rowCount){
+	        expandAllNodes(tree, rowCount, tree.getRowCount());
+	    }
 	}
 
 

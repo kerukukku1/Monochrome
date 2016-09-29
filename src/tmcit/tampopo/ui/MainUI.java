@@ -64,6 +64,7 @@ public class MainUI extends JFrame implements ActionListener{
 	private void setMenuBar() {
 		JMenuBar menubar = new JMenuBar();
 		JMenu menu1 = new JMenu("File");
+		JMenu menu2 = new JMenu("Solver");
 		JMenuItem menuitem2 = new JMenuItem("Refresh");
 		menuitem2.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
@@ -79,10 +80,11 @@ public class MainUI extends JFrame implements ActionListener{
 		menuitem3.addActionListener(this);
 		menuitem4.addActionListener(this);
 		menu1.add(menuitem2);
-		menu1.add(menuitem3);
-		menu1.add(menuitem4);
 		menu1.add(menuitem1);
+		menu2.add(menuitem3);
+		menu2.add(menuitem4);
 		menubar.add(menu1);
+		menubar.add(menu2);
 		this.setJMenuBar(menubar);
 	}
 

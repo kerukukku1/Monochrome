@@ -1,5 +1,6 @@
 package tmcit.tampopo.ui.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,6 +12,7 @@ import tmcit.api.Parameter;
 import tmcit.api.Parameter.ValueType;
 import tmcit.tampopo.ui.ParameterDetailPanel;
 import tmcit.tampopo.ui.SolverDetailPanel;
+import tmcit.tampopo.util.ParameterLoader;
 
 public class ParameterNode extends DefaultMutableTreeNode{
 	
@@ -18,15 +20,32 @@ public class ParameterNode extends DefaultMutableTreeNode{
 	private ISolver solver;
 	private List<Parameter> parameters;
 	private ParameterDetailPanel panel = null;
-	public SolverDetailPanel tabPane;
 	
-	public ParameterNode(String title,ISolver solver,SolverDetailPanel tabPane){
+	public ParameterNode(String title,ISolver solver){
 		super(title);
-		this.tabPane = tabPane;
 		this.title = title;
 		this.solver = solver;
 		this.parameters = getParametersCopy(solver.getParameters());
 //		showDetail();
+	}
+	
+	public void save(){
+		///現在のパラメータをすべてテキストに書き出す
+		try {
+			ParameterLoader.saveParameter(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getTitle(){
+		return title;
+	}
+	public ISolver getSolver(){
+		return solver;
+	}
+	public List<Parameter> getParameters(){
+		return parameters;
 	}
 	
 	private List<Parameter> getParametersCopy(List<Parameter> source){
@@ -67,7 +86,7 @@ public class ParameterNode extends DefaultMutableTreeNode{
 		return ret;
 	}
 	
-	public void showDetail(){
+	public void showDetail(SolverDetailPanel tabPane){
 		if(panel == null)panel = new ParameterDetailPanel(title,solver,parameters);
 		if(tabPane.indexOfComponent(panel) != -1)return;
 		tabPane.addTab(title, panel);

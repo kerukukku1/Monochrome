@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="JARS/opencv-2412.jar"/>
 	<classpathentry kind="lib" path="JARS/RotSolver_HighSpeed_API1.6.jar"/>
 	<classpathentry kind="lib" path="JARS/SolverAPI_v1.7.jar"/>
-	<classpathentry kind="lib" path="JARS/yasuBeam.jar"/>
 	<classpathentry kind="lib" path="JARS/asprise_scan.jar"/>
+	<classpathentry kind="lib" path="JARS/yasuBeam_v1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
