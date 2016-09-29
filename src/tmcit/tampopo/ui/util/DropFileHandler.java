@@ -1,4 +1,4 @@
-package tmcit.tampopo.util;
+package tmcit.tampopo.ui.util;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -13,6 +13,8 @@ import javax.swing.TransferHandler;
 
 import tmcit.procon27.main.Solver;
 import tmcit.tampopo.ui.SolverPanel;
+import tmcit.tampopo.util.Problem;
+import tmcit.tampopo.util.ProblemReader;
 
 public class DropFileHandler extends TransferHandler{
 	public SolverPanel solverPanel;
@@ -22,7 +24,7 @@ public class DropFileHandler extends TransferHandler{
 	}
 	
 	public void dropProblemTextFile(File file){
-		ProblemReader reader = new ProblemReader(file);
+		ProblemReader reader = new ProblemReader(file,null);
 		Problem problem;
 		try {
 			problem = reader.load();

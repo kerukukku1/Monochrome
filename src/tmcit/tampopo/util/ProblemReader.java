@@ -1,6 +1,7 @@
 package tmcit.tampopo.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,17 +9,20 @@ import java.util.Scanner;
 import tmcit.api.AnswerChangeEvent;
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
+import tmcit.tampopo.geometry.util.Piece;
+import tmcit.tampopo.geometry.util.Point;
+import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 import tmcit.tampopo.ui.SolverPanel;
-import tmcit.tampopo.util.Piece.PieceBuilder;
 
 public class ProblemReader {
 
-	public File file;
+	public File file,index;
 	public Problem problem;
 	public static SolverPanel solverPanel;///アクセスを簡易に
 
-	public ProblemReader(File file){
-		this.file = file;
+	public ProblemReader(File quest,File index){
+		this.file = quest;
+		this.index = index;
 		this.problem = null;
 	}
 
@@ -28,7 +32,9 @@ public class ProblemReader {
 
 	public static Thread runSolver(String problemText,ISolver solver, List<Parameter> useParameters,int solverId){
 		///ソルバーをThreadにして走らせる,Threadを返す
-
+		for(Parameter parameter : useParameters){
+			System.out.println(parameter.name+" : "+parameter.value);
+		}
 		solver.setParameters(useParameters);
 		solver.load(problemText);
 		solver.init(solverId);
@@ -122,8 +128,40 @@ public class ProblemReader {
 		}
 		return ret;
 	}
-
+	
 	public Problem load() throws Exception{
+		Problem prob = loadQuest();
+		if(index != null){
+			loadIndex(prob);
+		}
+		return this.problem = prob;
+	}
+	
+	private void loadIndex(Problem prob) throws Exception{
+		Scanner scan = new Scanner(index);
+		String piece2ImageDir = scan.nextLine();
+		List<Piece> realPieces = new ArrayList<Piece>();
+		int N = scan.nextInt();
+		if(prob.pieces.size() != N)return;///データが違う可能性高い
+		for(int i = 0;i < N;i++){
+			int V = scan.nextInt();
+			if(V == 0)continue;
+			PieceBuilder pieceBuilder = new PieceBuilder();
+			pieceBuilder.setID(i);
+			for(int j = 0;j < V;j++){
+				double x = scan.nextDouble();
+				double y = scan.nextDouble();
+				pieceBuilder.addPoint(x, y);
+			}
+			realPieces.add(pieceBuilder.build());
+		}
+		scan.close();
+		File imageFile = new File(piece2ImageDir);
+		prob.setPiece2Image(imageFile);
+		prob.setRealPieces(realPieces);
+	}
+
+	private Problem loadQuest() throws Exception{
 		List<Piece> frames = new ArrayList<Piece>();
 		List<Piece> pieces = new ArrayList<Piece>();
 		Scanner scan = new Scanner(file);
@@ -154,9 +192,7 @@ public class ProblemReader {
 			pieces.add(piece);
 		}
 		scan.close();
-
-		this.problem = new Problem(pieces, frames);
-		return this.problem;
+		return new Problem(pieces, frames);
 	}
 
 }

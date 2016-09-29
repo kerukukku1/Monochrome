@@ -25,7 +25,7 @@ public class MiniImagePanel extends JPanel{
 		this.index = index;
 		this.IMAGESIZE = IMAGESIZE;
 		initPanel();
-		makePanel();
+//		showImage();
 	}
 	
 	public String getTabTitle(){
@@ -34,13 +34,20 @@ public class MiniImagePanel extends JPanel{
 		return ret;
 	}
 	
-	public void makePanel(){
+	public void showImage(){
+		if(imageLabel != null)return;
 		imageLabel = new JLabel();
 		PuzzleImage puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
 		puzzleImage.paint(IMAGESIZE-3, false, false, false, false, false, false);
 		imageLabel.setIcon(new ImageIcon(puzzleImage.getImage()));
 		imageLabel.setBounds(2, 2, IMAGESIZE - 4, IMAGESIZE - 4);
 		this.add(imageLabel);
+	}
+	
+	public void hideImage(){
+		if(imageLabel == null)return;
+		this.remove(imageLabel);
+		imageLabel = null;
 	}
 	
 	public void initPanel(){

@@ -1,5 +1,6 @@
 package tmcit.tampopo.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -23,6 +24,7 @@ import javax.swing.ScrollPaneConstants;
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
 import tmcit.api.Parameter.ValueType;
+import tmcit.tampopo.ui.util.ParameterNode;
 import tmcit.tampopo.util.Problem;
 import tmcit.tampopo.util.ProblemReader;
 
@@ -30,11 +32,12 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 	
 	public static final int WIDTH = SolverPanel.RIGHT_WIDTH - 10;
 	public static final int HEIGHT = SolverPanel.RIGHT_HEIGHT - 30;
-	public static final int PARAMETER_AREA_HEIGHT = 300;
-	public static final int CONSOLE_AREA_HEIGHT = 220;
+	public static final int PARAMETER_AREA_HEIGHT = 280;
+	public static final int CONSOLE_AREA_HEIGHT = 180;
 	public static final int BUTTON_WIDTH = 190,BUTTON_HEIGHT = 44;
 	public static final int ONE_PARAMETER_HEIGHT = 20;
 
+	public ParameterNode sourceNode;
 	public String title;
 	public ISolver solver;
 	public List<Parameter> parameters;
@@ -43,12 +46,13 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 
 	public PanelListManager panelListManager;
 	public JTextArea console;
-	public JButton stopButton,runButton;
+	public JButton stopButton,runButton,saveButton;
 	
 	public boolean isSolverRunning = false;
 	Thread solverThread;
 
-	public ParameterDetailPanel(String title,ISolver solver,List<Parameter> parameters){
+	public ParameterDetailPanel(String title,ISolver solver,List<Parameter> parameters,ParameterNode sourceNode){
+		this.sourceNode = sourceNode;
 		this.title = title;
 		this.solver = solver;
 		this.parameters = parameters;
@@ -77,11 +81,34 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 		System.out.println(problemText);
 		solverThread = ProblemReader.runSolver(problemText,solver,useParameters,solverId);
 		isSolverRunning = true;
+		runButton.setEnabled(false);
 	}
 	
 	public void stopSolver(){
 		solverThread.stop();
 		isSolverRunning = false;
+		runButton.setEnabled(true);
+	}
+	
+	public boolean saveParameter(){
+		///パラメータを全部保存する、ただし入力ミスってる可能性もあるのでチェックを入れる
+		List<Parameter> tmp = new ArrayList<Parameter>();
+		for(ParameterPanel parameterPanel : parameterPanels){
+			Parameter into = parameterPanel.getUpdatedParameter();
+			if(into == null)return false;
+			try {
+				tmp.add(ParameterNode.getCopyParameter(into));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		this.parameters.clear();
+		for(Parameter parameter : tmp){
+			this.parameters.add(parameter);
+		}
+		System.out.println("RENRAKU");
+		return sourceNode.save();
 	}
 
 	public void addParameter(Parameter parameter){
@@ -105,13 +132,17 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 		
 		stopButton = new JButton("STOP");
 		runButton = new JButton("RUN");
+		saveButton = new JButton("SAVE");
 		stopButton.addActionListener(this);
 		runButton.addActionListener(this);
+		saveButton.addActionListener(this);
 		stopButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
 		runButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+		saveButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
 		
 		this.add(panelListManager);
 		this.add(conscroll);
+		this.add(saveButton);
 		this.add(stopButton);
 		this.add(runButton);
 	}
@@ -127,6 +158,13 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 			runSolver();
 		}else if(event.getSource().equals(stopButton)){
 			stopSolver();
+		}else if(event.getSource().equals(saveButton)){
+			boolean result = saveParameter();
+			if(result){
+				saveButton.setForeground(Color.GREEN);
+			}else{
+				saveButton.setForeground(Color.RED);
+			}
 		}
 	}
 

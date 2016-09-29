@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 
 import tmcit.api.Parameter;
 import tmcit.api.Parameter.ValueType;
-import tmcit.tampopo.util.ParameterNode;
+import tmcit.tampopo.ui.util.ParameterNode;
 
 public class ParameterPanel extends JPanel{
 	
@@ -28,7 +28,7 @@ public class ParameterPanel extends JPanel{
 		makePanel();
 	}
 	
-	public void updateParameter(){
+	public void updateParameter() throws Exception{
 		ValueType valueType = parameter.valueType;
 		Object value = null;
 		if(valueType == ValueType.Integer){
@@ -44,7 +44,12 @@ public class ParameterPanel extends JPanel{
 	}
 	
 	public Parameter getUpdatedParameter(){
-		updateParameter();
+		try {
+			updateParameter();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 		return parameter;
 	}
 	

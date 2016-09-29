@@ -15,8 +15,8 @@ import javax.swing.plaf.basic.BasicCheckBoxMenuItemUI;
 import tmcit.api.AnswerChangeEvent;
 import tmcit.api.AnswerChangeListener;
 import tmcit.procon27.main.Solver;
+import tmcit.tampopo.ui.util.DropFileHandler;
 import tmcit.tampopo.util.Answer;
-import tmcit.tampopo.util.DropFileHandler;
 import tmcit.tampopo.util.Problem;
 import tmcit.tampopo.util.ProblemReader;
 
@@ -52,10 +52,8 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 	}
 	
 	public void doMergeForMaster(){
-		System.out.println(master.pieces.size());
-		System.out.println(problem.getEmptyAnswer().pieces.size());
+		if(this.master == null)return;
 		Answer newMaster = this.master.getCopy();///これがマージ先,必ずコピー
-		System.out.println(newMaster.pieces.size());
 		Answer source = center.getViewingAnswer();
 		if(source == null)return;
 		source = source.getCopy();///一応コピー
@@ -65,9 +63,18 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 			return;
 		}
 		System.out.println("マージに成功しました！！！");
+		replaceMaster(newMaster);
+	}
+	public void doOverwriteForMaster(){
+		Answer source = center.getViewingAnswer();
+		if(source == null)return;
+		replaceMaster(source);
+	}
+	private void replaceMaster(Answer newAnswer){
+		///本来のMasterを削除してnewAnswerに置き換える
 		left.removeAnswerPanel(masterDetailPanel);
-		master = newMaster;
-		masterDetailPanel = left.addAnswer("Master", newMaster,0);
+		master = newAnswer;
+		masterDetailPanel = left.addAnswer("Master", master,0);
 	}
 	
 	@Override
@@ -174,9 +181,7 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 				int res = JOptionPane.
 						showConfirmDialog(this, "Masterを初期化しますか？","TITLE", JOptionPane.OK_CANCEL_OPTION);
 				if(res != 0)return;
-				left.removeAnswerPanel(masterDetailPanel);
-				master = own.problem.getEmptyAnswer();
-				masterDetailPanel = left.addAnswer("Master", master,0);
+				replaceMaster(own.problem.getEmptyAnswer());
 			}else{
 				left.removeAnswerPanel(detailPanel);
 			}
@@ -199,7 +204,6 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int button = e.getButton();
-		System.out.println(button);
 		if(e.getSource() instanceof DetailPanel){
 			leftDetailClick((DetailPanel)e.getSource(), button);
 		}else if(e.getSource() instanceof MiniImagePanel){

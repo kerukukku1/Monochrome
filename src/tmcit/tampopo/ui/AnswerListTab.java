@@ -11,7 +11,7 @@ import javax.swing.event.ChangeListener;
 
 import tmcit.tampopo.util.Answer;
 
-public class AnswerListTab extends JTabbedPane{
+public class AnswerListTab extends JTabbedPane implements ChangeListener{
 	
 	public AnswerListTab(int WIDTH,int HEIGHT){
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
@@ -58,5 +58,15 @@ public class AnswerListTab extends JTabbedPane{
 	}
 	
 	public void initTab(){
+		this.addChangeListener(this);
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent event) {
+		Component comp = this.getSelectedComponent();
+		if(comp instanceof BigImagePanel){
+			BigImagePanel bigImagePanel = (BigImagePanel) comp;
+			bigImagePanel.imageReload();
+		}
 	}
 }

@@ -1,5 +1,6 @@
-package tmcit.tampopo.util;
+package tmcit.tampopo.geometry.util;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,15 +10,40 @@ public class Piece {
 	private List<Point> points;///座標セット
 	private List<Double> angleSet = null;///角度セット
 	
+	private Color pieceColor = null;///描画の際に使う
+	
 	private Piece(int id,List<Point> points){
 		this.id = id;
 		this.points = points;
+	}
+	
+	public Color getPieceColor(){
+		return pieceColor;
+	}
+	public void setPieceColor(Color color){
+		this.pieceColor = color;
 	}
 	
 	public Piece getCopy(){
 		PieceBuilder pieceBuilder = new PieceBuilder();
 		pieceBuilder.setID(id);
 		for(Point point : points){
+			pieceBuilder.addPoint(point.x, point.y);
+		}
+		try {
+			return pieceBuilder.build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public Piece getReversePiece(){
+		///頂点の回転方向を反転したピースを返す
+		PieceBuilder pieceBuilder = new PieceBuilder();
+		pieceBuilder.setID(id);
+		for(int i = getPointSize()-1;i != -1;i--){
+			Point point = getPoint(i);
 			pieceBuilder.addPoint(point.x, point.y);
 		}
 		try {
@@ -77,7 +103,13 @@ public class Piece {
 		
 		public Piece build() throws Exception{
 			if(id == -1 || points.size() <= 2)throw new Exception("PIECE DAME DESU.");
-			return new Piece(id,points);
+			Piece ret = new Piece(id, points);
+			int rotation = Geometry.checkRotationDire(ret);
+			if(rotation == Geometry.COUNTER_CLOCKWISE){
+				///反時計回りのピースはすべて時計回りにする
+				ret = ret.getReversePiece();
+			}
+			return ret;
 		}
 		
 		public void setID(int id){

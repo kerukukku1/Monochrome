@@ -109,6 +109,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		if(title.equals("Problem")||title.equals("Master"))return;
 		String newTitle = JOptionPane.showInputDialog("rename");
 		if(newTitle == null)return;
 		this.title = newTitle;
