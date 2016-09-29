@@ -1,7 +1,12 @@
 package tmcit.tampopo.util;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import tmcit.tampopo.geometry.util.Piece;
 
@@ -10,9 +15,23 @@ public class Problem {
 	public List<Piece> frames;
 	public List<Piece> pieces;
 	
+	public BufferedImage piece2Image;///クソでかの可能性
+	public List<Piece> realPieces;///現画像上での座標が格納される
+	
 	public Problem(List<Piece> pieces,List<Piece> frames){
 		this.frames = frames;
 		this.pieces = pieces;
+	}
+	
+	public void setPiece2Image(File file){
+		try {
+			this.piece2Image = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void setRealPieces(List<Piece> realPieces){
+		this.realPieces = realPieces;
 	}
 	
 	public Answer getEmptyAnswer(){

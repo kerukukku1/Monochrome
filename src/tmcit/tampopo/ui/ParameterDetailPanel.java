@@ -1,5 +1,6 @@
 package tmcit.tampopo.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -80,24 +81,26 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 		System.out.println(problemText);
 		solverThread = ProblemReader.runSolver(problemText,solver,useParameters,solverId);
 		isSolverRunning = true;
+		runButton.setEnabled(false);
 	}
 	
 	public void stopSolver(){
 		solverThread.stop();
 		isSolverRunning = false;
+		runButton.setEnabled(true);
 	}
 	
-	public void saveParameter(){
+	public boolean saveParameter(){
 		///パラメータを全部保存する、ただし入力ミスってる可能性もあるのでチェックを入れる
 		List<Parameter> tmp = new ArrayList<Parameter>();
 		for(ParameterPanel parameterPanel : parameterPanels){
 			Parameter into = parameterPanel.getUpdatedParameter();
-			if(into == null)return;
+			if(into == null)return false;
 			try {
 				tmp.add(ParameterNode.getCopyParameter(into));
 			} catch (Exception e) {
 				e.printStackTrace();
-				return;
+				return false;
 			}
 		}
 		this.parameters.clear();
@@ -105,7 +108,7 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 			this.parameters.add(parameter);
 		}
 		System.out.println("RENRAKU");
-		sourceNode.save();
+		return sourceNode.save();
 	}
 
 	public void addParameter(Parameter parameter){
@@ -156,7 +159,12 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 		}else if(event.getSource().equals(stopButton)){
 			stopSolver();
 		}else if(event.getSource().equals(saveButton)){
-			saveParameter();
+			boolean result = saveParameter();
+			if(result){
+				saveButton.setForeground(Color.GREEN);
+			}else{
+				saveButton.setForeground(Color.RED);
+			}
 		}
 	}
 

@@ -7,6 +7,8 @@ import tmcit.tampopo.ui.MainUI;
 public class Main {
 	
 	public static final String saveDir = System.getProperty("user.home")+"/procon27";
+	public static final String questDir = System.getProperty("user.home")+"/procon27/quest.txt";
+	public static final String indexDir = System.getProperty("user.home")+"/procon27/index.txt";
 
 	public Mahito6.Main.Main mahitoMain;
 	public MainUI mainFrame;

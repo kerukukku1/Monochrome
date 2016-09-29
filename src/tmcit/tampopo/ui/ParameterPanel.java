@@ -28,7 +28,7 @@ public class ParameterPanel extends JPanel{
 		makePanel();
 	}
 	
-	public void updateParameter(){
+	public void updateParameter() throws Exception{
 		ValueType valueType = parameter.valueType;
 		Object value = null;
 		if(valueType == ValueType.Integer){
@@ -44,7 +44,12 @@ public class ParameterPanel extends JPanel{
 	}
 	
 	public Parameter getUpdatedParameter(){
-		updateParameter();
+		try {
+			updateParameter();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 		return parameter;
 	}
 	

@@ -15,6 +15,7 @@ import tmcit.api.ISolver;
 import tmcit.api.Parameter;
 import tmcit.api.Parameter.ParameterBuilder;
 import tmcit.api.Parameter.ValueType;
+import tmcit.tampopo.edgeSolver.main.BeamEdgeMain;
 import tmcit.tampopo.ui.SolverDetailPanel;
 import tmcit.tampopo.ui.util.FolderNode;
 import tmcit.tampopo.ui.util.ParameterNode;
@@ -23,7 +24,8 @@ public class ParameterLoader {
 	
 	public static String[] solvers = {"EdgeSolver","RotSolver"};
 
-	public static void saveParameter(ParameterNode node) throws IOException {
+	public static boolean saveParameter(ParameterNode node){
+		try{
 		// TODO Auto-generated method stub
 		String fileName = node.getTitle();
 		FolderNode parant = (FolderNode) node.getParent();
@@ -45,6 +47,11 @@ public class ParameterLoader {
 		FileWriter fileWriter = new FileWriter(file);
 		fileWriter.write(text);
 		fileWriter.close();
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public static void loadAllParameter(FolderNode root) throws Exception{
@@ -151,7 +158,9 @@ public class ParameterLoader {
 	
 	public static ISolver getISolverInstance(String solverName){
 		if(solverName.equals("EdgeSolver")){
-			return new tmcit.tampopo.edgeSolver.main.BeamEdgeMain();
+			BeamEdgeMain solver = new tmcit.tampopo.edgeSolver.main.BeamEdgeMain();
+			solver.getParameters();
+			return solver;
 		}else if(solverName.equals("RotSolver")){
 			return new tmcit.procon27.main.RotSolverMain();
 		}else{

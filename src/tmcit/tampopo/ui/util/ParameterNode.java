@@ -37,13 +37,9 @@ public class ParameterNode extends DefaultMutableTreeNode{
 		this.parameters = getParametersCopy(parameters);
 	}
 	
-	public void save(){
+	public boolean save(){
 		///現在のパラメータをすべてテキストに書き出す
-		try {
-			ParameterLoader.saveParameter(this);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		return ParameterLoader.saveParameter(this);
 	}
 	
 	public String getTitle(){

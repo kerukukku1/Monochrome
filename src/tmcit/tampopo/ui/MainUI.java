@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -15,7 +16,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import Mahito6.Main.Main;
 import Mahito6.UI.PieceListView;
+import tmcit.tampopo.util.Problem;
+import tmcit.tampopo.util.ProblemReader;
 
 public class MainUI extends JFrame implements ActionListener{
 
@@ -74,15 +78,23 @@ public class MainUI extends JFrame implements ActionListener{
 		JMenuItem menuitem4 = new JMenuItem("MERGE(TEST)");
 		menuitem4.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_M, 0));
+		JMenuItem menuitem5 = new JMenuItem("OVERWRITE(TEST)");
+		menuitem5.setAccelerator(KeyStroke.getKeyStroke(
+				  KeyEvent.VK_O, 0));
+		JMenuItem menuitem6 = new JMenuItem("load_quest");
 		JMenuItem menuitem1 = new JMenuItem("Exit");
 		menuitem1.addActionListener(this);
 		menuitem2.addActionListener(this);
 		menuitem3.addActionListener(this);
 		menuitem4.addActionListener(this);
+		menuitem5.addActionListener(this);
+		menuitem6.addActionListener(this);
 		menu1.add(menuitem2);
 		menu1.add(menuitem1);
+		menu2.add(menuitem6);
 		menu2.add(menuitem3);
 		menu2.add(menuitem4);
+		menu2.add(menuitem5);
 		menubar.add(menu1);
 		menubar.add(menu2);
 		this.setJMenuBar(menubar);
@@ -99,6 +111,19 @@ public class MainUI extends JFrame implements ActionListener{
 			System.exit(0);
 		}else if(value.equalsIgnoreCase("MERGE(TEST)")){
 			solverPanel.doMergeForMaster();
+		}else if(value.equalsIgnoreCase("OVERWRITE(TEST)")){
+			solverPanel.doOverwriteForMaster();
+		}else if(value.equalsIgnoreCase("load_quest")){
+			File quest = new File(tmcit.tampopo.main.Main.questDir);
+			File index = new File(tmcit.tampopo.main.Main.indexDir);
+			ProblemReader problemReader = new ProblemReader(quest,index);
+			try {
+				Problem problem = problemReader.load();
+				solverPanel.setProblem(problem);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
 		}
 	}
 

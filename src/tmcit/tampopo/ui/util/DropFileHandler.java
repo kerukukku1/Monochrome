@@ -24,7 +24,7 @@ public class DropFileHandler extends TransferHandler{
 	}
 	
 	public void dropProblemTextFile(File file){
-		ProblemReader reader = new ProblemReader(file);
+		ProblemReader reader = new ProblemReader(file,null);
 		Problem problem;
 		try {
 			problem = reader.load();
