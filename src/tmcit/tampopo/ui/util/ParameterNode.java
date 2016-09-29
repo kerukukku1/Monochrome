@@ -29,6 +29,14 @@ public class ParameterNode extends DefaultMutableTreeNode{
 //		showDetail();
 	}
 	
+	public ParameterNode(String title,ISolver solver,List<Parameter> parameters){
+		///こっちはすでに保存したパラメータから読み込む場合
+		super(title);
+		this.title = title;
+		this.solver = solver;
+		this.parameters = getParametersCopy(parameters);
+	}
+	
 	public void save(){
 		///現在のパラメータをすべてテキストに書き出す
 		try {
@@ -87,7 +95,7 @@ public class ParameterNode extends DefaultMutableTreeNode{
 	}
 	
 	public void showDetail(SolverDetailPanel tabPane){
-		if(panel == null)panel = new ParameterDetailPanel(title,solver,parameters);
+		if(panel == null)panel = new ParameterDetailPanel(title,solver,parameters,this);
 		if(tabPane.indexOfComponent(panel) != -1)return;
 		tabPane.addTab(title, panel);
 	}

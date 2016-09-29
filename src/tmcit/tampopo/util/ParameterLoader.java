@@ -74,7 +74,7 @@ public class ParameterLoader {
 				parant = next;
 			}
 			String title = route[route.length - 1];
-			parant.add(new ParameterNode(title, solver));
+			parant.add(new ParameterNode(title, solver,parameters));
 		}
 	}
 	private static FolderNode getChild(FolderNode node,String name){
