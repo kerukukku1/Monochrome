@@ -94,6 +94,7 @@ public class ParameterNode extends DefaultMutableTreeNode{
 		if(panel == null)panel = new ParameterDetailPanel(title,solver,parameters,this);
 		if(tabPane.indexOfComponent(panel) != -1)return;
 		tabPane.addTab(title, panel);
+		tabPane.setSelectedComponent(panel);
 	}
 
 }

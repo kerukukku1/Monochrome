@@ -111,7 +111,11 @@ public class PuzzleImage {
 		int id = 0;
 		for(Piece piece : pieces){
 			int pieceID = piece.getID();
-			g2d.setColor(colorDef[pieceID%colorDef.length]);
+			if(piece.getPieceColor() != null){
+				g2d.setColor(piece.getPieceColor());
+			}else{
+				g2d.setColor(colorDef[pieceID%colorDef.length]);
+			}
 			Polygon fill = new Polygon();
 			for(int i = 0;i < piece.getPointSize();i++){
 				Segment edge = piece.getSegment(i);

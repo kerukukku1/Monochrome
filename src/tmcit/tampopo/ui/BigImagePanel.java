@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
@@ -17,10 +19,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import tmcit.tampopo.edgeSolver.solver.util.Puzzle;
+import tmcit.tampopo.geometry.util.Piece;
 import tmcit.tampopo.util.Answer;
 import tmcit.tampopo.util.PuzzleImage;
 
-public class BigImagePanel extends JPanel implements ChangeListener{
+public class BigImagePanel extends JPanel implements ChangeListener , MouseListener{
 	
 	public static final int IMAGESIZE = SolverPanel.CENTER_BIGIMAGE_SIZE;
 	public static final Color backGround = new Color(230, 230, 240);
@@ -29,8 +33,11 @@ public class BigImagePanel extends JPanel implements ChangeListener{
 	public String title;
 	public Answer answer;
 	public JLabel imageLabel;
+	public PuzzleImage puzzleImage;
 	
-	public boolean frameDegree = false
+	public JCheckBox cb1,cb2,cb3,cb4,cb5,cb6;
+	
+	public static boolean frameDegree = false
 				  ,frameLength = true
 				  ,pieceDegree = false
 				  ,pieceLength = false
@@ -47,11 +54,17 @@ public class BigImagePanel extends JPanel implements ChangeListener{
 	}
 	
 	public void imageReload(){
-		PuzzleImage puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
+		puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
 		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex);
 		BufferedImage bigImage = puzzleImage.getImage();
 		imageLabel.setIcon(new ImageIcon(bigImage));
 		this.repaint();
+		cb1.setSelected(frameDegree);
+		cb2.setSelected(frameLength);
+		cb3.setSelected(frameIndex);
+		cb4.setSelected(pieceDegree);
+		cb5.setSelected(pieceLength);
+		cb6.setSelected(pieceIndex);
 	}
 	
 	@Override
@@ -84,20 +97,32 @@ public class BigImagePanel extends JPanel implements ChangeListener{
 		imageReload();
 	}
 	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		///ピース右クリックしたら消す
+		if(e.getButton() != 3)return;
+		if(answer.frames.size() == 0)return;///枠がある解のみ
+		Piece piece = puzzleImage.getPieceFromPoint(e.getX(), e.getY());
+		if(piece == null)return;
+		answer.pieces.remove(piece);
+		imageReload();
+	}
+	
 	public void makePanel(){
 		imageLabel = new JLabel();
 		imageLabel.setPreferredSize(new Dimension(IMAGESIZE, IMAGESIZE));
 		imageLabel.setBorder(new LineBorder(Color.GRAY, 3, true));
+		imageLabel.addMouseListener(this);
 		this.add(imageLabel);
 		
 		JLabel label1 = new JLabel("                                                                                       Frame:");
-		JCheckBox cb1 = new JCheckBox("Degree", frameDegree);
-		JCheckBox cb2 = new JCheckBox("Length", frameLength);
-		JCheckBox cb3 = new JCheckBox("Index", frameIndex);
+		cb1 = new JCheckBox("Degree", frameDegree);
+		cb2 = new JCheckBox("Length", frameLength);
+		cb3 = new JCheckBox("Index", frameIndex);
 		JLabel label2 = new JLabel("                                                                                         Piece:");
-		JCheckBox cb4 = new JCheckBox("Degree", pieceDegree);
-		JCheckBox cb5 = new JCheckBox("Length", pieceLength);
-		JCheckBox cb6 = new JCheckBox("Index", pieceIndex);
+		cb4 = new JCheckBox("Degree", pieceDegree);
+		cb5 = new JCheckBox("Length", pieceLength);
+		cb6 = new JCheckBox("Index", pieceIndex);
 		cb1.setName("frameDegree");
 		cb2.setName("frameLength");
 		cb3.setName("frameIndex");
@@ -125,6 +150,30 @@ public class BigImagePanel extends JPanel implements ChangeListener{
 		this.setLayout(new FlowLayout());
 		this.setBackground(backGround);
 //		this.setFont(new Font("メイリオ", Font.PLAIN, 16));
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

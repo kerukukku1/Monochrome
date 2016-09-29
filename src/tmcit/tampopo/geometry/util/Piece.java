@@ -1,5 +1,6 @@
 package tmcit.tampopo.geometry.util;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +10,18 @@ public class Piece {
 	private List<Point> points;///座標セット
 	private List<Double> angleSet = null;///角度セット
 	
+	private Color pieceColor = null;///描画の際に使う
+	
 	private Piece(int id,List<Point> points){
 		this.id = id;
 		this.points = points;
+	}
+	
+	public Color getPieceColor(){
+		return pieceColor;
+	}
+	public void setPieceColor(Color color){
+		this.pieceColor = color;
 	}
 	
 	public Piece getCopy(){
