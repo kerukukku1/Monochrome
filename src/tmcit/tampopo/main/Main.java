@@ -25,7 +25,7 @@ public class Main {
 	public void initUI(){
 	    try
 	    {
-	            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+	            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 	            UIManager.put("TabbedPane.selected",Color.GREEN);
 	    } catch (Exception ee){
 	        ee.printStackTrace();

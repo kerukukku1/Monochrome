@@ -29,10 +29,19 @@ public class PieceListView extends JPanel{
 
 	public PieceListView(){
 		title = "ListViewer";
+	    try
+	    {
+	            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+	            UIManager.put("TabbedPane.selected",Color.GREEN);
+	    } catch (Exception ee){
+	        ee.printStackTrace();
+	    }
 		launchUI();
+		
 		this.requestFocusInWindow();
 //		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
+		
 	}
 
 	public void launchPiecePanel(){
@@ -97,13 +106,6 @@ public class PieceListView extends JPanel{
 	private void launchUI() {
 //		this.setTitle(title);
 //		this.setResizable(false);
-	    try
-	    {
-	            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-	            UIManager.put("TabbedPane.selected",Color.GREEN);
-	    } catch (Exception ee){
-	        ee.printStackTrace();
-	    }
 		this.setPreferredSize(new Dimension(tabWidth, tabHeight));
 		earth = new JPanel();
 		paint = new JPanel();
@@ -112,21 +114,21 @@ public class PieceListView extends JPanel{
 		paint.setLayout(null);
 		earth.setLayout(null);
 	    JScrollPane scrollpane = new JScrollPane();
-	    scrollpane.setPreferredSize(new Dimension(tabWidth, tabHeight-50));
+	    scrollpane.setPreferredSize(new Dimension(tabWidth, tabHeight-80));
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);
 	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
-	    paint.setPreferredSize(new Dimension(tabWidth-50, tabHeight));
+	    paint.setPreferredSize(new Dimension(tabWidth-80, tabHeight));
 //	    scrollpane.setBounds(0, 0, tabWidth, tabHeight-50);
 	    JPanel p = new JPanel();
-	    p.setBounds(0, 0, tabWidth, tabHeight-100);
+	    p.setBounds(0, 0, tabWidth, tabHeight-80);
 	    p.add(scrollpane);
 	    earth.add(p);
 	    earth.setBounds(0, 0, tabWidth, tabHeight);
 	    earth.setBackground(Color.BLACK);
 
-	    InputPanel inputPanel = new InputPanel(0, tabHeight-100, tabWidth, 30);
+	    InputPanel inputPanel = new InputPanel(0, tabHeight-80, tabWidth, 30);
 	    earth.add(inputPanel);
 
 	    summary = new JTabbedPane();
@@ -137,12 +139,13 @@ public class PieceListView extends JPanel{
 	    this.add(summary);
 
 	    pieceViews = new ArrayList<PieceViewPanel>();
+	    this.revalidate();
 	    this.repaint();
 	}
 
 	public void initializePanel(){
-		paint.removeAll();
-		viewer.removeAll();
+		summary.removeAll();
+		this.remove(summary);
 		launchUI();
 	}
 }

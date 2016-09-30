@@ -92,12 +92,14 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		this.setOpaque(true);
 	}
 
-	private void LoadFiles(String path){
+	private boolean LoadFiles(String path){
 		if(!ProblemManager.imageManager.setPath(path)){
-			inputForm.setText("Illegal Path");
-			return;
+			JOptionPane.showMessageDialog(this, "Wrong Path", "WARNING_MESSAGE", 
+					JOptionPane.WARNING_MESSAGE);
+			return false;
 		}
 		System.out.println("Load Files");
+		return true;
 	}
 
 
@@ -143,8 +145,8 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		if(cmd.equals("Save")){
 			FolderManager.questSave();
 			FolderManager.indexSave();
-			
 		}else if(cmd.equals("Add")){
+			if(!LoadFiles(inputForm.getText()))return;
 		    String selectvalues[] = {"Piece1", "Piece2", "Frame", "Cancel"};
 
 		    int select = JOptionPane.showOptionDialog(this,
@@ -183,7 +185,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    int option = JOptionPane.showConfirmDialog(this, "Clear Problem?",
 		    	      "!!!Warning!!!", JOptionPane.YES_NO_OPTION,
 		    	      JOptionPane.WARNING_MESSAGE);
-		    if(option == JOptionPane.NO_OPTION){
+		    if(option != JOptionPane.YES_OPTION){
 		    	return;
 		    }
 			ProblemManager.resetImageManager();
