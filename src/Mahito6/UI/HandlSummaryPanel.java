@@ -160,10 +160,43 @@ public class HandlSummaryPanel extends JPanel implements KeyListener{
 	}
 	public void saveData(){
 		System.out.println("Save");
-		lines = new ArrayList<>(visPanel.getLines());
+		List<Line2D> lines = new ArrayList<>(visPanel.getLines());
+		edges.clear();
+//		lines.clear();
+//		Line2D HEAD = tmp.get(0);
+//		lines.add(HEAD);
+//		boolean memo[] = new boolean[tmp.size()];
+//		memo[0] = true;
+//		boolean isFlag = true;
+//		double x1 = HEAD.getX1();
+//		double y1 = HEAD.getY1();
+//		while(isFlag){
+//			isFlag = false;
+//			for(int i = 0; i < tmp.size(); i++){
+//				if(memo[i])continue;
+//				Line2D l = tmp.get(i);
+//				double nx1 = l.getX1();
+//				double ny1 = l.getY1();
+//				double nx2 = l.getX2();
+//				double ny2 = l.getY2();
+//				if((x1 == nx1 && y1 == ny1)){
+//					memo[i] = true;
+//					x1 = nx2;
+//					y1 = ny2;
+//					lines.add(l);
+//					isFlag = true;
+//				}else if(x1 == nx2 && y1 == ny2){
+//					memo[i] = true;
+//					x1 = nx1;
+//					y1 = ny1;
+//					lines.add(l);
+//					isFlag = true;					
+//				}
+//			}
+//		}
 		for(int i = 0; i < lines.size(); i++){
 			Line2D l = lines.get(i);
-			edges.add(makeEdge(calcHoughParam(l), l));
+			edges.add(makeEdge(calcHoughParam(l), l));	
 		}
 		System.out.println("edges:" + edges.size());
 		

@@ -167,9 +167,9 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 //		System.out.println(image.getWidth() + "x" + image.getHeight());
 		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(),image.getHeight());
 		solver2.solve();
-		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
+//		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
 //		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");
-		this.vertex = new ArrayList<>(list);
+		this.vertex = new ArrayList<>(solver2.getAnswer());
 //		for(Tuple2<Double,Double> t : ans){
 //			System.out.println(t.t1+","+t.t2);
 //		}
