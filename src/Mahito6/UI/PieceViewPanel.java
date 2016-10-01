@@ -24,6 +24,7 @@ import Main.UI.Util.Coordinates;
 
 public class PieceViewPanel extends JPanel implements MouseListener{
 	private int x, y, width, height, index;
+	private double image_scale;
 	private JLabel paintArea, pieceIndex, pieceVertex, pieceType, errorType;
 	private BufferedImage gPiece, image;
 	private List<Tuple2<Double, Double>> vertex;
@@ -44,6 +45,9 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.coord = myProblem.getCoord(index);
 		this.edges = myProblem.getEdges(index);
 		this.image = myProblem.getImage(index);
+		BufferedImage buf = myProblem.getGrayImage(index);
+		image_scale = 200 / (double)(Math.max(buf.getWidth(), buf.getHeight()));
+		gPiece = myProblem.rescaleImage(image_scale, buf);
 		setUtil();
 		launchItems();
 //		paintPiece();
@@ -87,10 +91,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	}
 
 	public void paintPiece(){
-		BufferedImage buf = myProblem.getGrayImage(index);
-		double scale = 200 / (double)(Math.max(buf.getWidth(), buf.getHeight()));
-		gPiece = myProblem.rescaleImage(scale, buf);
-		Graphics2D g = (Graphics2D)gPiece.getGraphics();
+		Graphics2D g = gPiece.createGraphics();
 //		g.setColor(Constants.backgroundColor);
 //		g.clearRect(0, 0, 200, 200);
 	    List<Tuple2<Double,Double>> data = vertex;
@@ -110,20 +111,20 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 
 	    g.setColor(Color.RED);
 //	    double scale = 200.0/(double)(Math.min(gPiece.getWidth(), gPiece.getHeight()));
-	    System.out.println("scale : " + scale);
+	    System.out.println("scale : " + image_scale);
     	for(int i = 0 ; i < data.size(); i++){
 	    	Tuple2<Double, Double> d1 = data.get(i);
 	    	Tuple2<Double, Double> d2 = data.get((i+1)%data.size());
-	    	double x1 = (d1.t1 - Constants.imagePositionOffset/2)*scale;
-	    	double y1 = (d1.t2 - Constants.imagePositionOffset/2)*scale;
-	    	double x2 = (d2.t1 - Constants.imagePositionOffset/2)*scale;
-	    	double y2 = (d2.t2 - Constants.imagePositionOffset/2)*scale;
+	    	double x1 = (d1.t1 - Constants.imagePositionOffset/2)*image_scale;
+	    	double y1 = (d1.t2 - Constants.imagePositionOffset/2)*image_scale;
+	    	double x2 = (d2.t1 - Constants.imagePositionOffset/2)*image_scale;
+	    	double y2 = (d2.t2 - Constants.imagePositionOffset/2)*image_scale;
 	    	g.draw(new Line2D.Double(x1, y1, x2, y2));
-	    	//System.out.println(x1 + "," + y1 + " " + x2 + "," + y2);
+	    	System.out.println(x1 + "," + y1 + " " + x2 + "," + y2);
     	}
 
 //		polygon = new Polygon(xpoints, ypoints, xpoints.length);
-//		g.drawPolygon(polygon);
+//		g.fillPolygon(polygon);
 	    this.repaint();
 	}
 
