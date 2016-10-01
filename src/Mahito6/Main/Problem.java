@@ -13,7 +13,7 @@ public class Problem {
 	private List<List<Tuple2<Double, Double>>> vertex;
 	private BufferedImage binImage;
 	private String image_path;
-	private int type;
+	private TYPE type;
 	private boolean modeWaku;
 	
 	public Problem(boolean modeWaku){
@@ -106,12 +106,12 @@ public class Problem {
 		return thumb;
 	}
 
-	public void setType(int type) {
+	public void setType(TYPE type) {
 		// TODO Auto-generated method stub
 		this.type = type;
 	}
 	
-	public int getType(){
+	public TYPE getType(){
 		return type;
 	}
 	
@@ -121,5 +121,11 @@ public class Problem {
 	
 	public String getPath(){
 		return image_path;
+	}
+	
+	public static enum TYPE {
+	    PIECE1,
+	    PIECE2,
+	    FRAME
 	}
 }

@@ -20,7 +20,7 @@ public class ProblemManager {
 	public static double dpi = 0;
 	
 	//0 : frame   1 : piece1   2: piece2
-	public static int switch_index = 0;
+	public static Problem.TYPE switch_index = Problem.TYPE.FRAME;
 	public ProblemManager(){
 //		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();
@@ -40,7 +40,7 @@ public class ProblemManager {
 		imageManager.clearAll();
 	}
 	
-	public static void setSwitchType(int type){
+	public static void setSwitchType(Problem.TYPE type){
 		switch_index = type;
 	}
 	

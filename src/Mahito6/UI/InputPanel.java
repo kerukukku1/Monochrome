@@ -31,6 +31,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	public int x, y, width, height;
 	public static JButton loadButton, clearButton, addButton, saveButton, scanButton;
 	public JTextField inputForm;
+	public Problem.TYPE[] types = {Problem.TYPE.PIECE1, Problem.TYPE.PIECE2, Problem.TYPE.FRAME};
 //	public ButtonGroup switType = new ButtonGroup();
 //	private JRadioButton piece;
 //	private JRadioButton frame;
@@ -162,10 +163,10 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    	return;
 		    }else{
 		    	if(selectvalues[select].equals("Piece1") || selectvalues[select].equals("Piece2")){
-		    		stateChangePiece(select);
+		    		stateChangePiece(types[select]);
 //		    		piece.setSelected(true);
 		    	}else{
-		    		stateChangeFrame(select);
+		    		stateChangeFrame(types[select]);
 //		    		frame.setSelected(true);
 		    	}
 		    }
@@ -238,7 +239,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 //		}
 	}
 
-	private void stateChangeFrame(int type) {
+	private void stateChangeFrame(Problem.TYPE type) {
 		ProblemManager.setSwitchType(type);
 		SolverConstants consts = ProblemManager.getConstants();
 		consts.edgeWidth = 6;
@@ -249,7 +250,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		Constants.modeWaku = true;
 	}
 
-	private void stateChangePiece(int type){
+	private void stateChangePiece(Problem.TYPE type){
 		ProblemManager.setSwitchType(type);
 		SolverConstants consts = ProblemManager.getConstants();
 		consts.edgeWidth = 6;

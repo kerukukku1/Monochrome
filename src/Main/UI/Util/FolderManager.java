@@ -169,7 +169,7 @@ public class FolderManager {
 			if(pieceCount == 1){
 				piece2_dir = p.getPath();
 			}else{
-				if(p.getType() == 1)piece2_dir = p.getPath();
+				if(p.getType() == Problem.TYPE.PIECE2)piece2_dir = p.getPath();
 			}
 			List<List<Tuple2<Double, Double>>> v = p.getVertex();
 			for(int j = 0; j < v.size(); j++){
@@ -178,7 +178,7 @@ public class FolderManager {
 					//図形が構成されていない場合は除去
 					continue;
 				}
-				if(p.getType() == 0 && pieceCount != 1){
+				if(p.getType() == Problem.TYPE.PIECE1 && pieceCount != 1){
 					ansPiece.add(String.valueOf(0));
 				}else{
 					ansPiece.add(String.valueOf(v2.size()));

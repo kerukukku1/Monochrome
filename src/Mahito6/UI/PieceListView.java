@@ -5,8 +5,12 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -22,6 +26,7 @@ public class PieceListView extends JPanel{
 	private JPanel earth;
 	private HandlSummaryPanel viewer;
 	private JTabbedPane summary;
+
 	public static List<PieceViewPanel> pieceViews;
 	public static int tabWidth = 980;
 	public static int tabHeight = 700;
