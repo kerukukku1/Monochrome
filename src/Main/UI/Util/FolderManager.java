@@ -15,12 +15,33 @@ import Mahito6.Main.Tuple2;
 
 public class FolderManager {
 	public static final String currentPath = System.getProperty("user.home")+File.separator+"procon27" + File.separator;
-	public static final String presetsPath = currentPath + File.separator + "presets" + File.separator;
+	public static final String imagePath = currentPath + "images" + File.separator;
+	public static final String presetsPath = currentPath + "presets" + File.separator;
 	public FolderManager(){}
 
 	public void buildDirectory(){
 		buildCurrent();
 		buildPresets();
+		buildImages();
+	}
+	private void buildImages() {
+		if(!new File(imagePath).exists()){
+			if(new File(imagePath).mkdir()){
+				System.out.println("mkdir " + imagePath);
+			}else{
+				System.out.println("permission denied");
+			}
+		}
+	}
+	
+	private void buildPresets() {
+		if(!new File(presetsPath).exists()){
+			if(new File(presetsPath).mkdir()){
+				System.out.println("mkdir " + presetsPath);
+			}else{
+				System.out.println("permission denied");
+			}
+		}
 	}
 
 	private void buildCurrent(){
@@ -104,16 +125,6 @@ public class FolderManager {
             ex.printStackTrace();
         }
 
-	}
-
-	private void buildPresets() {
-		if(!new File(presetsPath).exists()){
-			if(new File(presetsPath).mkdir()){
-				System.out.println("mkdir " + presetsPath);
-			}else{
-				System.out.println("permission denied");
-			}
-		}
 	}
 
 	public static File getPresetFile(String filename){

@@ -312,6 +312,8 @@ public class ImageManager{
 	public void clearAllNoise(){
 		int minx,miny,maxx,maxy,mat_h,mat_w;
 		Mat numbering = source.clone();
+		Core.flip(numbering, numbering, 1);
+		//y軸回転
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates now = coords.get(i);
 			BFS.clearNoise(Constants.clearNoiseThreshold, now);
@@ -346,14 +348,15 @@ public class ImageManager{
 //				//e.printStackTrace();
 //			}
 
-			if(!Constants.modeWaku){Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(maxx-150, (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(86, 0, 255), 20);
+			if(!Constants.modeWaku){
+				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(Math.abs(numbering.cols() - (maxx+150)), (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(86, 0, 255), 20);
 				ImageManager.piece_indexes++;
 			}
 		}
 		if(!Constants.modeWaku){
 			Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 			ImageManager.piece_load_index++;
-			Highgui.imwrite("numbering" + String.valueOf(ImageManager.piece_load_index) + ".png", numbering);
+			Highgui.imwrite(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png", numbering);
 		}
 		System.out.println("Noise cleared");
 	}
