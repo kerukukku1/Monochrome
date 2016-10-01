@@ -91,7 +91,10 @@ public class Problem {
 	}
 
 	public BufferedImage getSubImage(int x, int y, int range){
-		return binImage.getSubimage(Math.max(0, x-range), Math.max(0, y-range), range*2, range*2);
+		return binImage.getSubimage(Math.min(Math.max(0, x-range), 
+									binImage.getWidth()-range*2), 
+									Math.min(Math.max(0, y-range), 
+									binImage.getHeight()-range*2), range*2, range*2);
 	}
 
 	public BufferedImage getGrayImage(int index){
