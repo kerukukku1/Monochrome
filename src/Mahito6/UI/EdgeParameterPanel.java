@@ -26,14 +26,14 @@ import Mahito6.Solver.EdgeFinder;
 import Main.UI.Util.FolderManager;
 import Main.UI.Util.PresetReader;
 
-public class ParameterPanel extends JPanel implements ActionListener, ItemListener{
+public class EdgeParameterPanel extends JPanel implements ActionListener, ItemListener{
 	private HandlSummaryPanel parent;
 	private JButton run, save, next, back;
 	private JPanel paramField;
 	private List<InputParamPanel> params;
 	private SolverConstants consts;
 	private JComboBox pulldown;
-	public ParameterPanel(HandlSummaryPanel parent){
+	public EdgeParameterPanel(HandlSummaryPanel parent){
 		this.parent = parent;
 		this.setLayout(null);
 		this.setSize(300, HandlSummaryPanel.visualizeHeight-300);

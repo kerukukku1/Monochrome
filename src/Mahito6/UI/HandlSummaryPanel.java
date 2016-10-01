@@ -44,7 +44,7 @@ public class HandlSummaryPanel extends JPanel implements KeyListener{
 	private List<Edge> edges;
 	private PieceViewPanel parent;
 	private RealTimeDialog realtimeDialog;
-	private ParameterPanel paramPanel;
+	private EdgeParameterPanel paramPanel;
 	private int index;
 	public static final int visualizeWidth = Main.pieceView.getTabSize().width - 330;
 	public static final int visualizeHeight = Main.pieceView.getTabSize().height - 50;
@@ -84,7 +84,7 @@ public class HandlSummaryPanel extends JPanel implements KeyListener{
 	
 	private void setParameterPanel() {
 		// TODO Auto-generated method stub
-		paramPanel = new ParameterPanel(this);
+		paramPanel = new EdgeParameterPanel(this);
 		paramPanel.setBounds(visualizeWidth+10, 300+10, 300, visualizeHeight-300-5);
 		this.add(paramPanel);
 	}

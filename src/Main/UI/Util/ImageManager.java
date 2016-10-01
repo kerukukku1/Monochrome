@@ -287,7 +287,7 @@ public class ImageManager{
 		}
 
 		problem.setData(allEdges, vertex, coords);
-		problem.setPath(path);
+		problem.setPath(FolderManager.imagePath + "piece_" + String.valueOf(piece_load_index) + ".png");
 //		problem.setBufferedImages(bufImages);
 		ProblemManager.addProblem(problem);
 
@@ -357,6 +357,9 @@ public class ImageManager{
 			Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 			ImageManager.piece_load_index++;
 			Highgui.imwrite(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png", numbering);
+			Core.flip(source, numbering, 1);
+			Highgui.imwrite(FolderManager.imagePath + "piece_" + String.valueOf(piece_load_index) + ".png", numbering);
+			numbering = null;
 		}
 		System.out.println("Noise cleared");
 	}
