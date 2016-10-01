@@ -12,6 +12,7 @@ import tmcit.api.Parameter;
 import tmcit.api.Parameter.ValueType;
 import tmcit.tampopo.ui.ParameterDetailPanel;
 import tmcit.tampopo.ui.SolverDetailPanel;
+import tmcit.tampopo.util.IconUtil;
 import tmcit.tampopo.util.ParameterLoader;
 
 public class ParameterNode extends DefaultMutableTreeNode{
@@ -92,8 +93,12 @@ public class ParameterNode extends DefaultMutableTreeNode{
 	
 	public void showDetail(SolverDetailPanel tabPane){
 		if(panel == null)panel = new ParameterDetailPanel(title,solver,parameters,this);
-		if(tabPane.indexOfComponent(panel) != -1)return;
-		tabPane.addTab(title, panel);
+		if(tabPane.indexOfComponent(panel) != -1){
+			///既に表示されているので移動
+			tabPane.setSelectedComponent(panel);
+			return;
+		}
+		tabPane.addTab(title,IconUtil.getSolverIcon(solver),panel);
 		tabPane.setSelectedComponent(panel);
 	}
 

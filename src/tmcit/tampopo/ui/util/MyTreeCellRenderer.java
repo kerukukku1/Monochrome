@@ -34,7 +34,9 @@ public class MyTreeCellRenderer implements TreeCellRenderer{
 				label.setIcon(IconUtil.getIcon("folder.png"));
 			}
 		}else if(value instanceof ParameterNode){
-			label.setIcon(IconUtil.getIcon("file.png"));
+			///label.setIcon(IconUtil.getIcon("file.png"));
+			ParameterNode node = (ParameterNode) value;
+			label.setIcon(IconUtil.getSolverIcon(node.getSolver()));
 		}
 		label.setBorder(new LineBorder(Color.LIGHT_GRAY, 2, true));
 		return label;

@@ -32,6 +32,7 @@ public class SolverDetailPanel extends JTabbedPane{
 	
 	public void initPanel(){
 		this.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+		this.setTabPlacement(JTabbedPane.TOP);
 	}
 
 }
