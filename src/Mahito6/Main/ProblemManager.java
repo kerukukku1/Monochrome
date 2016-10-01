@@ -6,6 +6,7 @@ import java.util.List;
 import Mahito6.UI.InputPanel;
 import Mahito6.UI.MainFrame;
 import Mahito6.UI.MainPanel;
+import Mahito6.UI.Status;
 import Mahito6.UI.UtilityPanel;
 import Main.UI.Util.ImageManager;
 
@@ -20,7 +21,6 @@ public class ProblemManager {
 	public static double dpi = 0;
 	
 	//0 : frame   1 : piece1   2: piece2
-	public static Problem.TYPE switch_index = Problem.TYPE.FRAME;
 	public ProblemManager(){
 //		ProblemManager.mainFrame = mainFrame;
 		ProblemManager.imageManager = new ImageManager();
@@ -32,20 +32,17 @@ public class ProblemManager {
 		return consts;
 	}
 	
-	public static void generatePieceDatas(){
-		imageManager.getPieces();
+	public static void generatePieceDatas(Status.Type type){
+		imageManager.getPieces(type);
 	}
 	
 	public static void resetImageManager(){
+		problems.clear();
+		consts = new SolverConstants();
 		imageManager.clearAll();
 	}
 	
-	public static void setSwitchType(Problem.TYPE type){
-		switch_index = type;
-	}
-	
 	public static void addProblem(Problem problem){
-		problem.setType(switch_index);
 		ProblemManager.problem = problem;
 		problems.add(problem);
 	}

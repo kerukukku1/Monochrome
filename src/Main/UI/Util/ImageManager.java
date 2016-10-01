@@ -30,6 +30,7 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.Edge;
 import Mahito6.Thread.SolverThreadingAgent;
+import Mahito6.UI.Status;
 
 public class ImageManager{
 
@@ -223,10 +224,10 @@ public class ImageManager{
 		}
 	}
 
-	public void getPieces(){
+	public void getPieces(Status.Type type){
 		System.out.println("K=" + Constants.dividePixelLookingForDist);
 		System.out.println("Get Piece");
-		problem = new Problem(Constants.modeWaku);
+		problem = new Problem(type);
 		System.out.println("runAdaptiveThreshold");
 		MeasureTimer.start();
 		runAdaptiveThreshold();

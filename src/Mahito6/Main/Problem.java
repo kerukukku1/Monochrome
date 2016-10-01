@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Mahito6.Solver.Edge;
+import Mahito6.UI.Status;
 import Main.UI.Util.Coordinates;
 
 public class Problem {
@@ -13,15 +14,15 @@ public class Problem {
 	private List<List<Tuple2<Double, Double>>> vertex;
 	private BufferedImage binImage;
 	private String image_path;
-	private TYPE type;
-	private boolean modeWaku;
+	private Status.Type type;
 	
-	public Problem(boolean modeWaku){
-		this.modeWaku = modeWaku;
+	public Problem(Status.Type type){
+		this.type = type;
 	}
 
 	public boolean isWaku(){
-		return modeWaku;
+		if(type == Status.Type.FRAME)return true;
+		else return false;
 	}
 
 	public int getSize(){
@@ -106,12 +107,12 @@ public class Problem {
 		return thumb;
 	}
 
-	public void setType(TYPE type) {
+	public void setType(Status.Type type) {
 		// TODO Auto-generated method stub
 		this.type = type;
 	}
 	
-	public TYPE getType(){
+	public Status.Type getType(){
 		return type;
 	}
 	
@@ -121,11 +122,5 @@ public class Problem {
 	
 	public String getPath(){
 		return image_path;
-	}
-	
-	public static enum TYPE {
-	    PIECE1,
-	    PIECE2,
-	    FRAME
 	}
 }

@@ -63,40 +63,52 @@ public class PieceListView extends JPanel{
 	private void paintPiecePanel(List<Problem> problems){
 		List< List<Tuple2<Double, Double>> > vertex;
 		int count = 0;
+		int ypos = 0;
 		paint.removeAll();
 		for(int loop = 0; loop < problems.size(); loop++){
 			Problem problem = problems.get(loop);
 			if(!problem.isWaku())continue;
 			vertex = problem.getVertex();
+			PieceBox pb = new PieceBox(problem);
+			int pcount = 0;
 			for(int i = 0; i < vertex.size(); i++){
-				PieceViewPanel p = new PieceViewPanel((count%line)*205+10,((count)/line)*255+5,200,250, i, problem);
+				System.out.println(String.valueOf((pcount%line)*205+10)+"," + String.valueOf(((pcount)/line)*255+ 25) + ", " + 200 + ", " + 250);
+				PieceViewPanel p = new PieceViewPanel((pcount%line)*205+10,((pcount)/line)*255+ 25,200,250, i, problem);
 				pieceViews.add(p);
-				paint.add(p);
-				++count;
+				pb.add(p);
+//				paint.add(p);
+				++count;pcount++;
 			}
 			if(count%line != 0)count += (line - count%line);
-			JLabel label = new JLabel();
-			label.setBounds(0,((count)/line)*255+2, 1000, 3);
-			label.setBackground(Color.BLACK);
-			label.setOpaque(true);
-			paint.add(label);
+//			JLabel label = new JLabel();
+//			label.setBounds(0,((count)/line)*255+2, 1000, 3);
+//			label.setBackground(Color.BLACK);
+//			label.setOpaque(true);
+			pb.setBounds(0, ypos, 205*line + 10, (count / line)*255 + 25);
+			ypos = ((count / line)*255 + 25);
+			paint.add(pb);
 		}
 		for(int loop = 0; loop < problems.size(); loop++){
 			Problem problem = problems.get(loop);
 			if(problem.isWaku())continue;
 			vertex = problem.getVertex();
+			PieceBox pb = new PieceBox(problem);
+			int pcount = 0;
 			for(int i = 0; i < vertex.size(); i++){
-				PieceViewPanel p = new PieceViewPanel((count%line)*205+10,((count)/line)*255+5,200,250, i, problem);
+				PieceViewPanel p = new PieceViewPanel((pcount%line)*205+10,((pcount)/line)*255+ 25,200,250, i, problem);
 				pieceViews.add(p);
-				paint.add(p);
-				++count;
+				pb.add(p);
+//				paint.add(p);
+				++count;pcount++;
 			}
 			if(count%line != 0)count += (line - count%line);
-			JLabel label = new JLabel();
-			label.setBounds(0,((count)/line)*255+2, 1000, 3);
-			label.setBackground(Color.BLACK);
-			label.setOpaque(true);
-			paint.add(label);
+//			JLabel label = new JLabel();
+//			label.setBounds(0,((count)/line)*255+2, 1000, 3);
+//			label.setBackground(Color.BLACK);
+//			label.setOpaque(true);
+			pb.setBounds(0, ypos, 205*line + 10, (count / line)*255 + 25);
+			ypos = ((count / line)*255 + 25);
+			paint.add(pb);
 		}		
 		//追加されたピースは改行されて表示されるようにする。
 		paint.setPreferredSize(new Dimension(205*line + 10, 295+255*(count/line)));

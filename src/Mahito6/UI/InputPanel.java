@@ -31,7 +31,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	public int x, y, width, height;
 	public static JButton loadButton, clearButton, addButton, saveButton, scanButton;
 	public JTextField inputForm;
-	public Problem.TYPE[] types = {Problem.TYPE.PIECE1, Problem.TYPE.PIECE2, Problem.TYPE.FRAME};
+	public Status.Type[] types = {Status.Type.PIECE1, Status.Type.PIECE2, Status.Type.FRAME};
 //	public ButtonGroup switType = new ButtonGroup();
 //	private JRadioButton piece;
 //	private JRadioButton frame;
@@ -162,33 +162,34 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    if (select == JOptionPane.CLOSED_OPTION || selectvalues[select].equals("Cancel")){
 		    	return;
 		    }else{
-		    	if(selectvalues[select].equals("Piece1") || selectvalues[select].equals("Piece2")){
-		    		stateChangePiece(types[select]);
-//		    		piece.setSelected(true);
-		    	}else{
-		    		stateChangeFrame(types[select]);
+		    	System.out.println(types[select]);
+		    	if(types[select] == Status.Type.FRAME){
 //		    		frame.setSelected(true);
+		    		stateChangeFrame(types[select]);
+		    	}else{
+//		    		piece.setSelected(true);
+		    		stateChangePiece(types[select]);
 		    	}
 		    }
-			new Thread(new Runnable(){
-				@Override
-				public void run(){
-					System.out.println("All Noise Clear");
-					long start = System.nanoTime();
-					ProblemManager.generatePieceDatas();
-					long end = System.nanoTime();
-					System.out.println((end - start) / 1000000f + "ms");
-				}
-			}).start();
-//			System.out.println("All Noise Clear");
-//			long start = System.nanoTime();
-//			InputPanel.loadButton.setEnabled(false);
-//			InputPanel.clearButton.setEnabled(false);
-//			ProblemManager.generatePieceDatas();
-//			InputPanel.loadButton.setEnabled(true);
-//			InputPanel.clearButton.setEnabled(true);
-//			long end = System.nanoTime();
-//			System.out.println((end - start) / 1000000f + "ms");
+//			new Thread(new Runnable(){
+//				@Override
+//				public void run(){
+//					System.out.println("All Noise Clear");
+//					long start = System.nanoTime();
+//					ProblemManager.generatePieceDatas();
+//					long end = System.nanoTime();
+//					System.out.println((end - start) / 1000000f + "ms");
+//				}
+//			}).start();
+			System.out.println("All Noise Clear");
+			long start = System.nanoTime();
+			InputPanel.loadButton.setEnabled(false);
+			InputPanel.clearButton.setEnabled(false);
+			ProblemManager.generatePieceDatas(types[select]);
+			InputPanel.loadButton.setEnabled(true);
+			InputPanel.clearButton.setEnabled(true);
+			long end = System.nanoTime();
+			System.out.println((end - start) / 1000000f + "ms");
 		}else if(cmd.equals("Load")){
 			LoadFiles(inputForm.getText());
 		}else if(cmd.equals("Clear")){
@@ -239,8 +240,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 //		}
 	}
 
-	private void stateChangeFrame(Problem.TYPE type) {
-		ProblemManager.setSwitchType(type);
+	private void stateChangeFrame(Status.Type type) {
 		SolverConstants consts = ProblemManager.getConstants();
 		consts.edgeWidth = 6;
 		consts.lrAddition = 100;
@@ -250,8 +250,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		Constants.modeWaku = true;
 	}
 
-	private void stateChangePiece(Problem.TYPE type){
-		ProblemManager.setSwitchType(type);
+	private void stateChangePiece(Status.Type type){
 		SolverConstants consts = ProblemManager.getConstants();
 		consts.edgeWidth = 6;
 		//consts.lrAddition = 50;

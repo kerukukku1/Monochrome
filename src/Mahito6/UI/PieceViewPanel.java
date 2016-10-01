@@ -59,7 +59,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private void launchItems(){
 		pieceIndex = new JLabel("index:"+String.valueOf(index+1));
 		pieceVertex = new JLabel("Vertex:" + vertex.size());
-		String type = (Constants.modeWaku)?"Frame":"Piece";
+		String type = (myProblem.getType() == Status.Type.FRAME)?"Frame":"Piece";
 		if(type.equals("Frame"))this.setBackground(Color.GRAY.brighter());
 		pieceType = new JLabel("Type:"+type);
 

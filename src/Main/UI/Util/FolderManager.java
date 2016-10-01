@@ -12,6 +12,7 @@ import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
+import Mahito6.UI.Status;
 
 public class FolderManager {
 	public static final String currentPath = System.getProperty("user.home")+File.separator+"procon27" + File.separator;
@@ -169,7 +170,7 @@ public class FolderManager {
 			if(pieceCount == 1){
 				piece2_dir = p.getPath();
 			}else{
-				if(p.getType() == Problem.TYPE.PIECE2)piece2_dir = p.getPath();
+				if(p.getType() == Status.Type.PIECE2)piece2_dir = p.getPath();
 			}
 			List<List<Tuple2<Double, Double>>> v = p.getVertex();
 			for(int j = 0; j < v.size(); j++){
@@ -178,7 +179,7 @@ public class FolderManager {
 					//図形が構成されていない場合は除去
 					continue;
 				}
-				if(p.getType() == Problem.TYPE.PIECE1 && pieceCount != 1){
+				if(p.getType() == Status.Type.PIECE1 && pieceCount != 1){
 					ansPiece.add(String.valueOf(0));
 				}else{
 					ansPiece.add(String.valueOf(v2.size()));
