@@ -28,7 +28,7 @@ import tmcit.tampopo.util.PuzzleImage;
 
 public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionListener{
 	
-	public static final int BUG_OFFSET = 300;///300,300ずらさないとだめ
+	public static final int BUG_OFFSET = 0;///300,300ずらさないとだめ
 	public static final int CIRCLE_OFFSET = 30;///円を大き目に出す
 	
 	public static final int IMAGESIZE = MainUI.MAINTABPANE_HEIGHT - 30;

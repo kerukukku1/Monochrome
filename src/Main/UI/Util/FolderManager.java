@@ -143,13 +143,22 @@ public class FolderManager {
 		ansPiece.add("dummy");
 		String piece2_dir = "";
 		int pieceSize = 0;
+		int pieceCount = 0;
+
+		for(int i = 0; i < problems.size(); i++){
+			Problem p = problems.get(i);
+			if(p.isWaku())continue;
+			pieceCount++;
+		}
 
 		for(int i = 0; i < problems.size(); i++){
 			Problem p = problems.get(i);
 			if(p.isWaku())continue;
 			//piece2のディレクトリ取得
-			if(p.getType() == 1){
+			if(pieceCount == 1){
 				piece2_dir = p.getPath();
+			}else{
+				if(p.getType() == 1)piece2_dir = p.getPath();
 			}
 			List<List<Tuple2<Double, Double>>> v = p.getVertex();
 			for(int j = 0; j < v.size(); j++){
@@ -158,7 +167,7 @@ public class FolderManager {
 					//図形が構成されていない場合は除去
 					continue;
 				}
-				if(p.getType() == 0){
+				if(p.getType() == 0 && pieceCount != 1){
 					ansPiece.add(String.valueOf(0));
 				}else{
 					ansPiece.add(String.valueOf(v2.size()));
@@ -171,6 +180,7 @@ public class FolderManager {
 				pieceSize++;
 			}
 		}
+
 		//dummyを個数に置き換え
 		ansPiece.set(0, String.valueOf(pieceSize));
 		try {
