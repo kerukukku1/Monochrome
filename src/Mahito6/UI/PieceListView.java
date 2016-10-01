@@ -25,7 +25,7 @@ public class PieceListView extends JPanel{
 	public static List<PieceViewPanel> pieceViews;
 	public static int tabWidth = 980;
 	public static int tabHeight = 700;
-	private int line = 4;
+	private int line = 3;
 
 	public PieceListView(){
 		title = "ListViewer";
@@ -94,7 +94,7 @@ public class PieceListView extends JPanel{
 			paint.add(label);
 		}		
 		//追加されたピースは改行されて表示されるようにする。
-		paint.setPreferredSize(new Dimension(tabWidth, 295+255*(count/4)));
+		paint.setPreferredSize(new Dimension(205*line + 10, 295+255*(count/line)));
 		this.revalidate();
 		this.repaint();
 	}
@@ -113,16 +113,16 @@ public class PieceListView extends JPanel{
 		this.setLayout(null);
 		paint.setLayout(null);
 		earth.setLayout(null);
-	    JScrollPane scrollpane = new JScrollPane();
-	    scrollpane.setPreferredSize(new Dimension(tabWidth, tabHeight-80));
+	    JScrollPane scrollpane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    scrollpane.setPreferredSize(new Dimension(205*line + 10, tabHeight-80));
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);
 	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
-	    paint.setPreferredSize(new Dimension(tabWidth-80, tabHeight));
+	    paint.setPreferredSize(new Dimension(205*line + 10, tabHeight-80));
 //	    scrollpane.setBounds(0, 0, tabWidth, tabHeight-50);
 	    JPanel p = new JPanel();
-	    p.setBounds(0, 0, tabWidth, tabHeight-80);
+	    p.setBounds(0, 0, 205*line + 10, tabHeight-80);
 	    p.add(scrollpane);
 	    earth.add(p);
 	    earth.setBounds(0, 0, tabWidth, tabHeight);
