@@ -39,9 +39,9 @@ public class PieceBox extends JPanel implements ChangeListener{
 	    p1.addChangeListener(this);
 	    p2.addChangeListener(this);
 	    fr.addChangeListener(this);
-	    p1.setOpaque(true);
-	    p2.setOpaque(true);
-	    fr.setOpaque(true);
+	    p1.setOpaque(false);
+	    p2.setOpaque(false);
+	    fr.setOpaque(false);
 	    buttonGroup = new ButtonGroup();
 		buttonGroup.add(p1);
 		buttonGroup.add(p2);

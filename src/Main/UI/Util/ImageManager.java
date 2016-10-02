@@ -79,7 +79,7 @@ public class ImageManager{
 		Mat _source = source.clone();
 		if(!Constants.modeWaku)Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));
 		Imgproc.cvtColor(_source, _source, Imgproc.COLOR_RGB2GRAY);
-		grayImage = this.MatToBufferedImageBGR(_source);
+		grayImage = this.MatToBufferedImageBGR(source);
         //枠のときの速度上げ専
         //if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
         //微妙?

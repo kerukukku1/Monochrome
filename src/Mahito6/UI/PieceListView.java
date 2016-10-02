@@ -61,6 +61,7 @@ public class PieceListView extends JPanel{
 	}
 
 	private void paintPiecePanel(List<Problem> problems){
+		int border_offset = 35;
 		List< List<Tuple2<Double, Double>> > vertex;
 		int count = 0;
 		int ypos = 0;
@@ -72,8 +73,8 @@ public class PieceListView extends JPanel{
 			PieceBox pb = new PieceBox(problem);
 			int pcount = 0;
 			for(int i = 0; i < vertex.size(); i++){
-				System.out.println(String.valueOf((pcount%line)*205+10)+"," + String.valueOf(((pcount)/line)*255+ 25) + ", " + 200 + ", " + 250);
-				PieceViewPanel p = new PieceViewPanel((pcount%line)*205+10,((pcount)/line)*255+ 25,200,250, i, problem);
+//				System.out.println(String.valueOf((pcount%line)*205+10)+"," + String.valueOf(((pcount)/line)*255+ border_offset) + ", " + 200 + ", " + 250);
+				PieceViewPanel p = new PieceViewPanel((pcount%line)*205+10,((pcount)/line)*255+ border_offset,200,250, i, problem);
 				pieceViews.add(p);
 				pb.add(p);
 //				paint.add(p);
@@ -84,8 +85,8 @@ public class PieceListView extends JPanel{
 //			label.setBounds(0,((count)/line)*255+2, 1000, 3);
 //			label.setBackground(Color.BLACK);
 //			label.setOpaque(true);
-			pb.setBounds(0, ypos, 205*line + 10, (count / line)*255 + 25);
-			ypos = ((count / line)*255 + 25);
+			pb.setBounds(0, ypos, 205*line + 25, (count / line)*255 + border_offset);
+			ypos = ((count / line)*255 + border_offset);
 			paint.add(pb);
 		}
 		for(int loop = 0; loop < problems.size(); loop++){
@@ -95,7 +96,7 @@ public class PieceListView extends JPanel{
 			PieceBox pb = new PieceBox(problem);
 			int pcount = 0;
 			for(int i = 0; i < vertex.size(); i++){
-				PieceViewPanel p = new PieceViewPanel((pcount%line)*205+10,((pcount)/line)*255+ 25,200,250, i, problem);
+				PieceViewPanel p = new PieceViewPanel((pcount%line)*205+10,((pcount)/line)*255+ border_offset,200,250, i, problem);
 				pieceViews.add(p);
 				pb.add(p);
 //				paint.add(p);
@@ -106,12 +107,12 @@ public class PieceListView extends JPanel{
 //			label.setBounds(0,((count)/line)*255+2, 1000, 3);
 //			label.setBackground(Color.BLACK);
 //			label.setOpaque(true);
-			pb.setBounds(0, ypos, 205*line + 10, (count / line)*255 + 25);
-			ypos = ((count / line)*255 + 25);
+			pb.setBounds(0, ypos, 205*line + 25, (count / line)*255 + border_offset);
+			ypos = ((count / line)*255 + border_offset);
 			paint.add(pb);
 		}		
 		//追加されたピースは改行されて表示されるようにする。
-		paint.setPreferredSize(new Dimension(205*line + 10, 295+255*(count/line)));
+		paint.setPreferredSize(new Dimension(205*line + 25, 295+255*(count/line)));
 		this.revalidate();
 		this.repaint();
 	}
@@ -131,15 +132,15 @@ public class PieceListView extends JPanel{
 		paint.setLayout(null);
 		earth.setLayout(null);
 	    JScrollPane scrollpane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	    scrollpane.setPreferredSize(new Dimension(205*line + 10, tabHeight-80));
+	    scrollpane.setPreferredSize(new Dimension(205*line + 25, tabHeight-80));
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);
 	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
-	    paint.setPreferredSize(new Dimension(205*line + 10, tabHeight-80));
+	    paint.setPreferredSize(new Dimension(205*line + 25, tabHeight-80));
 //	    scrollpane.setBounds(0, 0, tabWidth, tabHeight-50);
 	    JPanel p = new JPanel();
-	    p.setBounds(0, 0, 205*line + 10, tabHeight-80);
+	    p.setBounds(0, 0, 205*line + 25, tabHeight-80);
 	    p.add(scrollpane);
 	    earth.add(p);
 	    earth.setBounds(0, 0, tabWidth, tabHeight);

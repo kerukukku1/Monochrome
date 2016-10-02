@@ -109,7 +109,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	    	ypoints[i] = (int)y;
 	    }
 
-	    g.setColor(Color.RED);
+	    g.setColor(Color.YELLOW);
 //	    double scale = 200.0/(double)(Math.min(gPiece.getWidth(), gPiece.getHeight()));
 	    System.out.println("scale : " + image_scale);
     	for(int i = 0 ; i < data.size(); i++){
