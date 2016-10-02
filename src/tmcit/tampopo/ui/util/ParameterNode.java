@@ -21,6 +21,7 @@ public class ParameterNode extends DefaultMutableTreeNode{
 	private ISolver solver;
 	private List<Parameter> parameters;
 	private ParameterDetailPanel panel = null;
+	private SolverDetailPanel tabPane = null;
 	
 	public ParameterNode(String title,ISolver solver){
 		super(title);
@@ -41,6 +42,15 @@ public class ParameterNode extends DefaultMutableTreeNode{
 	public boolean save(){
 		///現在のパラメータをすべてテキストに書き出す
 		return ParameterLoader.saveParameter(this);
+	}
+	
+	public void delete(){
+		if(panel != null && panel.isSolverRunning){
+			return;
+		}
+		solver = null;
+		hideDetail();
+		ParameterLoader.deleteParameter(this);
 	}
 	
 	public String getTitle(){
@@ -92,14 +102,21 @@ public class ParameterNode extends DefaultMutableTreeNode{
 	}
 	
 	public void showDetail(SolverDetailPanel tabPane){
+		this.tabPane = tabPane;
 		if(panel == null)panel = new ParameterDetailPanel(title,solver,parameters,this);
-		if(tabPane.indexOfComponent(panel) != -1){
+		if(this.tabPane.indexOfComponent(panel) != -1){
 			///既に表示されているので移動
-			tabPane.setSelectedComponent(panel);
+			this.tabPane.setSelectedComponent(panel);
 			return;
 		}
-		tabPane.addTab(title,IconUtil.getSolverIcon(solver),panel);
-		tabPane.setSelectedComponent(panel);
+		this.tabPane.addTab(title,IconUtil.getSolverIcon(solver),panel);
+		this.tabPane.setSelectedComponent(panel);
+	}
+	
+	public void hideDetail(){
+		if(this.tabPane == null)return;
+		if(this.panel == null)return;
+		this.tabPane.remove(this.panel);
 	}
 
 }

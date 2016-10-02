@@ -35,6 +35,7 @@ public class IconUtil {
 		iconNameList.add("folderopen.png");
 		iconNameList.add("fire.png");
 		iconNameList.add("typhoon.png");
+		iconNameList.add("close.png");
 	}
 
 	private boolean loadIcon(){

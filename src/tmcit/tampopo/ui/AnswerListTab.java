@@ -2,12 +2,15 @@ package tmcit.tampopo.ui;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -15,14 +18,16 @@ import javax.swing.event.ChangeListener;
 
 import tmcit.tampopo.util.Answer;
 
-public class AnswerListTab extends JTabbedPane implements ChangeListener{
+public class AnswerListTab extends DeletableTabbedPane implements ChangeListener,ActionListener{
 	
 	public HashMap<Component, Component> rootMemo;
 	///ここに中身と親コンポーネントを紐づける、既に表示しているかどうか分かるようにする
 	
 	public AnswerListTab(int WIDTH,int HEIGHT){
+		super();
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		this.rootMemo = new HashMap<Component,Component>();
+		this.setListener(this);
 		initTab();
 	}
 	
@@ -91,18 +96,25 @@ public class AnswerListTab extends JTabbedPane implements ChangeListener{
 		int nowTab = this.getSelectedIndex();
 		Component child = this.getSelectedComponent();
 		if(nowTab == -1)return;
+		deleteTab(child,masterCheck);
+	}
+	
+	public void deleteTab(Component child,boolean masterCheck){///masterCheck 1:消さない 0:消す
+		///表示中のコンポーネントをタブから削除
+//		int nowTab = this.get;
+//		if(nowTab == -1)return;
 		if(child instanceof MiniListPanel){
-			MiniListPanel miniListPanel = (MiniListPanel) this.getSelectedComponent();
+			MiniListPanel miniListPanel = (MiniListPanel) child;
 			if(miniListPanel.detailPanel != null)
 				miniListPanel.detailPanel.listOff();
 		}
 		if(child instanceof BigImagePanel){
-			BigImagePanel bigImagePanel = (BigImagePanel) this.getSelectedComponent();
+			BigImagePanel bigImagePanel = (BigImagePanel) child;
 			if(masterCheck && bigImagePanel.title.equals("Master"))return;
 			if(bigImagePanel.detailPanel != null)
 				bigImagePanel.detailPanel.listOff();
 		}
-		this.remove(nowTab);
+		this.remove(child);
 		this.removeRootMemo(child);
 	}
 	
@@ -117,6 +129,12 @@ public class AnswerListTab extends JTabbedPane implements ChangeListener{
 			BigImagePanel bigImagePanel = (BigImagePanel) comp;
 			bigImagePanel.imageReload();
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		DeletableMyButton button = (DeletableMyButton) event.getSource();
+		deleteTab(button.getSource(), true);
 	}
 
 }
