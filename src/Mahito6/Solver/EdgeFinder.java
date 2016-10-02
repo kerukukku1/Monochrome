@@ -4,6 +4,7 @@ package Mahito6.Solver;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +71,10 @@ public class EdgeFinder implements Runnable{
 
 	public void edgeFind() throws Exception{///これを呼ぶとエッジが検出される(シングルスレッド用)
 		long start = System.currentTimeMillis();
-
+        for (Field field : consts.getClass().getDeclaredFields()) {
+        	String title = field.getName();
+        	System.out.println(title + ":" + field.get(consts));
+        }
 		edges = new ArrayList<Edge>();
 		int c = 0;
 		LeastSquareMethod lsm = new LeastSquareMethod(save_image, consts);///最小二乗法のソルバ―

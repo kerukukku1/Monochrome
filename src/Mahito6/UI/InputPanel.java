@@ -242,7 +242,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 
 	private void stateChangeFrame(Status.Type type) {
 		SolverConstants consts = ProblemManager.getConstants();
-		consts.edgeWidth = 6;
+//		consts.edgeWidth = 6;
 		consts.lrAddition = 100;
 
 		Constants.clearNoiseThreshold = 1200;
@@ -252,7 +252,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 
 	private void stateChangePiece(Status.Type type){
 		SolverConstants consts = ProblemManager.getConstants();
-		consts.edgeWidth = 6;
+//		consts.edgeWidth = 6;
 		//consts.lrAddition = 50;
 		consts.lrAddition = 60;
 
