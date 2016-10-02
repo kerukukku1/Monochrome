@@ -12,7 +12,6 @@ import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.Tuple2;
-import Mahito6.UI.Status;
 
 public class FolderManager {
 	public static final String currentPath = System.getProperty("user.home")+File.separator+"procon27" + File.separator;

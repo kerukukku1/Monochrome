@@ -30,7 +30,6 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.Edge;
 import Mahito6.Thread.SolverThreadingAgent;
-import Mahito6.UI.Status;
 
 public class ImageManager{
 

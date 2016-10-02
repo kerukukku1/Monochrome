@@ -21,9 +21,10 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.Status;
 
 public class PieceViewPanel extends JPanel implements MouseListener{
-	private int x, y, width, height, index;
+	private int x, y, index;
 	private double image_scale;
 	private JLabel paintArea, pieceIndex, pieceVertex, pieceType, errorType;
 	private BufferedImage gPiece, image;
@@ -33,10 +34,11 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private HandlSummaryPanel vis = null;
 	private List<Edge> edges;
 	private Problem myProblem;
+	
+	public static int Height = 270;
+	public static int Width = 225;
 
-	public PieceViewPanel(int x, int y, int width, int height, int index, Problem problem){
-		this.width = width;
-		this.height = height;
+	public PieceViewPanel(int x, int y, int index, Problem problem){
 		this.x = x;
 		this.y = y;
 		this.index = index;
@@ -46,7 +48,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.edges = myProblem.getEdges(index);
 		this.image = myProblem.getImage(index);
 		BufferedImage buf = myProblem.getGrayImage(index);
-		image_scale = 200 / (double)(Math.max(buf.getWidth(), buf.getHeight()));
+		image_scale = Width / (double)(Math.max(buf.getWidth(), buf.getHeight()));
 		gPiece = myProblem.rescaleImage(image_scale, buf);
 		setUtil();
 		launchItems();
@@ -56,7 +58,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private void setUtil(){
 		this.setLayout(null);
 		this.setBackground(Color.WHITE);
-		this.setBounds(x, y, width, height);
+		this.setBounds(x, y, Width, Height);
 		this.setOpaque(true);
 	}
 
@@ -75,16 +77,16 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.add(pieceVertex);
 		this.add(pieceType);
 
-//		gPiece = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+//		gPiece = new BufferedImage(Width, Width, BufferedImage.TYPE_INT_ARGB);
 		paintPiece();
 		paintArea = new JLabel(new ImageIcon(gPiece));
-		paintArea.setBounds(0, 50, 200, 200);
+		paintArea.setBounds(0, 50, Width, Height-50);
 		paintArea.addMouseListener(this);
 		this.add(paintArea);
 
 		errorType = new JLabel();
 		errorType.setOpaque(true);
-		errorType.setBounds(150, 0, 50, 50);
+		errorType.setBounds(Width-50, 0, 50, 50);
 		Color c = coord.isError() ? Color.RED : Color.GREEN;
 		errorType.setBackground(c);
 		this.add(errorType);
@@ -93,7 +95,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	public void paintPiece(){
 		Graphics2D g = gPiece.createGraphics();
 //		g.setColor(Constants.backgroundColor);
-//		g.clearRect(0, 0, 200, 200);
+//		g.clearRect(0, 0, Width, Width);
 	    List<Tuple2<Double,Double>> data = vertex;
 	    double maxx = 0.0;
 	    double maxy = 0.0;
@@ -110,7 +112,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	    }
 
 	    g.setColor(Color.YELLOW);
-//	    double scale = 200.0/(double)(Math.min(gPiece.getWidth(), gPiece.getHeight()));
+//	    double scale = Width.0/(double)(Math.min(gPiece.getWidth(), gPiece.getHeight()));
 	    System.out.println("scale : " + image_scale);
     	for(int i = 0 ; i < data.size(); i++){
 	    	Tuple2<Double, Double> d1 = data.get(i);

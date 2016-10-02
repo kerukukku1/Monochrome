@@ -1,4 +1,4 @@
-package Mahito6.UI;
+package Main.UI.Util;
 
 public class Status {
 	public enum Type{

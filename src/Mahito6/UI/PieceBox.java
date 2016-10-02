@@ -22,6 +22,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import Mahito6.Main.Problem;
+import Main.UI.Util.Status;
 public class PieceBox extends JPanel implements ChangeListener{
 	private JRadioButton p1;
 	private JRadioButton p2;

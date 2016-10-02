@@ -6,9 +6,9 @@ import java.util.List;
 import Mahito6.UI.InputPanel;
 import Mahito6.UI.MainFrame;
 import Mahito6.UI.MainPanel;
-import Mahito6.UI.Status;
 import Mahito6.UI.UtilityPanel;
 import Main.UI.Util.ImageManager;
+import Main.UI.Util.Status;
 
 public class ProblemManager {
 //	public static MainFrame mainFrame;

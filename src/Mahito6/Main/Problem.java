@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Mahito6.Solver.Edge;
-import Mahito6.UI.Status;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.Status;
 
 public class Problem {
 	private List<Coordinates> coords;

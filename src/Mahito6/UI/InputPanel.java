@@ -26,15 +26,13 @@ import Mahito6.Main.Tuple2;
 import Main.UI.Util.Coordinates;
 import Main.UI.Util.FolderManager;
 import Main.UI.Util.MyKeyListener;
+import Main.UI.Util.Status;
 
 public class InputPanel extends JPanel implements ActionListener, ChangeListener{
 	public int x, y, width, height;
 	public static JButton loadButton, clearButton, addButton, saveButton, scanButton;
 	public JTextField inputForm;
 	public Status.Type[] types = {Status.Type.PIECE1, Status.Type.PIECE2, Status.Type.FRAME};
-//	public ButtonGroup switType = new ButtonGroup();
-//	private JRadioButton piece;
-//	private JRadioButton frame;
 	public InputPanel(int x, int y, int width, int height){
 		this.x = x;
 		this.y = y;
