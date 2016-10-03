@@ -95,8 +95,39 @@ public class ParameterLoader {
 				parant = next;
 			}
 			String title = route[route.length - 1];
-			parant.add(new ParameterNode(title, solver,parameters));
+			parameters = parameterMix(parameters, solver.getParameters());
+			parant.add(new ParameterNode(title, solver, parameters));
 		}
+	}
+	private static List<Parameter> parameterMix(List<Parameter> source, List<Parameter> add){
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		for(Parameter p1 : source){
+			///sourceに入っててaddに入ってないものは削除
+			boolean found = false;
+			for(Parameter p2 : add){
+				if(p1.name.equals(p2.name) && p1.valueType.equals(p2.valueType)){
+					found = true;
+					break;
+				}
+			}
+			if(found){
+				parameters.add(p1);
+			}
+		}
+		for(Parameter p1 : add){
+			///addに入っててsourceに入ってないものは新規追加
+			boolean found = false;
+			for(Parameter p2 : source){
+				if(p1.name.equals(p2.name) && p1.valueType.equals(p2.valueType)){
+					found = true;
+					break;
+				}
+			}
+			if(!found){
+				parameters.add(p1);
+			}
+		}
+		return parameters;
 	}
 	private static FolderNode getChild(FolderNode node,String name){
 		///nodeがnameという名前のFolderNodeを持っているか？

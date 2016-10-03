@@ -2,8 +2,10 @@ package tmcit.tampopo.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import tmcit.api.AnswerChangeEvent;
@@ -12,7 +14,9 @@ import tmcit.api.Parameter;
 import tmcit.tampopo.geometry.util.Piece;
 import tmcit.tampopo.geometry.util.Point;
 import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
+import tmcit.tampopo.ui.BigImagePanel;
 import tmcit.tampopo.ui.SolverPanel;
+import tmcit.tampopo.ui.util.ExVertex;
 
 public class ProblemReader {
 
@@ -29,14 +33,28 @@ public class ProblemReader {
 	public static void stopAllSolver(){
 
 	}
-
-	public static Thread runSolver(String problemText,ISolver solver, List<Parameter> useParameters,int solverId){
+	
+	public static Thread runSolver(ISolver solver,int solverID,List<Parameter> useParameters,PrintStream stream){
+		String problemText = makeMixProblemText();
+		ExVertex target = getTargetFrameAndVertex();
+		if(problemText == null||target==null)return null;
+		return ProblemReader.runSolver(problemText, solver, useParameters, solverID, target.frame, target.index,stream);
+	}
+	
+	public static Thread runSolver(String problemText
+								  ,ISolver solver
+								  , List<Parameter> useParameters
+								  ,int solverId
+								  ,int targetFrame
+								  ,int targetVertex
+								  ,PrintStream stream){
 		///ソルバーをThreadにして走らせる,Threadを返す
 		for(Parameter parameter : useParameters){
 			System.out.println(parameter.name+" : "+parameter.value);
 		}
+		solver.setPrintStream(stream);
 		solver.setParameters(useParameters);
-		solver.load(problemText);
+		solver.load(problemText,targetFrame,targetVertex);
 		solver.init(solverId);
 
 		Thread solverThread = new Thread(solver);
@@ -49,7 +67,7 @@ public class ProblemReader {
 		ProblemReader.solverPanel = solverPanel;
 	}
 
-	public static Answer convertSolvedAnswer(String answerText){
+	public static Answer convertSolvedAnswer(String answerText,double score){
 		///ソルバーで帰ってきたStringをまたAnswerに直す
 		Problem problem = solverPanel.getProblem();
 		List<Piece> frames = new ArrayList<Piece>();
@@ -78,9 +96,17 @@ public class ProblemReader {
 			}
 		}
 		scan.close();
-		Answer answer = new Answer(frames, pieces);
+		Answer answer = new Answer(frames, pieces,score);
 //		System.out.println(answerText);
 		return answer;
+	}
+	
+	public static ExVertex getTargetFrameAndVertex(){
+		BigImagePanel bigImagePanel = solverPanel.getViewingBigImagePanel();
+		if(bigImagePanel == null)return null;
+		int frame = bigImagePanel.selectedFrame;
+		int vertex = bigImagePanel.selectedVertex;
+		return new ExVertex(frame, vertex, null, null);
 	}
 
 	public static String makeMixProblemText(){

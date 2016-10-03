@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,6 +25,8 @@ import javax.swing.ScrollPaneConstants;
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
 import tmcit.api.Parameter.ValueType;
+import tmcit.api.SolverProgressEvent;
+import tmcit.tampopo.ui.util.JTextAreaStream;
 import tmcit.tampopo.ui.util.ParameterNode;
 import tmcit.tampopo.util.Problem;
 import tmcit.tampopo.util.ProblemReader;
@@ -46,10 +49,12 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 
 	public PanelListManager panelListManager;
 	public JTextArea console;
+	public PrintStream stream;
 	public JButton stopButton,runButton,saveButton;
 	
 	public boolean isSolverRunning = false;
 	public Thread solverThread;
+	public int solverID = -1;
 
 	public ParameterDetailPanel(String title,ISolver solver,List<Parameter> parameters,ParameterNode sourceNode){
 		this.sourceNode = sourceNode;
@@ -67,20 +72,18 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 	public void runSolver(){
 		///ソルバーを実行する、いろいろやる
 		if(isSolverRunning)return;
-		solverId = new Random().nextInt();
 		List<Parameter> useParameters = new ArrayList<Parameter>();
-		System.out.println(1);
 		for(ParameterPanel parameterPanel : parameterPanels){
 			Parameter into = parameterPanel.getUpdatedParameter();
 			if(into == null)return;
 			useParameters.add(into);
 		}
-		System.out.println(2);
-		String problemText = ProblemReader.makeMixProblemText();
-		if(problemText == null)return;
-		System.out.println(problemText);
-		solverThread = ProblemReader.runSolver(problemText,solver,useParameters,solverId);
+		int solverID = new Random().nextInt();
+		solverThread = ProblemReader.runSolver(solver,solverID,useParameters,stream);
+		if(solverThread == null)return;
 		isSolverRunning = true;
+		this.solverId = solverID;
+		SolverProgressEvent.addListener(solverID, sourceNode);
 		runButton.setEnabled(false);
 	}
 	
@@ -129,6 +132,7 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 		console.setFont(new Font("Arial", Font.PLAIN, 11));
 		console.setLineWrap(true);
 		conscroll.setPreferredSize(new Dimension(WIDTH, CONSOLE_AREA_HEIGHT));
+		this.stream = new PrintStream(new JTextAreaStream(console), true);
 		
 		stopButton = new JButton("STOP");
 		runButton = new JButton("RUN");

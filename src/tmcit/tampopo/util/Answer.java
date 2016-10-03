@@ -9,10 +9,22 @@ import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 public class Answer {
 	
 	public List<Piece> frames,pieces;
+	public double score = 0.0;
 	
 	public Answer(List<Piece> frames,List<Piece> pieces){
 		this.frames = frames;
 		this.pieces = pieces;
+	}
+	public Answer(List<Piece> frames,List<Piece> pieces,double score){
+		this.frames = frames;
+		this.pieces = pieces;
+		this.score = score;
+	}
+	public void setScore(double score){
+		this.score = score;
+	}
+	public double getScore(){
+		return this.score;
 	}
 	
 	public Answer getCopy(){
@@ -24,7 +36,7 @@ public class Answer {
 		for(Piece piece : this.pieces){
 			newPieces.add(piece.getCopy());
 		}
-		return new Answer(newFrames, newPieces);
+		return new Answer(newFrames, newPieces,score);
 	}
 	
 	public boolean mergeAnotherAnswer(Answer source){

@@ -13,11 +13,13 @@ import tmcit.tampopo.util.PuzzleImage;
 
 public class MiniImagePanel extends JPanel{
 	
+	public static final int SCORE_BAR_HEIGHT = 14;
+	
 	public MiniListPanel source;
 	public int index;
 	public int IMAGESIZE;
 	public Answer answer;
-	public JLabel imageLabel;
+	public JLabel imageLabel,scoreLabel;
 	
 	public MiniImagePanel(Answer answer,int index,int IMAGESIZE,MiniListPanel source){
 		this.source = source;
@@ -38,21 +40,29 @@ public class MiniImagePanel extends JPanel{
 		if(imageLabel != null)return;
 		imageLabel = new JLabel();
 		PuzzleImage puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
-		puzzleImage.paint(IMAGESIZE-3, false, false, false, false, false, false);
+		puzzleImage.paint(IMAGESIZE-3, false, false, false, false, false, false,-1,-1);
 		imageLabel.setIcon(new ImageIcon(puzzleImage.getImage()));
 		imageLabel.setBounds(2, 2, IMAGESIZE - 4, IMAGESIZE - 4);
+		
+		scoreLabel = new JLabel(""+answer.getScore());
+		scoreLabel.setBounds(2, IMAGESIZE, IMAGESIZE - 4, SCORE_BAR_HEIGHT - 2);
+		scoreLabel.setHorizontalAlignment(JLabel.CENTER);
+		
 		this.add(imageLabel);
+		this.add(scoreLabel);
 	}
 	
 	public void hideImage(){
 		if(imageLabel == null)return;
 		this.remove(imageLabel);
+		this.remove(scoreLabel);
 		imageLabel = null;
+		scoreLabel = null;
 	}
 	
 	public void initPanel(){
 		this.setLayout(null);
-		this.setPreferredSize(new Dimension(IMAGESIZE, IMAGESIZE));
+		this.setPreferredSize(new Dimension(IMAGESIZE, IMAGESIZE + SCORE_BAR_HEIGHT));
 		this.setBorder(new LineBorder(Color.GRAY, 2, true));
 	}
 
