@@ -64,7 +64,7 @@ public class ImageManager{
 		}
 		System.gc();
 	}
-	
+
 	public void clearAll(){
 		clear();
 		problem = null;
@@ -349,7 +349,9 @@ public class ImageManager{
 //			}
 
 			if(!Constants.modeWaku){
-				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(Math.abs(numbering.cols() - (maxx+150)), (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(86, 0, 255), 20);
+				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(0, 0, 0), 25);
+				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(0, 255, 255), 15);
+
 				ImageManager.piece_indexes++;
 			}
 		}
