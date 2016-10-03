@@ -102,14 +102,6 @@ public class Problem {
 		return binImage.getSubimage(c.minx, c.miny, c.maxx - c.minx, c.maxy - c.miny);
 	}
 
-	public BufferedImage rescaleImage(double scale, BufferedImage image){
-		int dw = (int)(image.getWidth() * scale);
-		int dh = (int)(image.getHeight() * scale);
-		BufferedImage thumb = new BufferedImage(dw, dh, BufferedImage.TYPE_INT_BGR);
-		thumb.getGraphics().drawImage(image.getScaledInstance(dw, dh, image.SCALE_AREA_AVERAGING), 0, 0, dw, dh, null);
-		return thumb;
-	}
-
 	public void setType(Status.Type type) {
 		// TODO Auto-generated method stub
 		this.type = type;

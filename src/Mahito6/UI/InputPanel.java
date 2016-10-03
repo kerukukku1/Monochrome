@@ -166,25 +166,25 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    		stateChangePiece(types[select]);
 		    	}
 		    }
-//			new Thread(new Runnable(){
-//				@Override
-//				public void run(){
-//					System.out.println("All Noise Clear");
-//					long start = System.nanoTime();
-//					ProblemManager.generatePieceDatas();
-//					long end = System.nanoTime();
-//					System.out.println((end - start) / 1000000f + "ms");
-//				}
-//			}).start();
-			System.out.println("All Noise Clear");
-			long start = System.nanoTime();
-			InputPanel.loadButton.setEnabled(false);
-			InputPanel.clearButton.setEnabled(false);
-			ProblemManager.generatePieceDatas(types[select]);
-			InputPanel.loadButton.setEnabled(true);
-			InputPanel.clearButton.setEnabled(true);
-			long end = System.nanoTime();
-			System.out.println((end - start) / 1000000f + "ms");
+			new Thread(new Runnable(){
+				@Override
+				public void run(){
+					System.out.println("All Noise Clear");
+					long start = System.nanoTime();
+					ProblemManager.generatePieceDatas(types[select]);
+					long end = System.nanoTime();
+					System.out.println((end - start) / 1000000f + "ms");
+				}
+			}).start();
+//			System.out.println("All Noise Clear");
+//			long start = System.nanoTime();
+//			InputPanel.loadButton.setEnabled(false);
+//			InputPanel.clearButton.setEnabled(false);
+//			ProblemManager.generatePieceDatas(types[select]);
+//			InputPanel.loadButton.setEnabled(true);
+//			InputPanel.clearButton.setEnabled(true);
+//			long end = System.nanoTime();
+//			System.out.println((end - start) / 1000000f + "ms");
 		}else if(cmd.equals("Load")){
 			LoadFiles(inputForm.getText());
 		}else if(cmd.equals("Clear")){

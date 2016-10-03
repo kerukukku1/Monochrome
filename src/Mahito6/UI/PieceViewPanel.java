@@ -21,6 +21,7 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.CrossAlgorithm;
 import Mahito6.Solver.Edge;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.ImageManager;
 import Main.UI.Util.Status;
 
 public class PieceViewPanel extends JPanel implements MouseListener{
@@ -49,7 +50,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.image = myProblem.getImage(index);
 		BufferedImage buf = myProblem.getGrayImage(index);
 		image_scale = Width / (double)(Math.max(buf.getWidth(), buf.getHeight()));
-		gPiece = myProblem.rescaleImage(image_scale, buf);
+		gPiece = ImageManager.rescaleImage(image_scale, buf);
 		setUtil();
 		launchItems();
 //		paintPiece();

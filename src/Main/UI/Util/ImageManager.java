@@ -30,6 +30,7 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.Edge;
 import Mahito6.Thread.SolverThreadingAgent;
+import Mahito6.UI.NumberingFrame;
 
 public class ImageManager{
 
@@ -359,8 +360,12 @@ public class ImageManager{
 			Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
 			ImageManager.piece_load_index++;
 			Highgui.imwrite(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png", numbering);
-			Core.flip(source, numbering, 1);
-			Highgui.imwrite(FolderManager.imagePath + "piece_" + String.valueOf(piece_load_index) + ".png", numbering);
+			new Thread(new Runnable(){
+				@Override
+				public void run(){
+					new NumberingFrame(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png");
+				}
+			}).start();
 			numbering = null;
 		}
 		System.out.println("Noise cleared");
@@ -408,5 +413,14 @@ public class ImageManager{
 	public static BufferedImage booleanToBufferedImage(boolean[][] state){
 		return null;
 	}
+	
+	public static BufferedImage rescaleImage(double scale, BufferedImage image){
+		int dw = (int)(image.getWidth() * scale);
+		int dh = (int)(image.getHeight() * scale);
+		BufferedImage thumb = new BufferedImage(dw, dh, BufferedImage.TYPE_INT_BGR);
+		thumb.getGraphics().drawImage(image.getScaledInstance(dw, dh, image.SCALE_AREA_AVERAGING), 0, 0, dw, dh, null);
+		return thumb;
+	}
+
 
 }
