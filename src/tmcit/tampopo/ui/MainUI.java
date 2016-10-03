@@ -76,13 +76,13 @@ public class MainUI extends JFrame implements ActionListener{
 				  KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem3 = new JMenuItem("Tab_Close");
 		menuitem3.setAccelerator(KeyStroke.getKeyStroke(
-				  KeyEvent.VK_D, 0));
+				  KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem4 = new JMenuItem("MERGE(TEST)");
 		menuitem4.setAccelerator(KeyStroke.getKeyStroke(
-				  KeyEvent.VK_M, 0));
+				  KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem5 = new JMenuItem("OVERWRITE(TEST)");
 		menuitem5.setAccelerator(KeyStroke.getKeyStroke(
-				  KeyEvent.VK_O, 0));
+				  KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem6 = new JMenuItem("Load_quest");
 		JMenuItem menuitem7 = new JMenuItem("Send_answer");
 		JMenuItem menuitem1 = new JMenuItem("Exit");

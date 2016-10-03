@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import tmcit.api.ISolver;
+
 
 public class IconUtil {
 
@@ -31,6 +33,9 @@ public class IconUtil {
 		iconNameList.add("file.png");
 		iconNameList.add("folder.png");
 		iconNameList.add("folderopen.png");
+		iconNameList.add("fire.png");
+		iconNameList.add("typhoon.png");
+		iconNameList.add("close.png");
 	}
 
 	private boolean loadIcon(){
@@ -62,6 +67,14 @@ public class IconUtil {
 		}
 		return null;
 */
+	}
+	
+	public static ImageIcon getSolverIcon(ISolver solver){
+		if(solver instanceof tmcit.tampopo.edgeSolver.main.BeamEdgeMain){
+			return IconUtil.getIcon("typhoon.png");
+		}else{
+			return IconUtil.getIcon("fire.png");
+		}
 	}
 
 }

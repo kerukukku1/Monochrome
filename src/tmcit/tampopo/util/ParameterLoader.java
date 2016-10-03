@@ -23,6 +23,20 @@ import tmcit.tampopo.ui.util.ParameterNode;
 public class ParameterLoader {
 	
 	public static String[] solvers = {"EdgeSolver","RotSolver"};
+	
+	public static void deleteParameter(ParameterNode node){
+		String fileName = node.getTitle();
+		FolderNode parant = (FolderNode) node.getParent();
+		while(true){
+			fileName = parant.getTitle() +"."+fileName;
+			if(parant.getParent() == null)break;
+			parant = (FolderNode) parant.getParent();
+		}
+		File dir = new File(tmcit.tampopo.main.Main.saveDir+"/"+"Parameters");
+		if(!dir.exists())dir.mkdirs();
+		File file = new File(tmcit.tampopo.main.Main.saveDir+"/"+"Parameters"+"/"+fileName);
+		file.delete();
+	}
 
 	public static boolean saveParameter(ParameterNode node){
 		try{

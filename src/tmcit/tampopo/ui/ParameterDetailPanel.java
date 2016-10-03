@@ -49,7 +49,7 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 	public JButton stopButton,runButton,saveButton;
 	
 	public boolean isSolverRunning = false;
-	Thread solverThread;
+	public Thread solverThread;
 
 	public ParameterDetailPanel(String title,ISolver solver,List<Parameter> parameters,ParameterNode sourceNode){
 		this.sourceNode = sourceNode;

@@ -78,20 +78,23 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 	}
 	
 	public void changeTargetPiece(){
-		int id = targetPiece.getID();
-		indexLabel.setText((id+1)+"");
-		Piece realPiece = null;
-		if(isPiece2[id]){
-			realPiece = realPiece2[id];
-		}
-		
 		BufferedImage overMap = new BufferedImage(dw, dh, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = overMap.createGraphics();
 		g2d.drawImage(pieceMapSouce, null, 0, 0);
-		if(realPiece != null){
-			drawCircleImage(g2d,realPiece);
+		String labelText = "";
+		if(targetPiece != null){
+			int id = targetPiece.getID();
+			labelText = (id+1)+"";
+			Piece realPiece = null;
+			if(isPiece2[id]){
+				realPiece = realPiece2[id];
+			}
+			if(realPiece != null){
+				drawCircleImage(g2d,realPiece);
+			}
 		}
 		g2d.dispose();
+		indexLabel.setText(labelText);
 		pieceMapLabel.setIcon(new ImageIcon(overMap));
 		this.repaint();
 	}
@@ -125,15 +128,20 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 		if(piece == null)return;
 		if(e.getButton() == 1){
 			piece.setPieceColor(pieceDarkColor);
+			targetPiece = null;
 		}else if(e.getButton() == 3){
 			piece.setPieceColor(pieceLightColor);
+			targetPiece = piece;
 		}
 		imageReload();
+		changeTargetPiece();
 	}
 	@Override
 	public void mouseMoved(MouseEvent event) {
 		Piece piece = puzzleImage.getPieceFromPoint(event.getX(), event.getY());
-		if(piece == null || targetPiece == piece)return;
+		if(piece == null 
+				|| targetPiece == piece 
+				|| piece.getPieceColor() == pieceDarkColor)return;
 		targetPiece = piece;
 		changeTargetPiece();
 	}

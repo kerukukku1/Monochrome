@@ -1,6 +1,7 @@
 package tmcit.tampopo.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -23,16 +24,16 @@ import tmcit.tampopo.util.ProblemReader;
 public class SolverPanel extends JPanel implements MouseListener , AnswerChangeListener{
 	
 	
-	public static final int LEFT_WIDTH = 210;
+	public static final int LEFT_WIDTH = 150;
 	public static final int LEFT_HEIGHT = 664;
-	public static final int CENTER_WIDTH = 540;
+	public static final int CENTER_WIDTH = 520;
 	public static final int CENTER_HEIGHT = 664;
-	public static final int RIGHT_WIDTH = 210;
+	public static final int RIGHT_WIDTH = 280;
 	public static final int RIGHT_HEIGHT = 664;
 	
-	public static final int LEFT_IMAGE_SIZE = 192;///左側のリストの画像サイズ
-	public static final int CENTER_BIGIMAGE_SIZE = 530;///真ん中のでっかい画像サイズ
-	public static final int CENTER_MINIIMAGE_SIZE = 128;///リストの小さい画像
+	public static final int LEFT_IMAGE_SIZE = LEFT_WIDTH - 16;///左側のリストの画像サイズ
+	public static final int CENTER_BIGIMAGE_SIZE = CENTER_WIDTH - 10;///真ん中のでっかい画像サイズ
+	public static final int CENTER_MINIIMAGE_SIZE = 124;///リストの小さい画像
 	
 	public SolverPanel own;
 	
@@ -123,6 +124,7 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 				master = own.problem.getEmptyAnswer();
 				masterDetailPanel = left.addAnswer("Master", master);
 				left.addAnswer("Problem",own.problem.convertAllAnswerList());
+				leftDetailClick(masterDetailPanel,1);
 			}
 		});
 	}
@@ -144,7 +146,7 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 	
 	public void tabClose(){
 		///今開いてるタブを閉じる
-		center.deleteOpeningTab();
+		center.deleteOpeningTab(true);
 	}
 	
 	private void leftDetailClick(DetailPanel detailPanel,int button){
@@ -152,8 +154,9 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 		List<Answer> answers = detailPanel.answers;
 		if(button == 1 || button == 2){
 			///解が1個ならビッグ、複数ならリスト表示
-			if(detailPanel.isListOn()){
+			if(center.getTabFromComponent(detailPanel) != null){
 				///すでに表示されているので
+				center.setView(detailPanel);
 				return;
 			}
 			JPanel newPanel;
@@ -165,9 +168,9 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 				newPanel = newMiniListPanel;
 			}
 			if(button == 1){
-				center.addTabAndSelect(title, newPanel);
+				center.addTabAndSelect(title, newPanel, detailPanel);
 			}else if(button == 2){
-				center.addTab(title, newPanel);
+				center.addTab(title, newPanel, detailPanel);
 			}
 			detailPanel.listOn();
 		}else{
@@ -192,11 +195,16 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 		Answer answer = miniImagePanel.answer;
 		if(button == 1 || button == 2){
 			///解が1個ならビッグ、複数ならリスト表示
+			if(center.getTabFromComponent(miniImagePanel) != null){
+				///既に表示されているので
+				center.setView(miniImagePanel);
+				return;
+			}
 			BigImagePanel newPanel = new BigImagePanel(title,answer,null);
 			if(button == 1){
-				center.addTabAndSelect(title,newPanel);
+				center.addTabAndSelect(title, newPanel, miniImagePanel);
 			}else if(button == 2){
-				center.addTab(title, newPanel);
+				center.addTab(title, newPanel, miniImagePanel);
 			}
 		}
 	}
