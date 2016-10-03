@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -19,13 +18,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import Mahito6.Main.Constants;
-import Mahito6.Main.Problem;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.SolverConstants;
-import Mahito6.Main.Tuple2;
-import Main.UI.Util.Coordinates;
 import Main.UI.Util.FolderManager;
 import Main.UI.Util.MyKeyListener;
+import Main.UI.Util.ScannerUtil;
 import Main.UI.Util.Status;
 
 public class InputPanel extends JPanel implements ActionListener, ChangeListener{
@@ -93,7 +90,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 
 	private boolean LoadFiles(String path){
 		if(!ProblemManager.imageManager.setPath(path)){
-			JOptionPane.showMessageDialog(this, "Wrong Path", "WARNING_MESSAGE", 
+			JOptionPane.showMessageDialog(this, "Wrong Path", "WARNING_MESSAGE",
 					JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
@@ -200,6 +197,30 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    }
 			ProblemManager.resetImageManager();
 			Mahito6.Main.Main.pieceView.initializePanel();
+		}else if(cmd.equals("Scan")){
+		    String selectvalues[] = {"Piece1", "Piece2", "Frame", "Cancel"};
+
+		    int select = JOptionPane.showOptionDialog(this,
+		      "Select Type : ",
+		      "!!!Warning!!!",
+		      JOptionPane.YES_NO_OPTION,
+		      JOptionPane.QUESTION_MESSAGE,
+		      null,
+		      selectvalues,
+		      selectvalues[0]
+		    );
+		    if (select == JOptionPane.CLOSED_OPTION || selectvalues[select].equals("Cancel")){
+		    	return;
+		    }else{
+		    	try {
+					ScannerUtil.scan(300, selectvalues[select]);
+					inputForm.setText(FolderManager.getScannerPath(300, selectvalues[select]));
+					LoadFiles(inputForm.getText());
+				} catch (Exception e1) {
+					// TODO 自動生成された catch ブロック
+					e1.printStackTrace();
+				}
+		    }
 		}
 	}
 

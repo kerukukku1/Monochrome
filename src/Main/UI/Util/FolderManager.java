@@ -33,7 +33,7 @@ public class FolderManager {
 			}
 		}
 	}
-	
+
 	private void buildPresets() {
 		if(!new File(presetsPath).exists()){
 			if(new File(presetsPath).mkdir()){
@@ -52,6 +52,10 @@ public class FolderManager {
 				System.out.println("permission denied");
 			}
 		}
+	}
+
+	public static String getScannerPath(int dpi, String meta){
+		return FolderManager.imagePath.replace("\\", "/") + meta+"_"+String.valueOf(dpi)+".png";
 	}
 
 	public static void questSave(){
@@ -186,7 +190,7 @@ public class FolderManager {
 						double x = (v2.get(k).t1+p.getCoord(j).minx - Constants.imagePositionOffset/2);
 						double y = (v2.get(k).t2+p.getCoord(j).miny - Constants.imagePositionOffset/2);
 						ansPiece.add(String.valueOf(x) + " " + String.valueOf(y));
-					}	
+					}
 				}
 				pieceSize++;
 			}

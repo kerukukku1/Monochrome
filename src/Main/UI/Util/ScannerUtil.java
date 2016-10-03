@@ -9,6 +9,8 @@ public class ScannerUtil {
 	public static void scan(int dpi,String meta) throws Exception{
 		String dpis = ""+dpi;
 		Imaging imaging = new Imaging("myApp", 0);
+		String path = FolderManager.getScannerPath(dpi, meta);
+		System.out.println(path);
 		Result res = imaging.scan(Request.fromJson(
 		         "{"
 				 + "\"twain_cap_setting\" : {"
@@ -20,7 +22,7 @@ public class ScannerUtil {
 		         + "\"output_settings\" : [ {"
 		         + "  \"type\" : \"save\","
 		         + "  \"format\" : \"png\","
-		         + "  \"save_path\" : \"C:/MinGW/"+meta+"_"+dpis+".png\""
+		         + "  \"save_path\" : \""+path +"\""
 		         + "} ]"
 		       + "}"), "select", false, false);
 	}
