@@ -36,8 +36,8 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 	public JLabel imageLabel;
 	public PuzzleImage puzzleImage;
 	
-	public int selectedFrame = -1;
-	public int selectedVertex = -1;
+	public int selectedFrame = 0;
+	public int selectedVertex = 0;
 	
 	public JCheckBox cb1,cb2,cb3,cb4,cb5,cb6;
 	

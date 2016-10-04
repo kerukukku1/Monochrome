@@ -36,6 +36,7 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 	public static final Color backGround = new Color(230, 230, 240);
 	public static final Color pieceLightColor = new Color(160, 160, 230);
 	public static final Color pieceDarkColor = Color.GRAY;
+	public static final Color pickupColor = Color.YELLOW;
 	
 	public Problem problem;
 	public Answer answer;
@@ -62,7 +63,11 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 	
 	public ToAnswerPanel(Problem problem,Answer answer){
 		this.problem = problem;
-		this.answer = answer;
+		try {
+			this.answer = answer.getReversedAnswer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		initAnswer();
 		initPanel();
 		makePanel();
@@ -92,6 +97,7 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 			if(realPiece != null){
 				drawCircleImage(g2d,realPiece);
 			}
+			targetPiece.setPieceColor(pickupColor);
 		}
 		g2d.dispose();
 		indexLabel.setText(labelText);
@@ -142,8 +148,10 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 		if(piece == null 
 				|| targetPiece == piece 
 				|| piece.getPieceColor() == pieceDarkColor)return;
+		if(targetPiece != null)targetPiece.setPieceColor(pieceLightColor);
 		targetPiece = piece;
 		changeTargetPiece();
+		imageReload();
 	}
 
 	

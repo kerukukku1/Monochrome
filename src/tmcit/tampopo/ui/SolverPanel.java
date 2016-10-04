@@ -68,7 +68,7 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 		replaceMaster(newMaster);
 	}
 	public void doOverwriteForMaster(){
-		Answer source = center.getViewingAnswer();
+		Answer source = center.getViewingAnswer().getCopy();
 		if(source == null)return;
 		replaceMaster(source);
 	}
@@ -112,7 +112,11 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 	
 	public Answer getViewingAnswer(){
 		///中央に表示してるデカアンサーを返す
-		return center.getViewingAnswer();
+		Answer ret = center.getViewingAnswer();
+		if(ret == null){
+			JOptionPane.showConfirmDialog(this, "表示して！！","test",JOptionPane.OK_OPTION);
+		}
+		return ret;
 	}
 	
 	public BigImagePanel getViewingBigImagePanel(){

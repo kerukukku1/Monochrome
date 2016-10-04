@@ -165,7 +165,9 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 				answer = tmp;
 			}
 		}
-		
+		if(answer.size() < 3){
+			this.isErrorCross = true;
+		}
 		for(int i = 0;i < answer.size();i++){
 			int next = (i+1)%answer.size();
 			Tuple2<Double, Double> e1 = answer.get(i);
@@ -201,23 +203,24 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 				if(isOut){
 					this.isErrorCross = true;
 				}
-			}
-			cx = (int)e1.t1.intValue();
-			cy = (int)e1.t2.intValue();
-			boolean isOut = true;
-			for(int tx = -3;tx < 3;tx++)
-			for(int ty = -3;ty < 3;ty++){
-				int dx = cx+tx;
-				int dy = cy+ty;
-				if(dx < 0||dy < 0||dx >= w||dy >= h){
-					continue;
+				cx = (int)e1.t1.intValue();
+				cy = (int)e1.t2.intValue();
+				isOut = true;
+				for(int tx = -3;tx < 3;tx++)
+				for(int ty = -3;ty < 3;ty++){
+					int dx = cx+tx;
+					int dy = cy+ty;
+					if(dx < 0||dy < 0||dx >= w||dy >= h){
+						continue;
+					}
+					int rgb = inputImage.getRGB(dx, dy);
+					if(rgb == -1)isOut = false;
 				}
-				int rgb = inputImage.getRGB(dx, dy);
-				if(rgb == -1)isOut = false;
+				if(isOut){
+					this.isCaution = true;
+				}
 			}
-			if(isOut){
-				this.isCaution = true;
-			}
+
 		}
 
 //		Graphics2D g2d = (Graphics2D) ansImage.getGraphics();
