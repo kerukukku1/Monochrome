@@ -106,6 +106,18 @@ public class PuzzleImage {
 	}
 	
 	public void paint(int width
+			 ,boolean frameDegree
+			 ,boolean frameLength
+			 ,boolean pieceDegree
+			 ,boolean pieceLength
+			 ,boolean frameIndex
+			 ,boolean pieceIndex
+			 ,int targetFrameIndex
+			 ,int targetVertexIndex){
+		paint(width, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex, targetFrameIndex, targetVertexIndex, false);
+	}
+	
+	public void paint(int width
 					 ,boolean frameDegree
 					 ,boolean frameLength
 					 ,boolean pieceDegree
@@ -113,7 +125,8 @@ public class PuzzleImage {
 					 ,boolean frameIndex
 					 ,boolean pieceIndex
 					 ,int targetFrameIndex
-					 ,int targetVertexIndex){///percent:�g��̊���
+					 ,int targetVertexIndex
+					 ,boolean reverse){///percent:�g��̊���
 		double percent = ((double)width)/((double)WIDTH);
 		double realper = percent * expansion * 0.9;
 		image = new BufferedImage(width,width,BufferedImage.TYPE_INT_ARGB);

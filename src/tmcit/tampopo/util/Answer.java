@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tmcit.tampopo.geometry.util.Piece;
+import tmcit.tampopo.geometry.util.Point;
 import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 
 public class Answer {
@@ -63,6 +64,41 @@ public class Answer {
 			pieces.add(piece.getCopy());
 		}
 		return true;
+	}
+	
+	public Answer getReversedAnswer() throws Exception{
+		///左右反転
+		double minx =  100000;
+		double maxx = 0;
+		for(Piece frame : frames){
+			for(Point point : frame.getPoints()){
+				minx = Math.min(minx, point.x);
+				maxx = Math.max(maxx, point.x);
+			}
+		}
+		List<Piece> revFrames = new ArrayList<Piece>();
+		List<Piece> revPieces = new ArrayList<Piece>();
+		for(Piece frame : frames){
+			PieceBuilder pieceBuilder = new PieceBuilder();
+			pieceBuilder.setID(frame.getID());
+			for(Point point : frame.getPoints()){
+				double x = maxx-(point.x - minx);
+				double y = point.y;
+				pieceBuilder.addPoint(x, y);
+			}
+			revFrames.add(pieceBuilder.build());
+		}
+		for(Piece piece : pieces){
+			PieceBuilder pieceBuilder = new PieceBuilder();
+			pieceBuilder.setID(piece.getID());
+			for(Point point : piece.getPoints()){
+				double x = maxx-(point.x - minx);
+				double y = point.y;
+				pieceBuilder.addPoint(x, y);
+			}
+			revPieces.add(pieceBuilder.build());
+		}
+		return new Answer(revFrames, revPieces, score);
 	}
 	
 //	public static Answer makeDebugAnswer(){
