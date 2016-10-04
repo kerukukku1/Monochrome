@@ -307,6 +307,7 @@ public class ImageManager{
 		for(int i = 0; i < bufImages.size(); i++){
 			vertex.add(agent.getCrossAnswer(i));
 			coords.get(i).setError(agent.isError(i));
+			coords.get(i).setCaution(agent.isCaution(i));
 		}
 	}
 

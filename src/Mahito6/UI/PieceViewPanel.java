@@ -89,7 +89,12 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		errorType = new JLabel();
 		errorType.setOpaque(true);
 		errorType.setBounds(Width-50, 0, 50, 50);
-		Color c = coord.isError() ? Color.RED : Color.GREEN;
+		Color c = Color.GREEN;
+		if(coord.isError()){
+			c = Color.RED;
+		}else if(coord.isCaution()){
+			c = Color.BLUE;
+		}
 		errorType.setBackground(c);
 		this.add(errorType);
 	}

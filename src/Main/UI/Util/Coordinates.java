@@ -10,6 +10,7 @@ public class Coordinates{
 	public int maxx, maxy, minx, miny;
 	private long funcCount;
 	private boolean error = false;
+	private boolean caution = false;
 	
 	public Coordinates(){
 		arx = new ArrayList<Integer>();
@@ -74,6 +75,14 @@ public class Coordinates{
 	
 	public void setError(boolean error){
 		this.error = error;
+	}
+	
+	public void setCaution(boolean caution){
+		this.caution  = caution;
+	}
+	
+	public boolean isCaution(){
+		return this.caution;
 	}
 	
 	public boolean isError(){

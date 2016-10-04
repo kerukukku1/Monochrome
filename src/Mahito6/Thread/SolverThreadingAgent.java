@@ -17,6 +17,7 @@ public class SolverThreadingAgent {
 	private List<BufferedImage> sourceImages;
 	private List<List<Tuple2<Double,Double>>> allAnswer;
 	private List<Boolean> isErrorList;
+	private List<Boolean> isCautionList;
 	private List<List<Edge>> allEdges;
 
 	/*
@@ -31,10 +32,12 @@ public class SolverThreadingAgent {
 		this.allAnswer = new ArrayList<List<Tuple2<Double,Double>>>(pieceNum);
 		this.allEdges = new ArrayList<List<Edge>>(pieceNum);
 		this.isErrorList = new ArrayList<Boolean>(pieceNum);
+		this.isCautionList = new ArrayList<Boolean>(pieceNum);
 		for(int i = 0; i < pieceNum; i++){
 			allAnswer.add(null);
 			allEdges.add(null);
 			isErrorList.add(null);
+			isCautionList.add(null);
 		}
 	}
 
@@ -44,14 +47,18 @@ public class SolverThreadingAgent {
 	public boolean isError(int id){
 		return isErrorList.get(id);
 	}
+	public boolean isCaution(int id){
+		return isCautionList.get(id);
+	}
 	public List<List<Edge>> getAllEdges(){
 		return allEdges;
 	}
 
 	private synchronized void endMethod(int id,List<Tuple2<Double, Double>> answerEdges,
-			   boolean isError){
+			   boolean isError, boolean isCaution){
 		///解をぶちこむためのメソッド、衝突防止
 		isErrorList.set(id, isError);
+		isCautionList.set(id,  isCaution);
 		allAnswer.set(id, answerEdges);
 
 		List<Edge> edges = new ArrayList<Edge>();
@@ -102,7 +109,8 @@ public class SolverThreadingAgent {
 						crossAlgorithm.solve();
 						List<Tuple2<Double, Double>> answerEdges = crossAlgorithm.getAnswer();
 						boolean isError = crossAlgorithm.isErrorCross();
-						endMethod(id,answerEdges,isError);
+						boolean isCaution = crossAlgorithm.isCaution();
+						endMethod(id,answerEdges,isError,isCaution);
 					}
 //					target.clear();
 				}
