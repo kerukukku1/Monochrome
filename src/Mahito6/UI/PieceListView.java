@@ -55,6 +55,16 @@ public class PieceListView extends JPanel{
 	public void launchPiecePanel(){
 		paintPiecePanel(ProblemManager.getProblems());
 	}
+	
+	public void callRun(){
+		if(viewer == null)return;
+		viewer.runEdgeFinder();
+	}
+	
+	public void callStore(){
+		if(viewer == null)return;
+		viewer.storeAnswer();
+	}
 
 	public void setVisualizePanel(HandlSummaryPanel vf){
 		viewer = vf;

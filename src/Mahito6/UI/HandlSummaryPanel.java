@@ -294,4 +294,12 @@ public class HandlSummaryPanel extends JPanel implements KeyListener{
 	public RealTimeDialog getRealTimeDialog() {
 		return realtimeDialog;
 	}
+	
+	public void runEdgeFinder(){
+		paramPanel.runEdgeFinder();
+	}
+	
+	public void storeAnswer(){
+		paramPanel.storeAnswer();
+	}
 }

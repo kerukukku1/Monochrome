@@ -140,25 +140,33 @@ public class EdgeParameterPanel extends JPanel implements ActionListener, ItemLi
 		}else if(cmd.equals(">")){
 			parent.next();
 		}else if(cmd.equals("Store")){
-			parent.saveData();
+			storeAnswer();
 //			parent.setTitle("Saved Data! [id]" + new Random().nextDouble());
 		}else if(cmd.equals("Run")){
-			reloadConstants();
-			BufferedImage tarImage = parent.getImage();
-			EdgeFinder finder = new EdgeFinder(parent.getImage(), false, consts);
-			try {
-				finder.edgeFind();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			CrossAlgorithm crossAlgorithm = new CrossAlgorithm(finder.getResult_edge(), tarImage);
-			crossAlgorithm.solve();
-			if(crossAlgorithm.isErrorCross()){
-				System.out.println("cross error!!");
-			}
-			parent.relaunch(crossAlgorithm.getAnswer(), false);
+			runEdgeFinder();
 		}
+	}
+	
+	public void runEdgeFinder(){
+		reloadConstants();
+		BufferedImage tarImage = parent.getImage();
+		EdgeFinder finder = new EdgeFinder(parent.getImage(), false, consts);
+		try {
+			finder.edgeFind();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		CrossAlgorithm crossAlgorithm = new CrossAlgorithm(finder.getResult_edge(), tarImage);
+		crossAlgorithm.solve();
+		if(crossAlgorithm.isErrorCross()){
+			System.out.println("cross error!!");
+		}
+		parent.relaunch(crossAlgorithm.getAnswer(), false);
+	}
+	
+	public void storeAnswer(){
+		parent.saveData();
 	}
 
 	@Override

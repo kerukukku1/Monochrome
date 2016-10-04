@@ -71,6 +71,7 @@ public class MainUI extends JFrame implements ActionListener{
 		JMenuBar menubar = new JMenuBar();
 		JMenu menu1 = new JMenu("File");
 		JMenu menu2 = new JMenu("Solver");
+		JMenu menu3 = new JMenu("Mono");
 		JMenuItem menuitem2 = new JMenuItem("Refresh");
 		menuitem2.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
@@ -86,6 +87,14 @@ public class MainUI extends JFrame implements ActionListener{
 		JMenuItem menuitem6 = new JMenuItem("Load_quest");
 		JMenuItem menuitem7 = new JMenuItem("Send_answer");
 		JMenuItem menuitem1 = new JMenuItem("Exit");
+		
+		JMenuItem menuitem8 = new JMenuItem("Store");
+		menuitem8.setAccelerator(KeyStroke.getKeyStroke(
+				  KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		JMenuItem menuitem9 = new JMenuItem("EdgeFinder");
+		menuitem9.setAccelerator(KeyStroke.getKeyStroke(
+				  KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+		
 		menuitem1.addActionListener(this);
 		menuitem2.addActionListener(this);
 		menuitem3.addActionListener(this);
@@ -93,6 +102,8 @@ public class MainUI extends JFrame implements ActionListener{
 		menuitem5.addActionListener(this);
 		menuitem6.addActionListener(this);
 		menuitem7.addActionListener(this);
+		menuitem8.addActionListener(this);
+		menuitem9.addActionListener(this);
 		menu1.add(menuitem2);
 		menu1.add(menuitem1);
 		menu2.add(menuitem6);
@@ -100,8 +111,11 @@ public class MainUI extends JFrame implements ActionListener{
 		menu2.add(menuitem4);
 		menu2.add(menuitem5);
 		menu2.add(menuitem7);
+		menu3.add(menuitem8);
+		menu3.add(menuitem9);
 		menubar.add(menu1);
 		menubar.add(menu2);
+		menubar.add(menu3);
 		this.setJMenuBar(menubar);
 	}
 
@@ -139,6 +153,10 @@ public class MainUI extends JFrame implements ActionListener{
 			}
 			toAnswerPanel = new ToAnswerPanel(problem, answer.getCopy());
 			tabPane.addTab("ANSWER", toAnswerPanel);
+		}else if(value.equalsIgnoreCase("Store")){
+			Mahito6.Main.Main.pieceView.callStore();
+		}else if(value.equalsIgnoreCase("EdgeFinder")){
+			Mahito6.Main.Main.pieceView.callRun();
 		}
 	}
 
