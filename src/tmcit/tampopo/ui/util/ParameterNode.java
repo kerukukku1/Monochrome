@@ -9,13 +9,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
+import tmcit.api.SolverProgressListener;
 import tmcit.api.Parameter.ValueType;
+import tmcit.api.SolverProgressEvent;
 import tmcit.tampopo.ui.ParameterDetailPanel;
 import tmcit.tampopo.ui.SolverDetailPanel;
 import tmcit.tampopo.util.IconUtil;
 import tmcit.tampopo.util.ParameterLoader;
 
-public class ParameterNode extends DefaultMutableTreeNode{
+public class ParameterNode extends DefaultMutableTreeNode implements SolverProgressListener{
 	
 	private String title;
 	private ISolver solver;
@@ -117,6 +119,12 @@ public class ParameterNode extends DefaultMutableTreeNode{
 		if(this.tabPane == null)return;
 		if(this.panel == null)return;
 		this.tabPane.remove(this.panel);
+	}
+
+	@Override
+	public void solverProgressEvent(SolverProgressEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

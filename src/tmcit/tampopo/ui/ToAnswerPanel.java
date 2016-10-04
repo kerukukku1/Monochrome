@@ -71,7 +71,7 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 	
 	public void imageReload(){
 		puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
-		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex);
+		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex,-1,-1);
 		BufferedImage bigImage = puzzleImage.getImage();
 		imageLabel.setIcon(new ImageIcon(bigImage));
 		this.repaint();

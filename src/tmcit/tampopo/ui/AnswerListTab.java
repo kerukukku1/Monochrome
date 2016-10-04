@@ -16,6 +16,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import tmcit.tampopo.ui.util.ExVertex;
 import tmcit.tampopo.util.Answer;
 
 public class AnswerListTab extends DeletableTabbedPane implements ChangeListener,ActionListener{
@@ -70,6 +71,14 @@ public class AnswerListTab extends DeletableTabbedPane implements ChangeListener
 		}
 		BigImagePanel bigImagePanel = (BigImagePanel) this.getSelectedComponent();
 		return bigImagePanel.answer;
+	}
+	
+	public BigImagePanel getViewingBigImagePanel(){
+		if(!(this.getSelectedComponent() instanceof BigImagePanel)){
+			System.out.println("表示して！");
+			return null;
+		}
+		return (BigImagePanel) this.getSelectedComponent();
 	}
 	
 	public void clearPanels(){

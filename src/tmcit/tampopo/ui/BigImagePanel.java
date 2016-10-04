@@ -21,6 +21,7 @@ import javax.swing.event.ChangeListener;
 
 import tmcit.tampopo.edgeSolver.solver.util.Puzzle;
 import tmcit.tampopo.geometry.util.Piece;
+import tmcit.tampopo.ui.util.ExVertex;
 import tmcit.tampopo.util.Answer;
 import tmcit.tampopo.util.PuzzleImage;
 
@@ -34,6 +35,9 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 	public Answer answer;
 	public JLabel imageLabel;
 	public PuzzleImage puzzleImage;
+	
+	public int selectedFrame = -1;
+	public int selectedVertex = -1;
 	
 	public JCheckBox cb1,cb2,cb3,cb4,cb5,cb6;
 	
@@ -55,7 +59,7 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 	
 	public void imageReload(){
 		puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
-		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex);
+		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex,selectedFrame,selectedVertex);
 		BufferedImage bigImage = puzzleImage.getImage();
 		imageLabel.setIcon(new ImageIcon(bigImage));
 		this.repaint();
@@ -65,6 +69,13 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		cb4.setSelected(pieceDegree);
 		cb5.setSelected(pieceLength);
 		cb6.setSelected(pieceIndex);
+	}
+	
+	public void doClickVeretex(int x,int y){
+		ExVertex exVertex = puzzleImage.getFrameAndVertexFromPoint(x, y);
+		if(exVertex == null)return;
+		this.selectedFrame = exVertex.frame;
+		this.selectedVertex = exVertex.index;
 	}
 	
 	@Override
@@ -100,12 +111,17 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 	@Override
 	public void mousePressed(MouseEvent e) {
 		///ピース右クリックしたら消す
-		if(e.getButton() != 3)return;
-		if(answer.frames.size() == 0)return;///枠がある解のみ
-		Piece piece = puzzleImage.getPieceFromPoint(e.getX(), e.getY());
-		if(piece == null)return;
-		answer.pieces.remove(piece);
-		imageReload();
+		if(e.getButton() == 3){
+			if(answer.frames.size() == 0)return;///枠がある解のみ
+			Piece piece = puzzleImage.getPieceFromPoint(e.getX(), e.getY());
+			if(piece == null)return;
+			answer.pieces.remove(piece);
+			imageReload();
+		}else if(e.getButton() == 1){
+			///左クリックなら辺を選択
+			doClickVeretex(e.getX(), e.getY());
+			imageReload();
+		}
 	}
 	
 	public void makePanel(){

@@ -17,6 +17,7 @@ import tmcit.api.AnswerChangeEvent;
 import tmcit.api.AnswerChangeListener;
 import tmcit.procon27.main.Solver;
 import tmcit.tampopo.ui.util.DropFileHandler;
+import tmcit.tampopo.ui.util.ExVertex;
 import tmcit.tampopo.util.Answer;
 import tmcit.tampopo.util.Problem;
 import tmcit.tampopo.util.ProblemReader;
@@ -82,9 +83,12 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 	public void answerChangeEvent(AnswerChangeEvent event) {
 		///解が更新されたら呼ばれる
 		List<String> answerTexts = event.getAnswer();
+		List<Double> answerScores = event.getScores();
 		List<Answer> answers = new ArrayList<Answer>();
-		for(String ansText : answerTexts){
-			Answer answer = ProblemReader.convertSolvedAnswer(ansText);
+		for(int i = 0;i < answerTexts.size();i++){
+			String ansText = answerTexts.get(i);
+			double score = answerScores.get(i);
+			Answer answer = ProblemReader.convertSolvedAnswer(ansText,score);
 			answers.add(answer);
 		}
 		if(answers.size() == 0){
@@ -109,6 +113,10 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 	public Answer getViewingAnswer(){
 		///中央に表示してるデカアンサーを返す
 		return center.getViewingAnswer();
+	}
+	
+	public BigImagePanel getViewingBigImagePanel(){
+		return center.getViewingBigImagePanel();
 	}
 	
 	public Problem getProblem(){
@@ -211,12 +219,7 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int button = e.getButton();
-		if(e.getSource() instanceof DetailPanel){
-			leftDetailClick((DetailPanel)e.getSource(), button);
-		}else if(e.getSource() instanceof MiniImagePanel){
-			centerMiniImageClick((MiniImagePanel)e.getSource(), button);
-		}
+
 	}
 
 	@Override
@@ -239,8 +242,12 @@ public class SolverPanel extends JPanel implements MouseListener , AnswerChangeL
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		int button = e.getButton();
+		if(e.getSource() instanceof DetailPanel){
+			leftDetailClick((DetailPanel)e.getSource(), button);
+		}else if(e.getSource() instanceof MiniImagePanel){
+			centerMiniImageClick((MiniImagePanel)e.getSource(), button);
+		}
 	}
 
 

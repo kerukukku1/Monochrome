@@ -11,6 +11,7 @@ import java.util.List;
 import tmcit.tampopo.geometry.util.Piece;
 import tmcit.tampopo.geometry.util.Point;
 import tmcit.tampopo.geometry.util.Segment;
+import tmcit.tampopo.ui.util.ExVertex;
 
 public class PuzzleImage {
 	
@@ -42,6 +43,7 @@ public class PuzzleImage {
 	private double expansion;
 	private int slidex,slidey;///�ŏ��ɍ��W���炱�̕�����
 	private Polygon[] polygons;
+	private List<ExVertex> edges;
 	
 	
 	public PuzzleImage(List<Piece> frames,List<Piece> pieces){
@@ -96,7 +98,22 @@ public class PuzzleImage {
 		return null;
 	}
 	
-	public void paint(int width,boolean frameDegree,boolean frameLength,boolean pieceDegree,boolean pieceLength,boolean frameIndex,boolean pieceIndex){///percent:�g��̊���
+	public ExVertex getFrameAndVertexFromPoint(double x,double y){
+		for(ExVertex exVertex : edges){
+			if(exVertex.isOnLine(x,y))return exVertex;
+		}
+		return null;
+	}
+	
+	public void paint(int width
+					 ,boolean frameDegree
+					 ,boolean frameLength
+					 ,boolean pieceDegree
+					 ,boolean pieceLength
+					 ,boolean frameIndex
+					 ,boolean pieceIndex
+					 ,int targetFrameIndex
+					 ,int targetVertexIndex){///percent:�g��̊���
 		double percent = ((double)width)/((double)WIDTH);
 		double realper = percent * expansion * 0.9;
 		image = new BufferedImage(width,width,BufferedImage.TYPE_INT_ARGB);
@@ -108,6 +125,7 @@ public class PuzzleImage {
 
 		///�s�[�X�̕`��
 		polygons = new Polygon[pieces.size()];
+		edges = new ArrayList<ExVertex>();
 		int id = 0;
 		for(Piece piece : pieces){
 			int pieceID = piece.getID();
@@ -149,15 +167,22 @@ public class PuzzleImage {
 			id++;
 		}
 		///�t���[���̕`��
-		for(Piece frame : frames){
+		for(int frameidx = 0;frameidx < frames.size();frameidx++){
+			Piece frame = frames.get(frameidx);
 			for(int i = 0;i < frame.getPointSize();i++){
-				g2d.setColor(Color.YELLOW);
+				
+				if(targetFrameIndex == frameidx && targetVertexIndex == i){
+					g2d.setColor(Color.RED);
+				}else{
+					g2d.setColor(Color.YELLOW);
+				}
 				Segment edge = frame.getSegment(i);
 				double x = (edge.p1.x - slidex) * realper;
 				double y = (edge.p1.y - slidey) * realper;
 				double tx = (edge.p2.x - slidex) * realper;
 				double ty = (edge.p2.y - slidey) * realper;
 				g2d.drawLine((int)x, (int)y, (int)tx, (int)ty);
+				edges.add(new ExVertex(frameidx, i, new Point(x, y), new Point(tx, ty)));
 				if(frameDegree){
 					g2d.drawString(getShortDouble(frame.getAngle(i),hvalue)+"d", (int)x, (int)y);
 				}

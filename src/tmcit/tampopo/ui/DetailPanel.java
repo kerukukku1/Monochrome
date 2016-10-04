@@ -75,7 +75,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		///answerからサムネ作る、複数ある場合は数も入れる
 		Answer answer = answers.get(0);
 		PuzzleImage puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
-		puzzleImage.paint(IMAGESIZE-4, false, false, false, false, false, false);
+		puzzleImage.paint(IMAGESIZE-4, false, false, false, false, false, false,-1,-1);
 		BufferedImage ret = puzzleImage.getImage();
 		if(answers.size() != 1){
 			Graphics2D graphics2d = ret.createGraphics();
