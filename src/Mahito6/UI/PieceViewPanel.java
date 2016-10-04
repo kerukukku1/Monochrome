@@ -28,7 +28,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	private int x, y, index;
 	private double image_scale;
 	private JLabel paintArea, pieceIndex, pieceVertex, pieceType, errorType;
-	private BufferedImage gPiece, image;
+	private BufferedImage gPiece, image, paint;
 	private List<Tuple2<Double, Double>> vertex;
 	private Polygon polygon;
 	private Coordinates coord;
@@ -79,8 +79,9 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.add(pieceType);
 
 //		gPiece = new BufferedImage(Width, Width, BufferedImage.TYPE_INT_ARGB);
+		paint = new BufferedImage(gPiece.getWidth(), gPiece.getHeight(), BufferedImage.TYPE_INT_BGR);
 		paintPiece();
-		paintArea = new JLabel(new ImageIcon(gPiece));
+		paintArea = new JLabel(new ImageIcon(paint));
 		paintArea.setBounds(0, 50, Width, Height-50);
 		paintArea.addMouseListener(this);
 		this.add(paintArea);
@@ -94,23 +95,11 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	}
 
 	public void paintPiece(){
-		Graphics2D g = gPiece.createGraphics();
+		Graphics2D g = paint.createGraphics();
+		g.drawImage(gPiece, 0, 0, null);
 //		g.setColor(Constants.backgroundColor);
 //		g.clearRect(0, 0, Width, Width);
 	    List<Tuple2<Double,Double>> data = vertex;
-	    double maxx = 0.0;
-	    double maxy = 0.0;
-	    int[] xpoints = new int[data.size()];
-	    int[] ypoints = new int[data.size()];
-	    for(int i = 0; i < data.size(); i++){
-	    	Tuple2<Double, Double> d = data.get(i);
-	    	double x = d.t1;
-	    	double y = d.t2;
-	    	maxx = (x < maxx)?maxx:x;
-	    	maxy = (y < maxy)?maxy:y;
-	    	xpoints[i] = (int)x;
-	    	ypoints[i] = (int)y;
-	    }
 
 	    g.setColor(Color.YELLOW);
 //	    double scale = Width.0/(double)(Math.min(gPiece.getWidth(), gPiece.getHeight()));
