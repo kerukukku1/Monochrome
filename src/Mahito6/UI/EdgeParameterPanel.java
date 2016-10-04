@@ -152,7 +152,7 @@ public class EdgeParameterPanel extends JPanel implements ActionListener, ItemLi
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			CrossAlgorithm crossAlgorithm = new CrossAlgorithm(finder.getResult_edge(), tarImage.getWidth(), tarImage.getHeight());
+			CrossAlgorithm crossAlgorithm = new CrossAlgorithm(finder.getResult_edge(), tarImage);
 			crossAlgorithm.solve();
 			if(crossAlgorithm.isErrorCross()){
 				System.out.println("cross error!!");

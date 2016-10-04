@@ -273,7 +273,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		SolverConstants consts = ProblemManager.getConstants();
 //		consts.edgeWidth = 6;
 		//consts.lrAddition = 50;
-		consts.lrAddition = 60;
+//		consts.lrAddition = 60;
 
 		Constants.dividePixelLookingForDist = 20;
 		Constants.clearNoiseThreshold = 200;
