@@ -98,7 +98,7 @@ public class SolverThreadingAgent {
 							e.printStackTrace();
 						}
 						List<Edge> edges = edgeFinder.getResult_edge();
-						CrossAlgorithm crossAlgorithm = new CrossAlgorithm(edges, w, h);
+						CrossAlgorithm crossAlgorithm = new CrossAlgorithm(edges, image);
 						crossAlgorithm.solve();
 						List<Tuple2<Double, Double>> answerEdges = crossAlgorithm.getAnswer();
 						boolean isError = crossAlgorithm.isErrorCross();

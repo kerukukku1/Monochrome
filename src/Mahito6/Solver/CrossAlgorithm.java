@@ -4,9 +4,12 @@ package Mahito6.Solver;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sound.sampled.Line;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Tuple2;
@@ -22,6 +25,7 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 	private static final double perm1 = 10.0;
 	private int w,h;
 	private List<Edge> edges;
+	private BufferedImage inputImage = null;
 	private List<Tuple2<Double,Double>> answer;
 //	private BufferedImage ansImage;
 	private List<Tuple2<Integer, Integer>> crossPoints;
@@ -31,6 +35,13 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 		this.edges = input;
 		this.w = w;
 		this.h = h;
+		if(Constants.isOutputDebugOval)crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
+	}
+	public CrossAlgorithm(List<Edge> input,BufferedImage image){
+		this.edges = input;
+		this.w = image.getWidth();
+		this.h = image.getHeight();
+		inputImage = image;
 		if(Constants.isOutputDebugOval)crossPoints = new ArrayList<Tuple2<Integer,Integer>>();
 	}
 	public boolean isFinished(){
@@ -148,6 +159,44 @@ public class CrossAlgorithm implements Runnable{///ï¿½Gï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½_ï
 			if(maxi < len){
 				maxi = len;
 				answer = tmp;
+			}
+		}
+		
+		for(int i = 0;i < answer.size();i++){
+			int next = (i+1)%answer.size();
+			Tuple2<Double, Double> e1 = answer.get(i);
+			Tuple2<Double, Double> e2 = answer.get(next);
+			Line2D.Double line1 = new Line2D.Double(e1.t1, e1.t2, e2.t1, e2.t2);
+			for(int j = 0;j < answer.size();j++){
+				if(i == j)continue;
+				int jnext = (j+1)%answer.size();
+				if(jnext == i)continue;
+				if(next == j)continue;
+				Tuple2<Double, Double> e3 = answer.get(j);
+				Tuple2<Double, Double> e4 = answer.get(jnext);
+				Line2D.Double line2 = new Line2D.Double(e3.t1, e3.t2, e4.t1, e4.t2);
+				if(line1.intersectsLine(line2)){
+					System.out.println("INTERSECT!!!");
+					this.isErrorCross = true;
+				}
+			}
+			int cx = (int)((e1.t1 + e2.t1)/2.0);
+			int cy = (int)((e1.t2 + e2.t2)/2.0);
+			if(inputImage != null){
+				boolean isOut = true;
+				for(int tx = -3;tx < 3;tx++)
+				for(int ty = -3;ty < 3;ty++){
+					int dx = cx+tx;
+					int dy = cy+ty;
+					if(dx < 0||dy < 0||dx >= w||dy >= h){
+						continue;
+					}
+					int rgb = inputImage.getRGB(dx, dy);
+					if(rgb == -1)isOut = false;
+				}
+				if(isOut){
+					this.isErrorCross = true;
+				}
 			}
 		}
 
