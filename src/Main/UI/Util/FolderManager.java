@@ -187,7 +187,7 @@ public class FolderManager {
 				}else{
 					ansPiece.add(String.valueOf(v2.size()));
 					for(int k = 0; k < v2.size(); k++){
-						double x = (v2.get(k).t1+p.getCoord(j).minx - Constants.imagePositionOffset/2);
+						double x = Math.abs(p.getImage().getWidth() - (v2.get(k).t1+p.getCoord(j).minx - Constants.imagePositionOffset/2));
 						double y = (v2.get(k).t2+p.getCoord(j).miny - Constants.imagePositionOffset/2);
 						ansPiece.add(String.valueOf(x) + " " + String.valueOf(y));
 					}

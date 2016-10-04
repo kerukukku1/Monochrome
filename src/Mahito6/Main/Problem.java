@@ -84,6 +84,10 @@ public class Problem {
 		}
 		return bim;
 	}
+	
+	public BufferedImage getImage(){
+		return binImage;
+	}
 
 	public void setBufferedImage(BufferedImage bufBinImage) {
 		// TODO Auto-generated method stub
