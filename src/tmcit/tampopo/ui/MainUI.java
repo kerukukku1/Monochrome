@@ -93,7 +93,7 @@ public class MainUI extends JFrame implements ActionListener{
 				  KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem9 = new JMenuItem("EdgeFinder");
 		menuitem9.setAccelerator(KeyStroke.getKeyStroke(
-				  KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+				  KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
 		
 		menuitem1.addActionListener(this);
 		menuitem2.addActionListener(this);
@@ -159,5 +159,4 @@ public class MainUI extends JFrame implements ActionListener{
 			Mahito6.Main.Main.pieceView.callRun();
 		}
 	}
-
 }
