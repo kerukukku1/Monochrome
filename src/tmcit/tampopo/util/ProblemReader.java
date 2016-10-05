@@ -16,32 +16,35 @@ import tmcit.tampopo.geometry.util.Point;
 import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 import tmcit.tampopo.ui.BigImagePanel;
 import tmcit.tampopo.ui.SolverPanel;
+import tmcit.tampopo.ui.SuperPanel;
 import tmcit.tampopo.ui.util.ExVertex;
+import tmcit.tampopo.ui.util.ParameterNode;
 
 public class ProblemReader {
 
 	public File file,index;
-	public Problem problem;
+	public static Problem problem = null;///問題データ
+	public static Answer master = null;///マスター解
 	public static SolverPanel solverPanel;///アクセスを簡易に
 
 	public ProblemReader(File quest,File index){
 		this.file = quest;
 		this.index = index;
-		this.problem = null;
 	}
 
 	public static void stopAllSolver(){
 
 	}
 	
-	public static Thread runSolver(ISolver solver,int solverID,List<Parameter> useParameters,PrintStream stream){
+	public static Thread runSolver(ParameterNode parameterNode,ISolver solver,int solverID,List<Parameter> useParameters,PrintStream stream){
 		String problemText = makeMixProblemText();
 		ExVertex target = getTargetFrameAndVertex();
 		if(problemText == null||target==null)return null;
-		return ProblemReader.runSolver(problemText, solver, useParameters, solverID, target.frame, target.index,stream);
+		return ProblemReader.runSolver(parameterNode,problemText, solver, useParameters, solverID, target.frame, target.index,stream);
 	}
 	
-	public static Thread runSolver(String problemText
+	public static Thread runSolver(ParameterNode parameterNode
+								  ,String problemText
 								  ,ISolver solver
 								  , List<Parameter> useParameters
 								  ,int solverId
@@ -56,10 +59,15 @@ public class ProblemReader {
 		solver.setParameters(useParameters);
 		solver.load(problemText,targetFrame,targetVertex);
 		solver.init(solverId);
+		
+		SuperPanel superPanel = solverPanel.getSuperPanelFromParameterNode(parameterNode);
+		superPanel.setAnswer(solverPanel.getViewingAnswer());
+		solverPanel.setViewSuperPanel(superPanel);
 
 		Thread solverThread = new Thread(solver);
 		solverThread.start();
-		AnswerChangeEvent.addListener(solverId, solverPanel);
+		AnswerChangeEvent.addListener(solverId, superPanel.right);
+		System.out.println("SOLVER RUN!!");
 		return solverThread;
 	}
 
@@ -69,7 +77,6 @@ public class ProblemReader {
 
 	public static Answer convertSolvedAnswer(String answerText,double score){
 		///ソルバーで帰ってきたStringをまたAnswerに直す
-		Problem problem = solverPanel.getProblem();
 		List<Piece> frames = new ArrayList<Piece>();
 		List<Piece> sourcePieces = new ArrayList<Piece>();
 		for(Piece frame : problem.frames){
@@ -111,7 +118,6 @@ public class ProblemReader {
 
 	public static String makeMixProblemText(){
 		String ret = "";
-		Problem problem = solverPanel.getProblem();
 		Answer mixAnswer = solverPanel.getViewingAnswer();
 		if(problem == null || mixAnswer == null)return null;
 		if(mixAnswer.frames.size() == 0)return null;///これピースだけだ?!
@@ -160,7 +166,7 @@ public class ProblemReader {
 		if(index != null){
 			loadIndex(prob);
 		}
-		return this.problem = prob;
+		return ProblemReader.problem = prob;
 	}
 	
 	private void loadIndex(Problem prob) throws Exception{
@@ -218,7 +224,7 @@ public class ProblemReader {
 			pieces.add(piece);
 		}
 		scan.close();
-		return new Problem(pieces, frames);
+		return ProblemReader.problem = new Problem(pieces, frames);
 	}
 
 }

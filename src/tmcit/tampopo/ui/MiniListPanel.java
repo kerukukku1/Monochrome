@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,14 +16,14 @@ import javax.xml.soap.Detail;
 
 import tmcit.tampopo.util.Answer;
 
-public class MiniListPanel extends JPanel implements AdjustmentListener{
+public class MiniListPanel extends JPanel implements AdjustmentListener , MouseListener{
 	
 	public static final Color backGround = new Color(230, 230, 240);
-	public static final int WIDTH = SolverPanel.CENTER_WIDTH - 4;
-	public static final int HEIGHT = SolverPanel.CENTER_HEIGHT - 26;
-	public static final int IMAGESIZE = SolverPanel.CENTER_MINIIMAGE_SIZE;
+	public static final int WIDTH = SuperPanel.CENTER_WIDTH - 4;
+	public static final int HEIGHT = SuperPanel.CENTER_HEIGHT - 26;
+	public static final int IMAGESIZE = SuperPanel.CENTER_MINIIMAGE_SIZE;
 	
-	public SolverPanel root;
+	public SuperPanel source;
 	public DetailPanel detailPanel;
 	public String title;
 	public List<Answer> answers;
@@ -29,8 +31,8 @@ public class MiniListPanel extends JPanel implements AdjustmentListener{
 	public PanelListManager panelListManager;
 	public int miniPanelNum;
 	
-	public MiniListPanel(String title,List<Answer> answers,SolverPanel root, DetailPanel detailPanel){
-		this.root = root;
+	public MiniListPanel(String title,List<Answer> answers,SuperPanel source, DetailPanel detailPanel){
+		this.source = source;
 		this.detailPanel = detailPanel;
 		///answerは必ずコピーする
 		this.answers = new ArrayList<Answer>();
@@ -46,6 +48,16 @@ public class MiniListPanel extends JPanel implements AdjustmentListener{
 		
 	}
 	
+	public void clickMiniImage(int button,MiniImagePanel miniImagePanel){
+		if(button == 1){
+			if(source.showBigImageOrMiniList(miniImagePanel)){
+				///既に表示中
+				return;
+			}
+			source.makeBigImageFromMiniImage(miniImagePanel);
+		}
+	}
+	
 	public String getTabTitle(){
 		String ret = title + "[" + miniPanelNum + "]";
 		return ret;
@@ -55,7 +67,7 @@ public class MiniListPanel extends JPanel implements AdjustmentListener{
 		///1個画像を追加する
 		this.answers.add(answer);
 		MiniImagePanel miniImagePanel = new MiniImagePanel(answer,miniPanelNum,IMAGESIZE,this);
-		miniImagePanel.addMouseListener(root);
+		miniImagePanel.addMouseListener(this);
 		panelListManager.addPanel(miniImagePanel);
 		miniPanels.add(miniImagePanel);
 		miniPanelNum++;
@@ -101,6 +113,35 @@ public class MiniListPanel extends JPanel implements AdjustmentListener{
 		}
 		refreshAllMiniImage(false);
 		adjustCounter = 0;
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent event) {
+		clickMiniImage(event.getButton(), (MiniImagePanel) event.getSource());
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

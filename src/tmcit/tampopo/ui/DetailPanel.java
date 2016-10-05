@@ -24,18 +24,16 @@ import tmcit.tampopo.util.PuzzleImage;
 public class DetailPanel extends JPanel implements MouseListener{
 	///解の複数保持用にも使いますよ
 	
-	public static final int IMAGESIZE = SolverPanel.LEFT_IMAGE_SIZE;
+	public static final int IMAGESIZE = SuperPanel.RIGHT_IMAGE_SIZE;
 	public static final int TITLE_OFFSET = 20;
 	
-	public SolverPanel source;
+	public SuperPanel source;
 	public String title;
 	public List<Answer> answers;///1個でもこっち使う
 	
 	public JLabel titleLabel;
 	
-	private boolean listOn = false;///中央のリストに追加されているか
-	
-	public DetailPanel(String title,Answer answer,SolverPanel source){
+	public DetailPanel(String title,Answer answer,SuperPanel source){
 		this.source = source;
 		this.answers = new ArrayList<Answer>();
 		this.answers.add(answer);
@@ -44,7 +42,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		makePanel();
 		addLabels();
 	}
-	public DetailPanel(String title,List<Answer> answers,SolverPanel source){
+	public DetailPanel(String title,List<Answer> answers,SuperPanel source){
 		this.source = source;
 		this.answers = answers;
 		this.title = title;
@@ -53,19 +51,9 @@ public class DetailPanel extends JPanel implements MouseListener{
 		addLabels();
 	}
 	
-	public boolean isListOn(){
-		return listOn;
-	}
-	public void listOn(){
-		listOn = true;
-	}
-	public void listOff(){
-		listOn = false;
-	}
-	
 	public void addLabels(){
 		titleLabel = new JLabel(title);
-		titleLabel.setBounds(2, 2, SolverPanel.LEFT_WIDTH - 20, TITLE_OFFSET);
+		titleLabel.setBounds(2, 2, SuperPanel.RIGHT_WIDTH - 20, TITLE_OFFSET);
 		titleLabel.setHorizontalAlignment(JLabel.CENTER);
 		titleLabel.addMouseListener(this);
 		this.add(titleLabel);
@@ -91,14 +79,14 @@ public class DetailPanel extends JPanel implements MouseListener{
 		JLabel imgLabel = new JLabel();
 		imgLabel.setIcon(new ImageIcon(getImage()));
 		imgLabel.setBounds(2, 2 + TITLE_OFFSET, IMAGESIZE -4, IMAGESIZE -4);
-		this.addMouseListener(source);
+		this.addMouseListener(this);
 		this.add(imgLabel);
 	}
 	
 	public void initPanel(){
 		this.setBorder(new LineBorder(Color.GRAY));
 		this.setLayout(null);
-		int width = SolverPanel.LEFT_WIDTH;
+		int width = SuperPanel.RIGHT_WIDTH;
 		int height;
 //		if(answers.size() == 1){
 			height = IMAGESIZE + TITLE_OFFSET;
@@ -107,14 +95,36 @@ public class DetailPanel extends JPanel implements MouseListener{
 //		}
 		this.setPreferredSize(new Dimension(width, height));
 	}
+	
+	public void clickDetail(int button){
+		///パネルをクリックしたときの動きをここに書く、右クリックで削除、左クリックで真ん中に表示
+		if(button == 1){
+			if(source.showBigImageOrMiniList(this)){
+				///既に表示中
+				return;
+			}
+			source.makeBigImageOrMiniList(this);
+		}else if(button == 3){
+			if(title.equals("Problem")||title.equals("Master"))return;
+			source.removeDetailPanel(this);
+		}
+	}
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		if(title.equals("Problem")||title.equals("Master"))return;
-		String newTitle = JOptionPane.showInputDialog("rename");
-		if(newTitle == null)return;
-		this.title = newTitle;
-		titleLabel.setText(newTitle);
-		this.repaint();
+	public void mousePressed(MouseEvent event) {
+		if(event.getSource() == this){
+			clickDetail(event.getButton());
+		}
+	}
+	@Override
+	public void mouseClicked(MouseEvent event) {
+		if(event.getSource() == titleLabel){
+			if(title.equals("Problem")||title.equals("Master"))return;
+			String newTitle = JOptionPane.showInputDialog("rename");
+			if(newTitle == null)return;
+			this.title = newTitle;
+			titleLabel.setText(newTitle);
+			this.repaint();
+		}
 	}
 	@Override
 	public void mouseEntered(MouseEvent e) {
@@ -126,11 +136,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub

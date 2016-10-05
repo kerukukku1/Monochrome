@@ -79,7 +79,7 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 			useParameters.add(into);
 		}
 		int solverID = new Random().nextInt();
-		solverThread = ProblemReader.runSolver(solver,solverID,useParameters,stream);
+		solverThread = ProblemReader.runSolver(sourceNode,solver,solverID,useParameters,stream);
 		if(solverThread == null)return;
 		isSolverRunning = true;
 		this.solverId = solverID;

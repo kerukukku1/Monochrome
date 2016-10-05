@@ -28,10 +28,9 @@ import tmcit.tampopo.util.PuzzleImage;
 
 public class BigImagePanel extends JPanel implements ChangeListener , MouseListener{
 	
-	public static final int IMAGESIZE = SolverPanel.CENTER_BIGIMAGE_SIZE;
+	public static final int IMAGESIZE = SuperPanel.CENTER_BIGIMAGE_SIZE;
 	public static final Color backGround = new Color(230, 230, 240);
-	
-	public DetailPanel detailPanel;
+
 	public String title;
 	public Answer answer;
 	public JLabel imageLabel;
@@ -49,8 +48,7 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 				  ,frameIndex = false
 				  ,pieceIndex = false;
 	
-	public BigImagePanel(String title,Answer answer, DetailPanel detailPanel){
-		this.detailPanel = detailPanel;
+	public BigImagePanel(String title,Answer answer){
 		this.title = title;
 		this.answer = answer;
 		initPanel();

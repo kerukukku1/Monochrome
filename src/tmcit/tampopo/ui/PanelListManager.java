@@ -101,6 +101,10 @@ public class PanelListManager extends JScrollPane{
 	}
 
 	public void addPanel(DetailPanel detailPanel, int index) {
+		if(index == mainPanel.getComponents().length){
+			addPanel(detailPanel);
+			return;
+		}
 		List<Component> components = new ArrayList<Component>();
 		int count = 0;
 		for(Component comp : mainPanel.getComponents()){

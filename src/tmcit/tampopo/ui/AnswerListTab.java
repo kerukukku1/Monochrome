@@ -37,9 +37,15 @@ public class AnswerListTab extends DeletableTabbedPane implements ChangeListener
 		return rootMemo.get(rootComponent);
 	}
 	
-	public void setView(Component rootComponent){
+	public boolean isExist(Component rootComponent){
+		return rootMemo.containsKey(rootComponent);
+	}
+	
+	public boolean setView(Component rootComponent){
+		if(!isExist(rootComponent))return false;
 		Component target = rootMemo.get(rootComponent);
 		this.setSelectedComponent(target);
+		return true;
 	}
 	
 	public void removeRootMemo(Component child){
@@ -57,10 +63,12 @@ public class AnswerListTab extends DeletableTabbedPane implements ChangeListener
             }
         }
 		if(target != null){
-			rootMemo.put(target, null);
+			rootMemo.remove(target);
+//			for(int i = 0;i < 10;i++)
+//				System.out.println("OKOKOKOKOKOKO");
 		}else{
-			for(int i = 0;i < 10;i++)
-				System.out.println("OKOKOKOKOKOKO");
+//			for(int i = 0;i < 10;i++)
+//				System.out.println("NONONO");
 		}
 	}
 	
@@ -105,26 +113,19 @@ public class AnswerListTab extends DeletableTabbedPane implements ChangeListener
 		int nowTab = this.getSelectedIndex();
 		Component child = this.getSelectedComponent();
 		if(nowTab == -1)return;
-		deleteTab(child,masterCheck);
+		deleteTabFromChild(child,masterCheck);
 	}
 	
-	public void deleteTab(Component child,boolean masterCheck){///masterCheck 1:消さない 0:消す
+	public void deleteTabFromChild(Component child,boolean masterCheck){///masterCheck 1:消さない 0:消す
 		///表示中のコンポーネントをタブから削除
-//		int nowTab = this.get;
-//		if(nowTab == -1)return;
-		if(child instanceof MiniListPanel){
-			MiniListPanel miniListPanel = (MiniListPanel) child;
-			if(miniListPanel.detailPanel != null)
-				miniListPanel.detailPanel.listOff();
-		}
-		if(child instanceof BigImagePanel){
-			BigImagePanel bigImagePanel = (BigImagePanel) child;
-			if(masterCheck && bigImagePanel.title.equals("Master"))return;
-			if(bigImagePanel.detailPanel != null)
-				bigImagePanel.detailPanel.listOff();
-		}
 		this.remove(child);
 		this.removeRootMemo(child);
+	}
+	
+	public void deleteTabFromRoot(Component rootComponent,boolean masterCheck){
+		if(!isExist(rootComponent))return;
+		Component child = getTabFromComponent(rootComponent);
+		deleteTabFromChild(child, masterCheck);
 	}
 	
 	public void initTab(){
@@ -143,7 +144,7 @@ public class AnswerListTab extends DeletableTabbedPane implements ChangeListener
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		DeletableMyButton button = (DeletableMyButton) event.getSource();
-		deleteTab(button.getSource(), true);
+		deleteTabFromChild(button.getSource(), true);
 	}
 
 }

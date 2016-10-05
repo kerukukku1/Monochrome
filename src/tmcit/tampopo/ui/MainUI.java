@@ -125,13 +125,13 @@ public class MainUI extends JFrame implements ActionListener{
 		if(value.equalsIgnoreCase("Refresh")){
 			this.repaint();
 		}else if(value.equalsIgnoreCase("Tab_Close")){
-			solverPanel.tabClose();
+//			solverPanel.tabClose();
 		}else if(value.equalsIgnoreCase("Exit")){
 			System.exit(0);
 		}else if(value.equalsIgnoreCase("MERGE(TEST)")){
-			solverPanel.doMergeForMaster();
+//			solverPanel.doMergeForMaster();
 		}else if(value.equalsIgnoreCase("OVERWRITE(TEST)")){
-			solverPanel.doOverwriteForMaster();
+//			solverPanel.doOverwriteForMaster();
 		}else if(value.equalsIgnoreCase("Load_quest")){
 			File quest = new File(tmcit.tampopo.main.Main.questDir);
 			File index = new File(tmcit.tampopo.main.Main.indexDir);
@@ -144,15 +144,15 @@ public class MainUI extends JFrame implements ActionListener{
 				return;
 			}
 		}else if(value.equalsIgnoreCase("Send_answer")){
-			Problem problem = solverPanel.getProblem();
-			Answer answer = solverPanel.getViewingAnswer();
-			if(problem == null || answer == null || problem.piece2Image == null)return;
-			if(toAnswerPanel != null){
-				tabPane.remove(toAnswerPanel);
-				toAnswerPanel = null;
-			}
-			toAnswerPanel = new ToAnswerPanel(problem, answer.getCopy());
-			tabPane.addTab("ANSWER", toAnswerPanel);
+//			Problem problem = solverPanel.getProblem();
+//			Answer answer = solverPanel.getViewingAnswer();
+//			if(problem == null || answer == null || problem.piece2Image == null)return;
+//			if(toAnswerPanel != null){
+//				tabPane.remove(toAnswerPanel);
+//				toAnswerPanel = null;
+//			}
+//			toAnswerPanel = new ToAnswerPanel(problem, answer.getCopy());
+//			tabPane.addTab("ANSWER", toAnswerPanel);
 		}else if(value.equalsIgnoreCase("Store")){
 			Mahito6.Main.Main.pieceView.callStore();
 		}else if(value.equalsIgnoreCase("EdgeFinder")){
