@@ -66,6 +66,10 @@ public class SolverPanel extends JPanel{
 		return superPanelTab.getViewingSuperPanel();
 	}
 	
+	public SuperPanel getMasterSuperPanel(){
+		return getSuperPanelFromParameterNode(null);
+	}
+	
 	public SuperPanel getSuperPanelFromParameterNode(ParameterNode parameterNode){
 		SuperPanel ret = superPanelTab.getSuperPanel(parameterNode);
 		if(ret == null){

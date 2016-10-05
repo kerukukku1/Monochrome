@@ -78,7 +78,7 @@ public class MainUI extends JFrame implements ActionListener{
 		JMenuItem menuitem3 = new JMenuItem("Tab_Close");
 		menuitem3.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK));
-		JMenuItem menuitem4 = new JMenuItem("MERGE(TEST)");
+		JMenuItem menuitem4 = new JMenuItem("MOVE_MASTER");
 		menuitem4.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem5 = new JMenuItem("OVERWRITE(TEST)");
@@ -128,13 +128,16 @@ public class MainUI extends JFrame implements ActionListener{
 //			solverPanel.tabClose();
 		}else if(value.equalsIgnoreCase("Exit")){
 			System.exit(0);
-		}else if(value.equalsIgnoreCase("MERGE(TEST)")){
-//			solverPanel.doMergeForMaster();
+		}else if(value.equalsIgnoreCase("MOVE_MASTER")){
+			Answer answer = solverPanel.getViewingAnswer();
+			SuperPanel superPanel = solverPanel.getMasterSuperPanel();
+			if(superPanel == null || answer == null)return;
+			superPanel.addAnswer(answer.getCopy());
 		}else if(value.equalsIgnoreCase("OVERWRITE(TEST)")){
 			Answer answer = solverPanel.getViewingAnswer();
 			SuperPanel superPanel = solverPanel.getViewingSuperPanel();
 			if(answer == null || superPanel == null)return;
-			superPanel.overwriteAnswerToMaster(answer);
+			superPanel.overwriteAnswerToMaster(answer.getCopy());
 		}else if(value.equalsIgnoreCase("Load_quest")){
 			File quest = new File(tmcit.tampopo.main.Main.questDir);
 			File index = new File(tmcit.tampopo.main.Main.indexDir);

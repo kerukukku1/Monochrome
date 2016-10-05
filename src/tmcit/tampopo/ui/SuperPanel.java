@@ -55,6 +55,10 @@ public class SuperPanel extends JPanel{
 		}
 	}
 	
+	public void addAnswer(Answer answer){
+		right.addAnswer("COPY", answer,2);
+	}
+	
 	public BigImagePanel getViewingBigImagePanel(){
 		return center.getViewingBigImagePanel();
 	}
