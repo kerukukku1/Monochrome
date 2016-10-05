@@ -38,13 +38,14 @@ public class ImageManager{
 	private List<Coordinates> coords;
 	private List<BufferedImage> bufImages;
 	private List< List<Tuple2<Double, Double>> > vertex;
-	private BufferedImage confirm, bufBinImage, grayImage;
+	private BufferedImage confirm, bufBinImage, originalImage;
 	public static List<String> data;
 	public List<List<Edge>> allEdges;
 	public Problem problem;
 	private Mat source;
 	private static int piece_indexes = 0;
-	private static int piece_load_index = 0;
+	public static int scan_stringOffset = 59;
+//	private static int piece_load_index = 0;
 
 	public ImageManager(){
 		coords = new ArrayList<Coordinates>();
@@ -71,7 +72,7 @@ public class ImageManager{
 		problem = null;
 		source = null;
 		ImageManager.piece_indexes = 0;
-		ImageManager.piece_load_index = 0;
+//		ImageManager.piece_load_index = 0;
 	}
 
 	public void runAdaptiveThreshold(){
@@ -79,7 +80,7 @@ public class ImageManager{
 		Mat _source = source.clone();
 		if(!Constants.modeWaku)Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));
 		Imgproc.cvtColor(_source, _source, Imgproc.COLOR_RGB2GRAY);
-		grayImage = this.MatToBufferedImageBGR(source);
+		originalImage = this.MatToBufferedImageBGR(source);
         //枠のときの速度上げ専
         //if(Constants.modeWaku)Imgproc.resize(src, src, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
         //微妙?
@@ -240,7 +241,7 @@ public class ImageManager{
 		MeasureTimer.start();
 		Act act = new Act(bufBinImage, Constants.divideImageGarbageThreshold);
 		coords = act.divideImages();
-		problem.setBufferedImage(grayImage);
+		problem.setBufferedImage(originalImage);
 		MeasureTimer.end();
 		MeasureTimer.call();
 
@@ -291,7 +292,7 @@ public class ImageManager{
 		if(this.problem.isWaku()){
 			problem.setPath(getPath("Waku"));
 		}else{
-			problem.setPath(getPath("Piece" + String.valueOf(ImageManager.piece_load_index)));
+			problem.setPath(FolderManager.imagePath + "flip_" + problem.getType().toString() + ".png");
 		}
 //		problem.setBufferedImages(bufImages);
 		ProblemManager.addProblem(problem);
@@ -316,12 +317,12 @@ public class ImageManager{
 	}
 
 	public void clearAllNoise(){
-		ImageManager.piece_load_index++;
+//		ImageManager.piece_load_index++;
 		int minx,miny,maxx,maxy,mat_h,mat_w;
 		Mat numbering = source.clone();
 		Core.flip(numbering, numbering, 1);
 		if(!this.problem.isWaku()){
-			Highgui.imwrite(getPath("Piece" + String.valueOf(ImageManager.piece_load_index)), numbering);
+			Highgui.imwrite(FolderManager.imagePath + "flip_" + problem.getType().toString() + ".png", numbering);
 		}
 
 		//y軸回転
@@ -360,23 +361,29 @@ public class ImageManager{
 //			}
 
 			if(!Constants.modeWaku){
-				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(0, 0, 0), 25);
-				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1), new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2), Core.FONT_HERSHEY_SIMPLEX, 8f, new Scalar(0, 255, 255), 15);
-
+				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1),
+						new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2),
+						Core.FONT_HERSHEY_SIMPLEX, 8f, 
+						new Scalar(0, 0, 0), 25);
+				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1),
+						new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2), 
+						Core.FONT_HERSHEY_SIMPLEX, 8f,
+						new Scalar(0, 255, 255), 15);
 				ImageManager.piece_indexes++;
 			}
 		}
 		if(!Constants.modeWaku){
 			Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
-//			Highgui.imwrite(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png", numbering);
-			if(ImageManager.piece_load_index == 1){
-				new Thread(new Runnable(){
-					@Override
-					public void run(){
-						new NumberingFrame(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png");
-					}
-				}).start();	
-			}
+			Highgui.imwrite(FolderManager.imagePath + "numbering_" + problem.getType().toString() + ".png", numbering);
+
+//			if(problem.getType() == Status.Type.PIECE1){
+//				new Thread(new Runnable(){
+//					@Override
+//					public void run(){
+//						new NumberingFrame(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png");
+//					}
+//				}).start();	
+//			}
 			numbering = null;
 		}
 		System.out.println("Noise cleared");

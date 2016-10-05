@@ -48,6 +48,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.coord = myProblem.getCoord(index);
 		this.edges = myProblem.getEdges(index);
 		this.image = myProblem.getImage(index);
+		//wかhが0以下になる場合エラー
 		BufferedImage buf = myProblem.getGrayImage(index);
 		image_scale = Width / (double)(Math.max(buf.getWidth(), buf.getHeight()));
 		gPiece = ImageManager.rescaleImage(image_scale, buf);
@@ -190,14 +191,14 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		vis = new HandlSummaryPanel(index, this);
 		Main.pieceView.setVisualizePanel(vis);
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}

@@ -1,6 +1,7 @@
 package Mahito6.Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import Mahito6.UI.InputPanel;
@@ -19,6 +20,7 @@ public class ProblemManager {
 	public static List<Problem> problems;
 	public static SolverConstants consts;
 	public static double dpi = 0;
+	public static HashMap<Status.Type, Boolean> map;
 	
 	//0 : frame   1 : piece1   2: piece2
 	public ProblemManager(){
@@ -26,6 +28,7 @@ public class ProblemManager {
 		ProblemManager.imageManager = new ImageManager();
 		problems = new ArrayList<Problem>();
 		consts = new SolverConstants();
+		map = new HashMap();
 	}
 	
 	public static SolverConstants getConstants(){
@@ -39,13 +42,16 @@ public class ProblemManager {
 	public static void resetImageManager(){
 		problems.clear();
 		consts = new SolverConstants();
+		map.clear();
 		imageManager.clearAll();
 	}
 	
 	public static void addProblem(Problem problem){
 		ProblemManager.problem = problem;
 		problems.add(problem);
+		map.put(problem.getType(), true);
 	}
+	
 	
 	public static void setInputPanel(InputPanel inputPanel){
 		ProblemManager.inputPanel = inputPanel;
