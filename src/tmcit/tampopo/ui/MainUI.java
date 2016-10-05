@@ -131,7 +131,10 @@ public class MainUI extends JFrame implements ActionListener{
 		}else if(value.equalsIgnoreCase("MERGE(TEST)")){
 //			solverPanel.doMergeForMaster();
 		}else if(value.equalsIgnoreCase("OVERWRITE(TEST)")){
-//			solverPanel.doOverwriteForMaster();
+			Answer answer = solverPanel.getViewingAnswer();
+			SuperPanel superPanel = solverPanel.getViewingSuperPanel();
+			if(answer == null || superPanel == null)return;
+			superPanel.overwriteAnswerToMaster(answer);
 		}else if(value.equalsIgnoreCase("Load_quest")){
 			File quest = new File(tmcit.tampopo.main.Main.questDir);
 			File index = new File(tmcit.tampopo.main.Main.indexDir);
@@ -144,15 +147,15 @@ public class MainUI extends JFrame implements ActionListener{
 				return;
 			}
 		}else if(value.equalsIgnoreCase("Send_answer")){
-//			Problem problem = solverPanel.getProblem();
-//			Answer answer = solverPanel.getViewingAnswer();
-//			if(problem == null || answer == null || problem.piece2Image == null)return;
-//			if(toAnswerPanel != null){
-//				tabPane.remove(toAnswerPanel);
-//				toAnswerPanel = null;
-//			}
-//			toAnswerPanel = new ToAnswerPanel(problem, answer.getCopy());
-//			tabPane.addTab("ANSWER", toAnswerPanel);
+			Problem problem = ProblemReader.problem;
+			Answer answer = solverPanel.getViewingAnswer();
+			if(problem == null || answer == null || problem.piece2Image == null)return;
+			if(toAnswerPanel != null){
+				tabPane.remove(toAnswerPanel);
+				toAnswerPanel = null;
+			}
+			toAnswerPanel = new ToAnswerPanel(problem, answer.getCopy());
+			tabPane.addTab("ANSWER", toAnswerPanel);
 		}else if(value.equalsIgnoreCase("Store")){
 			Mahito6.Main.Main.pieceView.callStore();
 		}else if(value.equalsIgnoreCase("EdgeFinder")){

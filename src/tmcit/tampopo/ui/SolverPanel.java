@@ -57,9 +57,13 @@ public class SolverPanel extends JPanel{
 	}
 	
 	public BigImagePanel getViewingBigImagePanel(){
-		SuperPanel superPanel = superPanelTab.getViewingSuperPanel();
+		SuperPanel superPanel = getViewingSuperPanel();
 		if(superPanel == null)return null;
 		return superPanel.getViewingBigImagePanel();
+	}
+	
+	public SuperPanel getViewingSuperPanel(){
+		return superPanelTab.getViewingSuperPanel();
 	}
 	
 	public SuperPanel getSuperPanelFromParameterNode(ParameterNode parameterNode){
