@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -129,13 +130,24 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		imageLabel.setPreferredSize(new Dimension(IMAGESIZE, IMAGESIZE));
 		imageLabel.setBorder(new LineBorder(Color.GRAY, 3, true));
 		imageLabel.addMouseListener(this);
+		imageLabel.setBounds(2, 2, IMAGESIZE, IMAGESIZE);
 		this.add(imageLabel);
 		
-		JLabel label1 = new JLabel("                                                                                       Frame:");
+		JLabel pieceNumLabel = new JLabel(""+answer.pieces.size());
+		pieceNumLabel.setFont(new Font("Arial", Font.BOLD, 60));
+		pieceNumLabel.setHorizontalAlignment(JLabel.CENTER);
+		pieceNumLabel.setVerticalAlignment(JLabel.CENTER);
+		pieceNumLabel.setBounds(2, IMAGESIZE + 2, 100, 100);
+		this.add(pieceNumLabel);
+		
+		JPanel checkboxPanel = new JPanel();
+		checkboxPanel.setLayout(new GridLayout(2, 4));
+		checkboxPanel.setOpaque(false);
+		JLabel label1 = new JLabel("Frame:");
 		cb1 = new JCheckBox("Degree", frameDegree);
 		cb2 = new JCheckBox("Length", frameLength);
 		cb3 = new JCheckBox("Index", frameIndex);
-		JLabel label2 = new JLabel("                                                                                         Piece:");
+		JLabel label2 = new JLabel("Piece:");
 		cb4 = new JCheckBox("Degree", pieceDegree);
 		cb5 = new JCheckBox("Length", pieceLength);
 		cb6 = new JCheckBox("Index", pieceIndex);
@@ -152,18 +164,20 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		cb5.addChangeListener(this);
 		cb6.addChangeListener(this);
 		
-		this.add(label1);
-		this.add(cb1);
-		this.add(cb2);
-		this.add(cb3);
-		this.add(label2);
-		this.add(cb4);
-		this.add(cb5);
-		this.add(cb6);
+		checkboxPanel.add(label1);
+		checkboxPanel.add(cb1);
+		checkboxPanel.add(cb2);
+		checkboxPanel.add(cb3);
+		checkboxPanel.add(label2);
+		checkboxPanel.add(cb4);
+		checkboxPanel.add(cb5);
+		checkboxPanel.add(cb6);
+		checkboxPanel.setBounds(200, IMAGESIZE + 2, 300, 40);
+		this.add(checkboxPanel);
 	}
 	
 	public void initPanel(){
-		this.setLayout(new FlowLayout());
+		this.setLayout(null);
 		this.setBackground(backGround);
 //		this.setFont(new Font("メイリオ", Font.PLAIN, 16));
 	}

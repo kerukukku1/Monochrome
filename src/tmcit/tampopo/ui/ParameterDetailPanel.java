@@ -88,6 +88,7 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 	}
 	
 	public void stopSolver(){
+		if(solverThread == null)return;
 		solverThread.stop();
 		isSolverRunning = false;
 		runButton.setEnabled(true);
@@ -110,7 +111,6 @@ public class ParameterDetailPanel extends JPanel implements ActionListener{
 		for(Parameter parameter : tmp){
 			this.parameters.add(parameter);
 		}
-		System.out.println("RENRAKU");
 		return sourceNode.save();
 	}
 
