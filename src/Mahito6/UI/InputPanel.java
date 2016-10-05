@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -18,6 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import Mahito6.Main.Constants;
+import Mahito6.Main.Main;
 import Mahito6.Main.ProblemManager;
 import Mahito6.Main.SolverConstants;
 import Main.UI.Util.FolderManager;
@@ -29,7 +31,6 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 	public int x, y, width, height;
 	public static JButton loadButton, clearButton, addButton, saveButton, scanButton;
 	public JTextField inputForm;
-	public Status.Type[] types = {Status.Type.PIECE1, Status.Type.PIECE2, Status.Type.FRAME};
 	public InputPanel(int x, int y, int width, int height){
 		this.x = x;
 		this.y = y;
@@ -143,7 +144,14 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 			FolderManager.indexSave();
 		}else if(cmd.equals("Add")){
 			if(!LoadFiles(inputForm.getText()))return;
-		    String selectvalues[] = {"Piece1", "Piece2", "Frame", "Cancel"};
+			List<String> list = new ArrayList<String>();
+			for(Status.Type type : ProblemManager.types){
+				if(ProblemManager.loadMap.get(type) == false){
+					list.add(type.toString());
+				}
+			}
+			list.add("Cancel");
+		    String selectvalues[] = (String[])list.toArray(new String[list.size()]);
 
 		    int select = JOptionPane.showOptionDialog(this,
 		      "Select Type : ",
@@ -157,13 +165,13 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    if (select == JOptionPane.CLOSED_OPTION || selectvalues[select].equals("Cancel")){
 		    	return;
 		    }else{
-		    	System.out.println(types[select]);
-		    	if(types[select] == Status.Type.FRAME){
+		    	System.out.println(selectvalues[select]);
+		    	if(getStringToStatus(selectvalues[select]) == Status.Type.FRAME){
 //		    		frame.setSelected(true);
-		    		stateChangeFrame(types[select]);
+		    		stateChangeFrame();
 		    	}else{
 //		    		piece.setSelected(true);
-		    		stateChangePiece(types[select]);
+		    		stateChangePiece();
 		    	}
 		    }
 			new Thread(new Runnable(){
@@ -171,7 +179,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 				public void run(){
 					System.out.println("All Noise Clear");
 					long start = System.nanoTime();
-					ProblemManager.generatePieceDatas(types[select]);
+					ProblemManager.generatePieceDatas(getStringToStatus(selectvalues[select]));
 					long end = System.nanoTime();
 					System.out.println((end - start) / 1000000f + "ms");
 				}
@@ -189,16 +197,46 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 			LoadFiles(inputForm.getText());
 		}else if(cmd.equals("Clear")){
 			//runの時は保持されているproblemデータを全てリセット
-		    int option = JOptionPane.showConfirmDialog(this, "Clear Problem?",
-		    	      "!!!Warning!!!", JOptionPane.YES_NO_OPTION,
-		    	      JOptionPane.WARNING_MESSAGE);
-		    if(option != JOptionPane.YES_OPTION){
+			List<String> list = new ArrayList<String>();
+			list.add("All");
+			for(Status.Type type : ProblemManager.types){
+				if(ProblemManager.loadMap.get(type) == true){
+					list.add(type.toString());
+				}
+			}
+			list.add("Cancel");
+		    String selectvalues[] = (String[])list.toArray(new String[list.size()]);
+
+		    int select = JOptionPane.showOptionDialog(this,
+		      "Select Clear",
+		      "!!!Warning!!!",
+		      JOptionPane.YES_NO_OPTION,
+		      JOptionPane.QUESTION_MESSAGE,
+		      null,
+		      selectvalues,
+		      selectvalues[0]
+		    );
+		    if (select == JOptionPane.CLOSED_OPTION || selectvalues[select].equals("Cancel")){
 		    	return;
-		    }
-			ProblemManager.resetImageManager();
-			Mahito6.Main.Main.pieceView.initializePanel();
+		    }else{
+		    	if(selectvalues[select].equals("All")){
+					ProblemManager.resetImageManager();
+					Mahito6.Main.Main.pieceView.initializePanel();	
+		    	}else{
+					ProblemManager.removeImageManager(getStringToStatus(selectvalues[select]));
+					Mahito6.Main.Main.pieceView.initializePanel();
+					Main.pieceView.launchPiecePanel();
+		    	}
+		    }			
 		}else if(cmd.equals("Scan")){
-		    String selectvalues[] = {"Piece1", "Piece2", "Frame", "Cancel"};
+			List<String> list = new ArrayList<String>();
+			for(Status.Type type : ProblemManager.types){
+				if(ProblemManager.loadMap.get(type) == false){
+					list.add(type.toString());
+				}
+			}
+			list.add("Cancel");
+		    String selectvalues[] = (String[])list.toArray(new String[list.size()]);
 
 		    int select = JOptionPane.showOptionDialog(this,
 		      "Select Type : ",
@@ -259,7 +297,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 //		}
 	}
 
-	private void stateChangeFrame(Status.Type type) {
+	private void stateChangeFrame() {
 		SolverConstants consts = ProblemManager.getConstants();
 //		consts.edgeWidth = 6;
 		consts.lrAddition = 100;
@@ -269,7 +307,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		Constants.modeWaku = true;
 	}
 
-	private void stateChangePiece(Status.Type type){
+	private void stateChangePiece() {
 		SolverConstants consts = ProblemManager.getConstants();
 //		consts.edgeWidth = 6;
 		//consts.lrAddition = 50;
@@ -278,5 +316,16 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		Constants.dividePixelLookingForDist = 20;
 		Constants.clearNoiseThreshold = 200;
 		Constants.modeWaku = false;
+	}
+	
+	private Status.Type getStringToStatus(String stype){
+		Status.Type type = null;
+		for(Status.Type tmp : ProblemManager.types){
+			if(stype.equals(tmp.toString())){
+				type = tmp;
+				break;
+			}
+		}
+		return type;
 	}
 }

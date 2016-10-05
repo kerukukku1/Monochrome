@@ -14,6 +14,7 @@ public class Problem {
 	private List<List<Tuple2<Double, Double>>> vertex;
 	private BufferedImage binImage;
 	private String image_path;
+	private String numbering_path;
 	private Status.Type type;
 	
 	public Problem(Status.Type type){
@@ -119,7 +120,15 @@ public class Problem {
 		this.image_path = path;
 	}
 	
+	public void setNumberingPath(String path){
+		this.image_path = path;
+	}
+	
 	public String getPath(){
 		return image_path;
+	}
+	
+	public String getNumberingPath(){
+		return numbering_path;
 	}
 }

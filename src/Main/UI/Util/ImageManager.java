@@ -43,7 +43,6 @@ public class ImageManager{
 	public List<List<Edge>> allEdges;
 	public Problem problem;
 	private Mat source;
-	private static int piece_indexes = 0;
 	public static int scan_stringOffset = 59;
 //	private static int piece_load_index = 0;
 
@@ -71,7 +70,6 @@ public class ImageManager{
 		clear();
 		problem = null;
 		source = null;
-		ImageManager.piece_indexes = 0;
 //		ImageManager.piece_load_index = 0;
 	}
 
@@ -290,7 +288,7 @@ public class ImageManager{
 
 		problem.setData(allEdges, vertex, coords);
 		if(this.problem.isWaku()){
-			problem.setPath(getPath("Waku"));
+			problem.setPath(path);
 		}else{
 			problem.setPath(FolderManager.imagePath + "flip_" + problem.getType().toString() + ".png");
 		}
@@ -319,10 +317,10 @@ public class ImageManager{
 	public void clearAllNoise(){
 //		ImageManager.piece_load_index++;
 		int minx,miny,maxx,maxy,mat_h,mat_w;
-		Mat numbering = source.clone();
-		Core.flip(numbering, numbering, 1);
+		Mat flip_image = source.clone();
+		Core.flip(flip_image, flip_image, 1);
 		if(!this.problem.isWaku()){
-			Highgui.imwrite(FolderManager.imagePath + "flip_" + problem.getType().toString() + ".png", numbering);
+			Highgui.imwrite(FolderManager.imagePath + "flip_" + problem.getType().toString() + ".png", flip_image);
 		}
 
 		//y軸回転
@@ -359,23 +357,11 @@ public class ImageManager{
 //				// TODO Auto-generated catch block
 //				//e.printStackTrace();
 //			}
-
-			if(!Constants.modeWaku){
-				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1),
-						new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2),
-						Core.FONT_HERSHEY_SIMPLEX, 8f, 
-						new Scalar(0, 0, 0), 25);
-				Core.putText(numbering, String.valueOf(ImageManager.piece_indexes+1),
-						new Point(Math.abs(numbering.cols() - (maxx+50)), (maxy+miny)/2), 
-						Core.FONT_HERSHEY_SIMPLEX, 8f,
-						new Scalar(0, 255, 255), 15);
-				ImageManager.piece_indexes++;
-			}
 		}
 		if(!Constants.modeWaku){
-			Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
-			Highgui.imwrite(FolderManager.imagePath + "numbering_" + problem.getType().toString() + ".png", numbering);
-
+//			Imgproc.resize(numbering, numbering, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+//			Highgui.imwrite(FolderManager.imagePath + "numbering_" + problem.getType().toString() + ".png", numbering);
+//			problem.setNumberingPath(FolderManager.imagePath + "numbering_" + problem.getType().toString() + ".png");
 //			if(problem.getType() == Status.Type.PIECE1){
 //				new Thread(new Runnable(){
 //					@Override
@@ -384,7 +370,7 @@ public class ImageManager{
 //					}
 //				}).start();	
 //			}
-			numbering = null;
+//			numbering = null;
 		}
 		System.out.println("Noise cleared");
 	}
