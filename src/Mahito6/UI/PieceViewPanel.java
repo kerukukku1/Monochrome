@@ -164,7 +164,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	//頂点検出。humei
 	public void updateVertex(List<Tuple2<Double, Double>> list){
 //		System.out.println(image.getWidth() + "x" + image.getHeight());
-		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image);
+		CrossAlgorithm solver2 = new CrossAlgorithm(edges,image.getWidth(), image.getHeight());
 		solver2.solve();
 //		List<Tuple2<Double,Double>> ans = solver2.getAnswer();
 //		System.out.println("--------------NO." +String.valueOf(index+1)+" answer updated--------------");

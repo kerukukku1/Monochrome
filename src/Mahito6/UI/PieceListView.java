@@ -79,9 +79,11 @@ public class PieceListView extends JPanel{
 		int count = 0;
 		int ypos = 0;
 		paint.removeAll();
+		int space_counter = 0;
 		for(int loop = 0; loop < problems.size(); loop++){
 			Problem problem = problems.get(loop);
 			if(!problem.isWaku())continue;
+			space_counter++;
 			vertex = problem.getVertex();
 			PieceBox pb = new PieceBox(problem);
 			int pcount = 0;
@@ -90,21 +92,18 @@ public class PieceListView extends JPanel{
 				PieceViewPanel p = new PieceViewPanel((pcount%line)*(padding + PieceViewPanel.Width)+10,((pcount)/line)*(padding + PieceViewPanel.Height)+ border_offset, i, problem);
 				pieceViews.add(p);
 				pb.add(p);
-//				paint.add(p);
 				++count;pcount++;
 			}
 			if(count%line != 0)count += (line - count%line);
-//			JLabel label = new JLabel();
-//			label.setBounds(0,((count)/line)*(padding + PieceViewPanel.Height)+2, 1000, 3);
-//			label.setBackground(Color.BLACK);
-//			label.setOpaque(true);
 			pb.setBounds(0, ypos, (padding + PieceViewPanel.Width)*line + 25, (count / line)*(padding + PieceViewPanel.Height) + border_offset);
-			ypos = ((count / line)*(padding + PieceViewPanel.Height) + border_offset);
+			ypos = ((count / line)*(padding + PieceViewPanel.Height)) + (border_offset * space_counter);
 			paint.add(pb);
 		}
+		space_counter = 1;
 		for(int loop = 0; loop < problems.size(); loop++){
 			Problem problem = problems.get(loop);
 			if(problem.isWaku())continue;
+			space_counter++;
 			vertex = problem.getVertex();
 			PieceBox pb = new PieceBox(problem);
 			int pcount = 0;
@@ -112,20 +111,15 @@ public class PieceListView extends JPanel{
 				PieceViewPanel p = new PieceViewPanel((pcount%line)*(padding + PieceViewPanel.Width)+10,((pcount)/line)*(padding + PieceViewPanel.Height)+ border_offset, i, problem);
 				pieceViews.add(p);
 				pb.add(p);
-//				paint.add(p);
 				++count;pcount++;
 			}
-			if(count%line != 0)count += (line - count%line);
-//			JLabel label = new JLabel();
-//			label.setBounds(0,((count)/line)*(padding + PieceViewPanel.Height)+2, 1000, 3);
-//			label.setBackground(Color.BLACK);
-//			label.setOpaque(true);
 			pb.setBounds(0, ypos, (padding + PieceViewPanel.Width)*line + 25, (count / line)*(padding + PieceViewPanel.Height) + border_offset);
-			ypos = ((count / line)*(padding + PieceViewPanel.Height) + border_offset);
+			if(count%line != 0)count += (line - count%line);
+			ypos = ((count / line)*(padding + PieceViewPanel.Height)) + (border_offset * space_counter);
 			paint.add(pb);
 		}		
 		//追加されたピースは改行されて表示されるようにする。
-		paint.setPreferredSize(new Dimension((padding + PieceViewPanel.Width)*line + 25, (padding + PieceViewPanel.Height)*(count/line)));
+		paint.setPreferredSize(new Dimension((padding + PieceViewPanel.Width)*line + 25, ypos));
 		this.revalidate();
 		this.repaint();
 	}
