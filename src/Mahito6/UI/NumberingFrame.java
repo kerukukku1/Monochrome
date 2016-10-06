@@ -21,6 +21,7 @@ import org.opencv.highgui.Highgui;
 
 import Mahito6.Main.Constants;
 import Mahito6.Main.Problem;
+import Mahito6.Main.ProblemManager;
 import Mahito6.Solver.BFS;
 import Main.UI.Util.Coordinates;
 import Main.UI.Util.ImageManager;
@@ -28,6 +29,8 @@ import Main.UI.Util.ImageManager;
 public class NumberingFrame extends JFrame{
 	private JPanel earth;
 	public NumberingFrame(Problem p){
+//		System.out.println(ProblemManager.getQuestPath());
+		System.out.println(p.getPath());
 		this.setLayout(null);
 		String path = p.getPath();
 		List<Coordinates> coords = p.getCoords();
@@ -35,22 +38,24 @@ public class NumberingFrame extends JFrame{
 		earth = new JPanel();
 		earth.setLayout(null);
 		System.out.println(path);
+		System.out.println(p.getPath());
 		Mat numbering = Highgui.imread(path);
+		
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates c = coords.get(i);
-			if(!Constants.modeWaku){
-				Core.putText(numbering, String.valueOf(i+1),
-						new Point(Math.abs(numbering.cols() - (c.maxx+50)), (c.maxy+c.miny)/2),
-						Core.FONT_HERSHEY_SIMPLEX, 8f, 
-						new Scalar(0, 0, 0), 25);
-				Core.putText(numbering, String.valueOf(i+1),
-						new Point(Math.abs(numbering.cols() - (c.maxx+50)), (c.maxy+c.miny)/2), 
-						Core.FONT_HERSHEY_SIMPLEX, 8f,
-						new Scalar(0, 255, 255), 15);
+				if(!Constants.modeWaku){
+					Core.putText(numbering, String.valueOf(i+1),
+							new Point(Math.abs(numbering.cols() - (c.maxx+50)), (c.maxy+c.miny)/2),
+							Core.FONT_HERSHEY_SIMPLEX, 8f, 
+							new Scalar(0, 0, 0), 25);
+					Core.putText(numbering, String.valueOf(i+1),
+							new Point(Math.abs(numbering.cols() - (c.maxx+50)), (c.maxy+c.miny)/2), 
+							Core.FONT_HERSHEY_SIMPLEX, 8f,
+							new Scalar(0, 255, 255), 15);
+	//			}
+				System.out.println("Hello");
 			}
-			System.out.println("Hello");
 		}
-		
 		BufferedImage buf = ImageManager.MatToBufferedImageBGR(numbering);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		int h = (int) d.getHeight() - 100;
@@ -60,12 +65,15 @@ public class NumberingFrame extends JFrame{
 		ImageIcon icn = new ImageIcon(ImageManager.rescaleImage(scale, buf));
 		JLabel imlabel = new JLabel();
 		imlabel.setIcon(icn);
-		imlabel.setBounds(0, 0, (int)(scale * (double)buf.getWidth()), (int)(scale * (double)buf.getHeight()));
+		imlabel.setBounds(0, 0, icn.getIconWidth(), icn.getIconHeight());
 		earth.add(imlabel);
-		earth.setBounds(0, 0, (int)(scale * (double)buf.getWidth()), (int)(scale * (double)buf.getHeight()));
+		earth.setBounds(0, 0, icn.getIconWidth(), icn.getIconHeight());
 		this.add(earth);
-		this.setSize(new Dimension((int)(scale * (double)buf.getWidth()), (int)(scale * (double)buf.getHeight())));
+		this.setSize(icn.getIconWidth(), icn.getIconHeight());
 //		this.setResizable(false);
 		this.setVisible(true);
+			
 	}
+
+
 }

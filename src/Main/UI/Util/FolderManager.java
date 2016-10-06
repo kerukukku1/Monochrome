@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import Mahito6.Main.Constants;
@@ -16,42 +18,50 @@ import Mahito6.Main.Tuple2;
 public class FolderManager {
 	public static final String currentPath = System.getProperty("user.home")+File.separator+"procon27" + File.separator;
 	public static final String imagePath = currentPath + "images" + File.separator;
-	public static final String presetsPath = currentPath + "presets" + File.separator;
+//	public static final String presetsPath = currentPath + "presets" + File.separator;
+	public static final String questsPath = currentPath + "quests" + File.separator;
 	public FolderManager(){}
 
 	public void buildDirectory(){
 		buildCurrent();
-		buildPresets();
+//		buildPresets();
 		buildImages();
+		buildQuests();
+		buildIDFolder();
+	}
+	
+	private boolean verifyBuild(String path){
+		if(!new File(path).exists()){
+			if(new File(path).mkdir()){
+				System.out.println("mkdir " + path);
+				return true;
+			}else{
+				System.out.println("permission denied");
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void buildIDFolder(){
+        Date date = new Date();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        String name = sdf1.format(date).toString();
+        String new_path = questsPath + name + File.separator;
+        verifyBuild(new_path);
+        ProblemManager.setQuestPath(new_path);
 	}
 	private void buildImages() {
-		if(!new File(imagePath).exists()){
-			if(new File(imagePath).mkdir()){
-				System.out.println("mkdir " + imagePath);
-			}else{
-				System.out.println("permission denied");
-			}
-		}
+		verifyBuild(imagePath);
 	}
-
 	private void buildPresets() {
-		if(!new File(presetsPath).exists()){
-			if(new File(presetsPath).mkdir()){
-				System.out.println("mkdir " + presetsPath);
-			}else{
-				System.out.println("permission denied");
-			}
-		}
+//		verifyBuild(presetsPath);
 	}
-
 	private void buildCurrent(){
-		if(!new File(currentPath).exists()){
-			if(new File(currentPath).mkdir()){
-				System.out.println("mkdir " + currentPath);
-			}else{
-				System.out.println("permission denied");
-			}
-		}
+		verifyBuild(currentPath);
+	}
+	private void buildQuests() {
+		verifyBuild(questsPath);
 	}
 
 	public static String getScannerPath(int dpi, String meta){
@@ -132,12 +142,13 @@ public class FolderManager {
 	}
 
 	public static File getPresetFile(String filename){
-		String preset = presetsPath + filename;
+		String preset = "Presets" + File.separator + filename;
 		return new File(preset);
 	}
 
 	public static List<String> getPresetNames(){
-		File dir = new File(presetsPath);
+//		File dir = new File(presetsPath);
+		File dir = new File("Presets" + File.separator);
 		List<String> ret = new ArrayList<String>();
 	    File[] files = dir.listFiles();
 	    for (int i = 0; i < files.length; i++) {

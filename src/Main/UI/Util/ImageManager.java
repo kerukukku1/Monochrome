@@ -5,7 +5,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -288,10 +290,18 @@ public class ImageManager{
 
 		problem.setData(allEdges, vertex, coords);
 		if(this.problem.isWaku()){
+	        Date date = new Date();
+	        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+	        String nowtime = sdf1.format(date).toString();
 			problem.setPath(path);
-		}else{
-			problem.setPath(FolderManager.imagePath + "flip_" + problem.getType().toString() + ".png");
+//			problem.setPath(path);
 		}
+//		}else{
+//	        Date date = new Date();
+//	        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+//	        String nowtime = sdf1.format(date).toString();
+//			problem.setPath(ProblemManager.getQuestPath()  + "flip_" + nowtime + problem.getType().toString() + ".png");
+//		}
 //		problem.setBufferedImages(bufImages);
 		ProblemManager.addProblem(problem);
 
@@ -320,7 +330,11 @@ public class ImageManager{
 		Mat flip_image = source.clone();
 		Core.flip(flip_image, flip_image, 1);
 		if(!this.problem.isWaku()){
-			Highgui.imwrite(FolderManager.imagePath + "flip_" + problem.getType().toString() + ".png", flip_image);
+	        Date date = new Date();
+	        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+	        String nowtime = sdf1.format(date).toString();
+			Highgui.imwrite(ProblemManager.getQuestPath()  + "flip_" + nowtime + problem.getType().toString() + ".png", flip_image);
+			problem.setPath(ProblemManager.getQuestPath()  + "flip_" + nowtime + problem.getType().toString() + ".png");
 		}
 
 		//y軸回転

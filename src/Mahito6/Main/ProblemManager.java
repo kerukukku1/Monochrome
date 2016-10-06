@@ -22,6 +22,7 @@ public class ProblemManager {
 	public static double dpi = 0;
 	public static HashMap<Status.Type, Boolean> loadMap;
 	public static Status.Type[] types = {Status.Type.PIECE1, Status.Type.PIECE2, Status.Type.FRAME};
+	public static String currentQuestPath;
 	
 	//0 : frame   1 : piece1   2: piece2
 	public ProblemManager(){
@@ -33,6 +34,14 @@ public class ProblemManager {
 		for(Status.Type type : types){
 			loadMap.put(type, false);
 		}
+	}
+	
+	public static void setQuestPath(String path){
+		ProblemManager.currentQuestPath = path;
+	}
+	
+	public static String getQuestPath(){
+		return ProblemManager.currentQuestPath;
 	}
 	
 	public static SolverConstants getConstants(){

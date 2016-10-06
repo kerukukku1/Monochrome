@@ -2,7 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="JARS/asprise_scan.jar"/>
-	<classpathentry kind="lib" path="JARS/opencv-2412.jar"/>
+	<classpathentry kind="lib" path="JARS/opencv-2412.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="JARS/EdgeSolver_v1.9.jar"/>
 	<classpathentry kind="lib" path="JARS/RotSolver_v1.5_non-Binary-Search.jar"/>
 	<classpathentry kind="lib" path="JARS/SolverAPI_v2.2.jar"/>
