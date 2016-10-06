@@ -1,19 +1,17 @@
 package tmcit.tampopo.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 import tmcit.api.AnswerChangeEvent;
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
 import tmcit.tampopo.geometry.util.Piece;
-import tmcit.tampopo.geometry.util.Point;
 import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
+import tmcit.tampopo.geometry.util.Point;
 import tmcit.tampopo.ui.BigImagePanel;
 import tmcit.tampopo.ui.SolverPanel;
 import tmcit.tampopo.ui.SuperPanel;
@@ -35,14 +33,14 @@ public class ProblemReader {
 	public static void stopAllSolver(){
 
 	}
-	
+
 	public static Thread runSolver(ParameterNode parameterNode,ISolver solver,int solverID,List<Parameter> useParameters,PrintStream stream){
 		String problemText = makeMixProblemText();
 		ExVertex target = getTargetFrameAndVertex();
 		if(problemText == null||target==null)return null;
 		return ProblemReader.runSolver(parameterNode,problemText, solver, useParameters, solverID, target.frame, target.index,stream);
 	}
-	
+
 	public static Thread runSolver(ParameterNode parameterNode
 								  ,String problemText
 								  ,ISolver solver
@@ -59,7 +57,7 @@ public class ProblemReader {
 		solver.setParameters(useParameters);
 		solver.load(problemText,targetFrame,targetVertex);
 		solver.init(solverId);
-		
+
 		SuperPanel superPanel = solverPanel.getSuperPanelFromParameterNode(parameterNode);
 		superPanel.setAnswer(solverPanel.getViewingAnswer());
 		solverPanel.setViewSuperPanel(superPanel);
@@ -103,16 +101,16 @@ public class ProblemReader {
 			}
 		}
 		scan.close();
-		Answer answer = new Answer(frames, pieces,score);
+		Answer answer = new Answer(frames, pieces,score,0,0);
 //		System.out.println(answerText);
 		return answer;
 	}
-	
+
 	public static ExVertex getTargetFrameAndVertex(){
 		BigImagePanel bigImagePanel = solverPanel.getViewingBigImagePanel();
 		if(bigImagePanel == null)return null;
-		int frame = bigImagePanel.selectedFrame;
-		int vertex = bigImagePanel.selectedVertex;
+		int frame = bigImagePanel.getSelectedFrameIndex();
+		int vertex = bigImagePanel.getSelectedVertexIndex();
 		return new ExVertex(frame, vertex, null, null);
 	}
 
@@ -160,7 +158,7 @@ public class ProblemReader {
 		}
 		return ret;
 	}
-	
+
 	public Problem load() throws Exception{
 		Problem prob = loadQuest();
 		if(index != null){
@@ -168,7 +166,7 @@ public class ProblemReader {
 		}
 		return ProblemReader.problem = prob;
 	}
-	
+
 	private void loadIndex(Problem prob) throws Exception{
 		Scanner scan = new Scanner(index);
 		String piece2ImageDir = scan.nextLine();

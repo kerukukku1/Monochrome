@@ -2,7 +2,6 @@ package tmcit.tampopo.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
@@ -11,23 +10,19 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import tmcit.tampopo.edgeSolver.solver.util.Puzzle;
 import tmcit.tampopo.geometry.util.Piece;
 import tmcit.tampopo.ui.util.ExVertex;
 import tmcit.tampopo.util.Answer;
 import tmcit.tampopo.util.PuzzleImage;
 
 public class BigImagePanel extends JPanel implements ChangeListener , MouseListener{
-	
+
 	public static final int IMAGESIZE = SuperPanel.CENTER_BIGIMAGE_SIZE;
 	public static final Color backGround = new Color(230, 230, 240);
 
@@ -35,19 +30,16 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 	public Answer answer;
 	public JLabel imageLabel;
 	public PuzzleImage puzzleImage;
-	
-	public int selectedFrame = 0;
-	public int selectedVertex = 0;
-	
+
 	public JCheckBox cb1,cb2,cb3,cb4,cb5,cb6;
-	
+
 	public static boolean frameDegree = false
 				  ,frameLength = true
 				  ,pieceDegree = false
 				  ,pieceLength = false
 				  ,frameIndex = false
 				  ,pieceIndex = false;
-	
+
 	public BigImagePanel(String title,Answer answer){
 		this.title = title;
 		this.answer = answer;
@@ -55,10 +47,17 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		makePanel();
 		imageReload();
 	}
-	
+
+	public int getSelectedFrameIndex(){
+		return answer.targetFrameIndex;
+	}
+	public int getSelectedVertexIndex(){
+		return answer.targetVertexIndex;
+	}
+
 	public void imageReload(){
 		puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
-		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex,selectedFrame,selectedVertex);
+		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex,getSelectedFrameIndex(),getSelectedVertexIndex());
 		BufferedImage bigImage = puzzleImage.getImage();
 		imageLabel.setIcon(new ImageIcon(bigImage));
 		this.repaint();
@@ -69,14 +68,14 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		cb5.setSelected(pieceLength);
 		cb6.setSelected(pieceIndex);
 	}
-	
+
 	public void doClickVeretex(int x,int y){
 		ExVertex exVertex = puzzleImage.getFrameAndVertexFromPoint(x, y);
 		if(exVertex == null)return;
-		this.selectedFrame = exVertex.frame;
-		this.selectedVertex = exVertex.index;
+		answer.setTargetFrameIndex(exVertex.frame);
+		answer.setTargetVertexIndex(exVertex.index);
 	}
-	
+
 	@Override
 	public void stateChanged(ChangeEvent event) {
 		JCheckBox checkBox = (JCheckBox) event.getSource();
@@ -106,7 +105,7 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		}
 		imageReload();
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		///ピース右クリックしたら消す
@@ -122,7 +121,7 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 			imageReload();
 		}
 	}
-	
+
 	public void makePanel(){
 		imageLabel = new JLabel();
 		imageLabel.setPreferredSize(new Dimension(IMAGESIZE, IMAGESIZE));
@@ -130,14 +129,14 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		imageLabel.addMouseListener(this);
 		imageLabel.setBounds(2, 2, IMAGESIZE, IMAGESIZE);
 		this.add(imageLabel);
-		
+
 		JLabel pieceNumLabel = new JLabel(""+answer.pieces.size());
 		pieceNumLabel.setFont(new Font("Arial", Font.BOLD, 60));
 		pieceNumLabel.setHorizontalAlignment(JLabel.CENTER);
 		pieceNumLabel.setVerticalAlignment(JLabel.CENTER);
 		pieceNumLabel.setBounds(2, IMAGESIZE + 2, 100, 100);
 		this.add(pieceNumLabel);
-		
+
 		JPanel checkboxPanel = new JPanel();
 		checkboxPanel.setLayout(new GridLayout(2, 4));
 		checkboxPanel.setOpaque(false);
@@ -161,7 +160,7 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		cb4.addChangeListener(this);
 		cb5.addChangeListener(this);
 		cb6.addChangeListener(this);
-		
+
 		checkboxPanel.add(label1);
 		checkboxPanel.add(cb1);
 		checkboxPanel.add(cb2);
@@ -173,7 +172,7 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 		checkboxPanel.setBounds(200, IMAGESIZE + 2, 300, 40);
 		this.add(checkboxPanel);
 	}
-	
+
 	public void initPanel(){
 		this.setLayout(null);
 		this.setBackground(backGround);
@@ -183,25 +182,25 @@ public class BigImagePanel extends JPanel implements ChangeListener , MouseListe
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 

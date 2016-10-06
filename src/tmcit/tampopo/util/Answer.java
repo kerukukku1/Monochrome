@@ -4,30 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tmcit.tampopo.geometry.util.Piece;
-import tmcit.tampopo.geometry.util.Point;
 import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
+import tmcit.tampopo.geometry.util.Point;
 
 public class Answer {
-	
+
 	public List<Piece> frames,pieces;
 	public double score = 0.0;
-	
+	public int targetFrameIndex = 0;
+	public int targetVertexIndex = 0;
+
 	public Answer(List<Piece> frames,List<Piece> pieces){
 		this.frames = frames;
 		this.pieces = pieces;
 	}
-	public Answer(List<Piece> frames,List<Piece> pieces,double score){
+	public Answer(List<Piece> frames,List<Piece> pieces,double score,int targetFrameIndex,int targetVertexIndex){
 		this.frames = frames;
 		this.pieces = pieces;
 		this.score = score;
+		this.targetFrameIndex = targetFrameIndex;
+		this.targetVertexIndex = targetVertexIndex;
 	}
 	public void setScore(double score){
 		this.score = score;
 	}
+	public void setTargetFrameIndex(int targetFrameIndex){
+		this.targetFrameIndex = targetFrameIndex;
+	}
+	public void setTargetVertexIndex(int targetVertexIndex){
+		this.targetVertexIndex = targetVertexIndex;
+	}
 	public double getScore(){
 		return this.score;
 	}
-	
+
 	public Answer getCopy(){
 		List<Piece> newFrames = new ArrayList<Piece>();
 		List<Piece> newPieces = new ArrayList<Piece>();
@@ -37,13 +47,13 @@ public class Answer {
 		for(Piece piece : this.pieces){
 			newPieces.add(piece.getCopy());
 		}
-		return new Answer(newFrames, newPieces,score);
+		return new Answer(newFrames, newPieces,score,targetFrameIndex,targetVertexIndex);
 	}
-	
+
 	public boolean mergeAnotherAnswer(Answer source){
 		System.out.println("------Merge Tool------");
 		System.out.println("TO    :"+frames.size()+"frames , "+pieces.size()+"pieces.");
-		
+
 		boolean[] isUse = new boolean[50];
 		for(int i = 0;i < 50;i++)isUse[i] = false;
 		for(Piece piece:pieces){
@@ -65,7 +75,7 @@ public class Answer {
 		}
 		return true;
 	}
-	
+
 	public Answer getReversedAnswer() throws Exception{
 		///左右反転
 		double minx =  100000;
@@ -98,9 +108,9 @@ public class Answer {
 			}
 			revPieces.add(pieceBuilder.build());
 		}
-		return new Answer(revFrames, revPieces, score);
+		return new Answer(revFrames, revPieces, score,targetFrameIndex,targetVertexIndex);
 	}
-	
+
 //	public static Answer makeDebugAnswer(){
 //		List<Piece> rf = new ArrayList<Piece>();
 //		List<Piece> rp = new ArrayList<Piece>();
