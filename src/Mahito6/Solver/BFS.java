@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import Mahito6.Main.Constants;
 import Main.UI.Util.Coordinates;
+import Main.UI.Util.ImageManager;
 import Main.UI.Util.JQueue;
 
 public class BFS{
@@ -57,7 +58,7 @@ public class BFS{
 			for(int k = 0; k < dx.length; k++){
 				int nx = nowx + dx[k];
 				int ny = nowy + dy[k];
-				if(nx < 0 || ny < 0 || nx >= maxx || ny >= maxy)continue;
+				if(nx < 0 || ny < 0 || nx >= maxx|| ny >= maxy - ImageManager.scan_stringOffset)continue;
 				if(memo[nx][ny] == true)continue;
 				memo[nx][ny] = true;
 //				System.out.println(nx + "," + ny);

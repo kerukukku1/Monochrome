@@ -1,6 +1,7 @@
 package Mahito6.Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import Mahito6.UI.InputPanel;
@@ -19,6 +20,8 @@ public class ProblemManager {
 	public static List<Problem> problems;
 	public static SolverConstants consts;
 	public static double dpi = 0;
+	public static HashMap<Status.Type, Boolean> loadMap;
+	public static Status.Type[] types = {Status.Type.PIECE1, Status.Type.PIECE2, Status.Type.FRAME};
 	
 	//0 : frame   1 : piece1   2: piece2
 	public ProblemManager(){
@@ -26,6 +29,10 @@ public class ProblemManager {
 		ProblemManager.imageManager = new ImageManager();
 		problems = new ArrayList<Problem>();
 		consts = new SolverConstants();
+		loadMap = new HashMap<Status.Type, Boolean>();
+		for(Status.Type type : types){
+			loadMap.put(type, false);
+		}
 	}
 	
 	public static SolverConstants getConstants(){
@@ -39,13 +46,30 @@ public class ProblemManager {
 	public static void resetImageManager(){
 		problems.clear();
 		consts = new SolverConstants();
+		loadMap.clear();
+		for(Status.Type type : types){
+			loadMap.put(type, false);
+		}
+		imageManager.clearAll();
+	}
+	
+	public static void removeImageManager(Status.Type type){
+		for(Problem p : problems){
+			if(p.getType() == type){
+				problems.remove(p);
+				break;
+			}
+		}
+		loadMap.put(type, false);
 		imageManager.clearAll();
 	}
 	
 	public static void addProblem(Problem problem){
 		ProblemManager.problem = problem;
 		problems.add(problem);
+		loadMap.put(problem.getType(), true);
 	}
+	
 	
 	public static void setInputPanel(InputPanel inputPanel){
 		ProblemManager.inputPanel = inputPanel;
