@@ -151,9 +151,9 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 				}
 			}
 			list.add("Cancel");
-		    String selectvalues[] = (String[])list.toArray(new String[list.size()]);
+		    final String selectvalues[] = (String[])list.toArray(new String[list.size()]);
 
-		    int select = JOptionPane.showOptionDialog(this,
+		    final int select = JOptionPane.showOptionDialog(this,
 		      "Select Type : ",
 		      "!!!Warning!!!",
 		      JOptionPane.YES_NO_OPTION,
@@ -221,13 +221,13 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		    }else{
 		    	if(selectvalues[select].equals("All")){
 					ProblemManager.resetImageManager();
-					Mahito6.Main.Main.pieceView.initializePanel();	
+					Mahito6.Main.Main.pieceView.initializePanel();
 		    	}else{
 					ProblemManager.removeImageManager(getStringToStatus(selectvalues[select]));
 					Mahito6.Main.Main.pieceView.initializePanel();
 					Main.pieceView.launchPiecePanel();
 		    	}
-		    }			
+		    }
 		}else if(cmd.equals("Scan")){
 			List<String> list = new ArrayList<String>();
 			for(Status.Type type : ProblemManager.types){
@@ -317,7 +317,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		Constants.clearNoiseThreshold = 200;
 		Constants.modeWaku = false;
 	}
-	
+
 	private Status.Type getStringToStatus(String stype){
 		Status.Type type = null;
 		for(Status.Type tmp : ProblemManager.types){
