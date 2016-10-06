@@ -5,12 +5,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -30,8 +25,8 @@ public class PieceListView extends JPanel{
 
 	public static List<PieceViewPanel> pieceViews;
 	public static int tabWidth = 980;
-	public static int tabHeight = 700;
-	
+	public static int tabHeight = 680;
+
 	private int padding = 5;
 	private int line = 3;
 
@@ -45,22 +40,22 @@ public class PieceListView extends JPanel{
 	        ee.printStackTrace();
 	    }
 		launchUI();
-		
+
 		this.requestFocusInWindow();
 //		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
-		
+
 	}
 
 	public void launchPiecePanel(){
 		paintPiecePanel(ProblemManager.getProblems());
 	}
-	
+
 	public void callRun(){
 		if(viewer == null)return;
 		viewer.runEdgeFinder();
 	}
-	
+
 	public void callStore(){
 		if(viewer == null)return;
 		viewer.storeAnswer();
@@ -117,7 +112,7 @@ public class PieceListView extends JPanel{
 			if(count%line != 0)count += (line - count%line);
 			ypos = ((count / line)*(padding + PieceViewPanel.Height)) + (border_offset * space_counter);
 			paint.add(pb);
-		}		
+		}
 		//追加されたピースは改行されて表示されるようにする。
 		paint.setPreferredSize(new Dimension((padding + PieceViewPanel.Width)*line + 25, ypos));
 		this.revalidate();
@@ -135,12 +130,12 @@ public class PieceListView extends JPanel{
 		earth = new JPanel();
 		paint = new JPanel();
 		viewer = null;
-		
+
 		this.setLayout(null);
 		paint.setLayout(null);
 		earth.setLayout(null);
 
-		
+
 		JScrollPane scrollpane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	    scrollpane.setPreferredSize(new Dimension((padding + PieceViewPanel.Width)*line + 25, tabHeight-80));
 	    JViewport view = new JViewport();
@@ -155,7 +150,7 @@ public class PieceListView extends JPanel{
 	    earth.add(p);
 	    earth.setBounds(0, 0, tabWidth, tabHeight);
 	    earth.setBackground(Color.BLACK);
-	    
+
 	    numBox = new NumberingBox();
 	    numBox.setBackground(Color.BLUE);
 	    numBox.setBounds((padding + PieceViewPanel.Width)*line + 25, 0, tabWidth - ((padding + PieceViewPanel.Width)*line + 25), (int)(Math.sqrt(2.0) * (tabWidth - ((padding + PieceViewPanel.Width)*line + 25))));
