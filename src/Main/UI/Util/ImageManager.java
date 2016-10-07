@@ -18,6 +18,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
@@ -32,7 +33,6 @@ import Mahito6.Main.Tuple2;
 import Mahito6.Solver.BFS;
 import Mahito6.Solver.Edge;
 import Mahito6.Thread.SolverThreadingAgent;
-import Mahito6.UI.NumberingFrame;
 
 public class ImageManager{
 
@@ -95,7 +95,7 @@ public class ImageManager{
 			}
 		}
 
-		//if(Constants.modeWaku)source = new Mat(source, new Rect(10, 10, 7000-10, 7000-10));
+		if(problem.getType() == Status.Type.FRAME)source = new Mat(source, new Rect(10, 10, source.cols()-100, source.rows()-100));
 		Mat binImage = _source.clone();
 //		Mat binImage2 = _source.clone();
         //61 14 太いけど確実param　GAUSSIAN
@@ -382,7 +382,7 @@ public class ImageManager{
 //					public void run(){
 //						new NumberingFrame(FolderManager.imagePath + "numbering_" + String.valueOf(piece_load_index) + ".png");
 //					}
-//				}).start();	
+//				}).start();
 //			}
 //			numbering = null;
 		}
@@ -431,7 +431,7 @@ public class ImageManager{
 	public static BufferedImage booleanToBufferedImage(boolean[][] state){
 		return null;
 	}
-	
+
 	public static BufferedImage rescaleImage(double scale, BufferedImage image){
 		int dw = (int)(image.getWidth() * scale);
 		int dh = (int)(image.getHeight() * scale);
