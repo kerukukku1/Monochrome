@@ -11,6 +11,7 @@ import tmcit.tampopo.ui.util.ParameterNode;
 import tmcit.tampopo.util.Answer;
 import tmcit.tampopo.util.AnswerComparator;
 import tmcit.tampopo.util.Problem;
+import tmcit.tampopo.util.ProblemReader;
 
 public class SuperPanel extends JPanel{
 
@@ -55,6 +56,13 @@ public class SuperPanel extends JPanel{
 		if(!showBigImageOrMiniList(masterDetailPanel)){
 			makeBigImageOrMiniList(masterDetailPanel);
 		}
+	}
+
+	public void clearMaster(){
+		right.removeAnswerPanel(masterDetailPanel);
+		center.deleteTabFromRoot(masterDetailPanel, false);
+		masterDetailPanel = right.addAnswer("Master", ProblemReader.problem.getEmptyAnswer(),0);
+		makeBigImageOrMiniList(masterDetailPanel);
 	}
 
 	public void addAnswer(Answer answer){

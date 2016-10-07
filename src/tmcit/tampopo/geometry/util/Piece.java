@@ -7,13 +7,15 @@ import java.util.List;
 public class Piece {
 
 	private int id;
+	private boolean isReverse;
 	private List<Point> points;///座標セット
 	private List<Double> angleSet = null;///角度セット
 
 	private Color pieceColor = null;///描画の際に使う
 
-	private Piece(int id,List<Point> points){
+	private Piece(int id,List<Point> points,boolean isReverse){
 		this.id = id;
+		this.isReverse = isReverse;
 		this.points = points;
 	}
 
@@ -23,10 +25,14 @@ public class Piece {
 	public void setPieceColor(Color color){
 		this.pieceColor = color;
 	}
+	public boolean isReverse(){
+		return this.isReverse;
+	}
 
 	public Piece getCopy(){
 		PieceBuilder pieceBuilder = new PieceBuilder();
 		pieceBuilder.setID(id);
+		pieceBuilder.setReverse(isReverse);
 		for(Point point : points){
 			pieceBuilder.addPoint(point.x, point.y);
 		}
@@ -42,6 +48,7 @@ public class Piece {
 		///頂点の回転方向を反転したピースを返す
 		PieceBuilder pieceBuilder = new PieceBuilder();
 		pieceBuilder.setID(id);
+		pieceBuilder.setReverse(isReverse);
 		for(int i = getPointSize()-1;i != -1;i--){
 			Point point = getPoint(i);
 			pieceBuilder.addPoint(point.x, point.y);
@@ -107,15 +114,17 @@ public class Piece {
 
 	public static class PieceBuilder{
 		public int id;
+		public boolean isReverse;
 		public List<Point> points;
 		public PieceBuilder(){
 			id = -1;
+			isReverse = false;
 			points = new ArrayList<Point>();
 		}
 
 		public Piece build() throws Exception{
 			if(id == -1 || points.size() <= 2)throw new Exception("PIECE DAME DESU.");
-			Piece ret = new Piece(id, points);
+			Piece ret = new Piece(id, points,isReverse);
 			int rotation = Geometry.checkRotationDire(ret);
 			if(rotation == Geometry.COUNTER_CLOCKWISE){
 				///反時計回りのピースはすべて時計回りにする
@@ -126,6 +135,9 @@ public class Piece {
 
 		public void setID(int id){
 			this.id = id;
+		}
+		public void setReverse(boolean isReverse){
+			this.isReverse = isReverse;
 		}
 
 		public PieceBuilder addPoint(Point point){

@@ -102,6 +102,7 @@ public class Answer {
 		for(Piece frame : frames){
 			PieceBuilder pieceBuilder = new PieceBuilder();
 			pieceBuilder.setID(frame.getID());
+			pieceBuilder.setReverse(frame.isReverse());
 			for(Point point : frame.getPoints()){
 				double x = maxx-(point.x - minx);
 				double y = point.y;
@@ -112,6 +113,7 @@ public class Answer {
 		for(Piece piece : pieces){
 			PieceBuilder pieceBuilder = new PieceBuilder();
 			pieceBuilder.setID(piece.getID());
+			pieceBuilder.setReverse(piece.isReverse());
 			for(Point point : piece.getPoints()){
 				double x = maxx-(point.x - minx);
 				double y = point.y;

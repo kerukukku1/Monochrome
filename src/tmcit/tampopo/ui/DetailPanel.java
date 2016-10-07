@@ -103,7 +103,14 @@ public class DetailPanel extends JPanel implements MouseListener{
 			}
 			source.makeBigImageOrMiniList(this,isCtrl,isShift);
 		}else if(button == 3){
-			if(title.equals("Problem")||title.equals("Master"))return;
+			if(title.equals("Problem"))return;
+			if(title.equals("Master")){
+				int res = JOptionPane.showConfirmDialog(this, "マスターを初期化しますか？");
+				if(res == 0){
+					source.clearMaster();
+				}
+				return;
+			}
 			source.removeDetailPanel(this);
 		}
 	}

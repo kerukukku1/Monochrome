@@ -2,8 +2,6 @@ package tmcit.tampopo.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -17,8 +15,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import tmcit.tampopo.geometry.util.Piece;
 import tmcit.tampopo.geometry.util.Point;
@@ -27,17 +23,18 @@ import tmcit.tampopo.util.Problem;
 import tmcit.tampopo.util.PuzzleImage;
 
 public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionListener{
-	
+
 	public static final int BUG_OFFSET = 0;///300,300ずらさないとだめ
 	public static final int CIRCLE_OFFSET = 30;///円を大き目に出す
-	
+
 	public static final int IMAGESIZE = MainUI.MAINTABPANE_HEIGHT - 30;
 	public static final int RIGHTWIDTH = 300;///右側の幅のこと
 	public static final Color backGround = new Color(230, 230, 240);
 	public static final Color pieceLightColor = new Color(160, 160, 230);
 	public static final Color pieceDarkColor = Color.GRAY;
 	public static final Color pickupColor = Color.YELLOW;
-	
+	public static final Color pickupReverseColor = Color.BLUE;
+
 	public Problem problem;
 	public Answer answer;
 	public JLabel imageLabel;
@@ -47,11 +44,11 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 	public BufferedImage pieceMapSouce;
 	public double bias;
 	public int dw,dh;///右側の画像の大きさ
-	
+
 	public Piece targetPiece;
-	
+
 	public JCheckBox cb1,cb2,cb3,cb4,cb5,cb6;
-	
+
 	public boolean frameDegree = false
 				  ,frameLength = false
 				  ,pieceDegree = false
@@ -60,7 +57,7 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 				  ,pieceIndex = false;
 	public boolean[] isPiece2 = new boolean[50];
 	public Piece[] realPiece2 = new Piece[50];
-	
+
 	public ToAnswerPanel(Problem problem,Answer answer){
 		this.problem = problem;
 		try {
@@ -73,7 +70,7 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 		makePanel();
 		imageReload();
 	}
-	
+
 	public void imageReload(){
 		puzzleImage = new PuzzleImage(answer.frames, answer.pieces);
 		puzzleImage.paint(IMAGESIZE, frameDegree, frameLength, pieceDegree, pieceLength, frameIndex, pieceIndex,-1,-1);
@@ -81,7 +78,7 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 		imageLabel.setIcon(new ImageIcon(bigImage));
 		this.repaint();
 	}
-	
+
 	public void changeTargetPiece(){
 		BufferedImage overMap = new BufferedImage(dw, dh, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = overMap.createGraphics();
@@ -97,14 +94,18 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 			if(realPiece != null){
 				drawCircleImage(g2d,realPiece);
 			}
-			targetPiece.setPieceColor(pickupColor);
+			if(!targetPiece.isReverse()){
+				targetPiece.setPieceColor(pickupColor);
+			}else{
+				targetPiece.setPieceColor(pickupReverseColor);
+			}
 		}
 		g2d.dispose();
 		indexLabel.setText(labelText);
 		pieceMapLabel.setIcon(new ImageIcon(overMap));
 		this.repaint();
 	}
-	
+
 	public void drawCircleImage(Graphics2D g2d,Piece realPiece){
 		int minx = 100000,miny = 100000;
 		int maxx = 0,maxy = 0;
@@ -122,10 +123,14 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 		maxy += CIRCLE_OFFSET;
 		int width = maxx-minx;
 		int height = maxy-miny;
+		g2d.setColor(pickupColor);
+		if(targetPiece.isReverse()){
+			g2d.setColor(pickupReverseColor);
+		}
 		g2d.setStroke(new BasicStroke(4.0f));
 		g2d.drawOval(minx, miny, width, height);
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		///ピース左クリックしたら色変える
@@ -145,8 +150,8 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 	@Override
 	public void mouseMoved(MouseEvent event) {
 		Piece piece = puzzleImage.getPieceFromPoint(event.getX(), event.getY());
-		if(piece == null 
-				|| targetPiece == piece 
+		if(piece == null
+				|| targetPiece == piece
 				|| piece.getPieceColor() == pieceDarkColor)return;
 		if(targetPiece != null)targetPiece.setPieceColor(pieceLightColor);
 		targetPiece = piece;
@@ -154,14 +159,14 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 		imageReload();
 	}
 
-	
+
 	public void makePanel(){
 		imageLabel = new JLabel();
 		imageLabel.setBorder(new LineBorder(Color.GRAY, 3, true));
 		imageLabel.addMouseListener(this);
 		imageLabel.addMouseMotionListener(this);
 		imageLabel.setBounds(2, 2, IMAGESIZE, IMAGESIZE);
-		
+
 		BufferedImage sourceImage = problem.piece2Image;
 		bias = (double)RIGHTWIDTH/(double)sourceImage.getWidth();
 		dw = RIGHTWIDTH;
@@ -170,18 +175,18 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 		pieceMapLabel = new JLabel(new ImageIcon(pieceMapSouce));
 		pieceMapLabel.setBorder(new LineBorder(Color.GRAY, 3, true));
 		pieceMapLabel.setBounds(IMAGESIZE + 4, 2, dw, dh);
-		
+
 		indexLabel = new JLabel("");
 		indexLabel.setBounds(IMAGESIZE + 4, dh + 4, RIGHTWIDTH, 220);
 		indexLabel.setFont(new Font("Arial", Font.BOLD, 240));
 		indexLabel.setHorizontalAlignment(JLabel.CENTER);
 		indexLabel.setVerticalAlignment(JLabel.CENTER);
-		
+
 		this.add(imageLabel);
 		this.add(pieceMapLabel);
 		this.add(indexLabel);
 	}
-	
+
 	public static BufferedImage reduceImage(BufferedImage image, int dw, int dh) {
 		  BufferedImage thumb = new BufferedImage(dw, dh, image.getType());
 		  thumb.getGraphics().drawImage(image.getScaledInstance(dw, dh, Image.SCALE_AREA_AVERAGING), 0, 0, dw, dh, null);
@@ -210,31 +215,31 @@ public class ToAnswerPanel extends JPanel implements MouseListener, MouseMotionL
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 

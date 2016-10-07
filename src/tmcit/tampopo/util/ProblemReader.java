@@ -9,6 +9,8 @@ import java.util.Scanner;
 import tmcit.api.AnswerChangeEvent;
 import tmcit.api.ISolver;
 import tmcit.api.Parameter;
+import tmcit.api.SolverProgressEvent;
+import tmcit.api.SolverProgressListener;
 import tmcit.tampopo.geometry.util.Piece;
 import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 import tmcit.tampopo.geometry.util.Point;
@@ -65,6 +67,12 @@ public class ProblemReader {
 		Thread solverThread = new Thread(solver);
 		solverThread.start();
 		AnswerChangeEvent.addListener(solverId, superPanel.right);
+		SolverProgressEvent.addListener(solverId, new SolverProgressListener(){
+			@Override
+			public void solverProgressEvent(SolverProgressEvent event) {
+				System.out.println("PROGRESS:"+event.percentage);
+			}
+		});
 		System.out.println("SOLVER RUN!!");
 		return solverThread;
 	}
@@ -85,10 +93,17 @@ public class ProblemReader {
 		Scanner scan = new Scanner(answerText);
 		int N = scan.nextInt();
 		for(int i = 0;i < N;i++){
-			int id = scan.nextInt();
+			String idrstr = scan.next();
+			String[] split = idrstr.split("_");
+			boolean isReverse = false;
+			int id = Integer.parseInt(split[0]);
+			if(split.length == 2){
+				isReverse = true;
+			}
 			int vertexNum = scan.nextInt();
 			PieceBuilder pieceBuilder = new PieceBuilder();
 			pieceBuilder.setID(id);
+			pieceBuilder.setReverse(isReverse);
 			for(int j = 0;j < vertexNum;j++){
 				double x = scan.nextDouble();
 				double y = scan.nextDouble();
