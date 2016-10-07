@@ -141,7 +141,7 @@ public class PieceListView extends JPanel{
 	    JViewport view = new JViewport();
 	    view.setView(paint);
 	    scrollpane.setViewport(view);
-	    scrollpane.getVerticalScrollBar().setUnitIncrement(10);
+	    scrollpane.getVerticalScrollBar().setUnitIncrement(40);
 	    paint.setPreferredSize(new Dimension((padding + PieceViewPanel.Width)*line + 25, tabHeight-80));
 //	    scrollpane.setBounds(0, 0, tabWidth, tabHeight-50);
 	    JPanel p = new JPanel();

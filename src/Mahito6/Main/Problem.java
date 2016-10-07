@@ -102,9 +102,15 @@ public class Problem {
 									binImage.getHeight()-range*2), range*2, range*2);
 	}
 
-	public BufferedImage getGrayImage(int index){
+	public BufferedImage getGrayImage(int index, int offset){
 		Coordinates c = coords.get(index);
-		return binImage.getSubimage(c.minx, c.miny, c.maxx - c.minx, c.maxy - c.miny);
+		if(c.minx - offset < 0 || 
+				c.miny - offset < 0 || 
+				c.maxx - c.minx + offset*2 >= binImage.getWidth() ||
+				c.maxy - c.miny + offset*2 >= binImage.getHeight()){
+			return null;
+		}
+		return binImage.getSubimage(c.minx - offset, c.miny - offset, c.maxx - c.minx + offset*2, c.maxy - c.miny + offset*2);
 	}
 
 	public void setType(Status.Type type) {

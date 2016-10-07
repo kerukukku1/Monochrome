@@ -38,6 +38,7 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 	
 	public static int Height = 270;
 	public static int Width = 225;
+	public static int offset_pixel = 20;
 
 	public PieceViewPanel(int x, int y, int index, Problem problem){
 		this.x = x;
@@ -49,7 +50,11 @@ public class PieceViewPanel extends JPanel implements MouseListener{
 		this.edges = myProblem.getEdges(index);
 		this.image = myProblem.getImage(index);
 		//wかhが0以下になる場合エラー
-		BufferedImage buf = myProblem.getGrayImage(index);
+		BufferedImage buf = myProblem.getGrayImage(index, offset_pixel);
+		if(buf == null){
+			offset_pixel = 0;
+			buf = myProblem.getGrayImage(index, offset_pixel);
+		}
 		image_scale = Width / (double)(Math.max(buf.getWidth(), buf.getHeight()));
 		gPiece = ImageManager.rescaleImage(image_scale, buf);
 		setUtil();
@@ -113,10 +118,10 @@ public class PieceViewPanel extends JPanel implements MouseListener{
     	for(int i = 0 ; i < data.size(); i++){
 	    	Tuple2<Double, Double> d1 = data.get(i);
 	    	Tuple2<Double, Double> d2 = data.get((i+1)%data.size());
-	    	double x1 = (d1.t1 - Constants.imagePositionOffset/2)*image_scale;
-	    	double y1 = (d1.t2 - Constants.imagePositionOffset/2)*image_scale;
-	    	double x2 = (d2.t1 - Constants.imagePositionOffset/2)*image_scale;
-	    	double y2 = (d2.t2 - Constants.imagePositionOffset/2)*image_scale;
+	    	double x1 = (offset_pixel + d1.t1 - Constants.imagePositionOffset/2)*image_scale;
+	    	double y1 = (offset_pixel + d1.t2 - Constants.imagePositionOffset/2)*image_scale;
+	    	double x2 = (offset_pixel + d2.t1 - Constants.imagePositionOffset/2)*image_scale;
+	    	double y2 = (offset_pixel + d2.t2 - Constants.imagePositionOffset/2)*image_scale;
 	    	g.draw(new Line2D.Double(x1, y1, x2, y2));
 	    	System.out.println(x1 + "," + y1 + " " + x2 + "," + y2);
     	}
