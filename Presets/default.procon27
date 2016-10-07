@@ -1,0 +1,8 @@
+int,kAngleSplits,1024
+int,kMinCount,60
+int,edgeWidth,5
+int,MethodWidth,5
+int,lrAddition,30
+int,doubleLineDetect,40
+double,LongEdge,70.0
+double,ShorteningLength,20.0
