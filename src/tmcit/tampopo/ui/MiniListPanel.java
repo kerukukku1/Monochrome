@@ -10,19 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import javax.xml.soap.Detail;
 
 import tmcit.tampopo.util.Answer;
 
 public class MiniListPanel extends JPanel implements AdjustmentListener , MouseListener{
-	
+
 	public static final Color backGround = new Color(230, 230, 240);
 	public static final int WIDTH = SuperPanel.CENTER_WIDTH - 4;
 	public static final int HEIGHT = SuperPanel.CENTER_HEIGHT - 26;
 	public static final int IMAGESIZE = SuperPanel.CENTER_MINIIMAGE_SIZE;
-	
+
 	public SuperPanel source;
 	public DetailPanel detailPanel;
 	public String title;
@@ -30,7 +27,7 @@ public class MiniListPanel extends JPanel implements AdjustmentListener , MouseL
 	public List<MiniImagePanel> miniPanels;
 	public PanelListManager panelListManager;
 	public int miniPanelNum;
-	
+
 	public MiniListPanel(String title,List<Answer> answers,SuperPanel source, DetailPanel detailPanel){
 		this.source = source;
 		this.detailPanel = detailPanel;
@@ -45,9 +42,9 @@ public class MiniListPanel extends JPanel implements AdjustmentListener , MouseL
 			addAnswer(answer);
 		}
 		refreshAllMiniImage(true);
-		
+
 	}
-	
+
 	public void clickMiniImage(int button,MiniImagePanel miniImagePanel){
 		if(button == 1){
 			if(source.showBigImageOrMiniList(miniImagePanel)){
@@ -57,12 +54,12 @@ public class MiniListPanel extends JPanel implements AdjustmentListener , MouseL
 			source.makeBigImageFromMiniImage(miniImagePanel);
 		}
 	}
-	
+
 	public String getTabTitle(){
 		String ret = title + "[" + miniPanelNum + "]";
 		return ret;
 	}
-	
+
 	public void addAnswer(Answer answer){
 		///1個画像を追加する
 		this.answers.add(answer);
@@ -72,7 +69,7 @@ public class MiniListPanel extends JPanel implements AdjustmentListener , MouseL
 		miniPanels.add(miniImagePanel);
 		miniPanelNum++;
 	}
-	
+
 	public void makePanel(){
 		panelListManager = new PanelListManager(WIDTH, HEIGHT,false,this);
 		panelListManager.setBounds(0, 0, WIDTH, HEIGHT);
@@ -80,13 +77,13 @@ public class MiniListPanel extends JPanel implements AdjustmentListener , MouseL
 		panelListManager.getVerticalScrollBar().addAdjustmentListener(this);
 		this.add(panelListManager);
 	}
-	
+
 	public void initPanel(){
 		this.setLayout(null);
 	}
-	
+
 	private int adjustCounter = 0;
-	
+
 	public void refreshAllMiniImage(boolean isFirst){
 		int c1 = 0;
 		Rectangle viewRectangle = panelListManager.mainPanel.getVisibleRect();
@@ -114,9 +111,9 @@ public class MiniListPanel extends JPanel implements AdjustmentListener , MouseL
 		refreshAllMiniImage(false);
 		adjustCounter = 0;
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent event) {
 		clickMiniImage(event.getButton(), (MiniImagePanel) event.getSource());
@@ -125,25 +122,25 @@ public class MiniListPanel extends JPanel implements AdjustmentListener , MouseL
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

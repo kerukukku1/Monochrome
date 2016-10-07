@@ -16,11 +16,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import Mahito6.Main.Main;
-import Mahito6.UI.PieceListView;
 import tmcit.tampopo.util.Answer;
 import tmcit.tampopo.util.Problem;
 import tmcit.tampopo.util.ProblemReader;
+import Mahito6.UI.PieceListView;
 
 public class MainUI extends JFrame implements ActionListener{
 
@@ -87,14 +86,14 @@ public class MainUI extends JFrame implements ActionListener{
 		JMenuItem menuitem6 = new JMenuItem("Load_quest");
 		JMenuItem menuitem7 = new JMenuItem("Send_answer");
 		JMenuItem menuitem1 = new JMenuItem("Exit");
-		
+
 		JMenuItem menuitem8 = new JMenuItem("Store");
 		menuitem8.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem9 = new JMenuItem("EdgeFinder");
 		menuitem9.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
-		
+
 		menuitem1.addActionListener(this);
 		menuitem2.addActionListener(this);
 		menuitem3.addActionListener(this);
@@ -125,7 +124,9 @@ public class MainUI extends JFrame implements ActionListener{
 		if(value.equalsIgnoreCase("Refresh")){
 			this.repaint();
 		}else if(value.equalsIgnoreCase("Tab_Close")){
-//			solverPanel.tabClose();
+			SuperPanel superPanel = solverPanel.getViewingSuperPanel();
+			if(superPanel == null)return;
+			superPanel.removeViewingBigImageOrMiniList();
 		}else if(value.equalsIgnoreCase("Exit")){
 			System.exit(0);
 		}else if(value.equalsIgnoreCase("MOVE_MASTER")){

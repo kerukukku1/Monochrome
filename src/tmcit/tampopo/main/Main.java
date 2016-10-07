@@ -4,10 +4,11 @@ import java.awt.Color;
 
 import javax.swing.UIManager;
 
+import tmcit.tampopo.geometry.network.IPManager;
 import tmcit.tampopo.ui.MainUI;
 
 public class Main {
-	
+
 	public static final String saveDir = System.getProperty("user.home")+"/procon27";
 	public static final String questDir = System.getProperty("user.home")+"/procon27/quest.txt";
 	public static final String indexDir = System.getProperty("user.home")+"/procon27/index.txt";
@@ -16,6 +17,8 @@ public class Main {
 	public MainUI mainFrame;
 
 	public Main(){
+		IPManager ipManager = new IPManager();
+		ipManager.exec();
 		mahitoMain = new Mahito6.Main.Main();
 		new tmcit.tampopo.util.IconUtil("resources");
 		initUI();

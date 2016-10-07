@@ -14,8 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border; 
 import javax.swing.border.LineBorder;
 
 import tmcit.tampopo.util.Answer;
@@ -23,16 +21,16 @@ import tmcit.tampopo.util.PuzzleImage;
 
 public class DetailPanel extends JPanel implements MouseListener{
 	///解の複数保持用にも使いますよ
-	
+
 	public static final int IMAGESIZE = SuperPanel.RIGHT_IMAGE_SIZE;
 	public static final int TITLE_OFFSET = 20;
-	
+
 	public SuperPanel source;
 	public String title;
 	public List<Answer> answers;///1個でもこっち使う
-	
+
 	public JLabel titleLabel;
-	
+
 	public DetailPanel(String title,Answer answer,SuperPanel source){
 		this.source = source;
 		this.answers = new ArrayList<Answer>();
@@ -50,7 +48,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		makePanel();
 		addLabels();
 	}
-	
+
 	public void addLabels(){
 		titleLabel = new JLabel(title);
 		titleLabel.setBounds(2, 2, SuperPanel.RIGHT_WIDTH - 20, TITLE_OFFSET);
@@ -58,7 +56,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		titleLabel.addMouseListener(this);
 		this.add(titleLabel);
 	}
-	
+
 	public BufferedImage getImage(){
 		///answerからサムネ作る、複数ある場合は数も入れる
 		Answer answer = answers.get(0);
@@ -74,7 +72,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		}
 		return ret;
 	}
-	
+
 	public void makePanel(){
 		JLabel imgLabel = new JLabel();
 		imgLabel.setIcon(new ImageIcon(getImage()));
@@ -82,7 +80,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 		this.addMouseListener(this);
 		this.add(imgLabel);
 	}
-	
+
 	public void initPanel(){
 		this.setBorder(new LineBorder(Color.GRAY));
 		this.setLayout(null);
@@ -95,15 +93,15 @@ public class DetailPanel extends JPanel implements MouseListener{
 //		}
 		this.setPreferredSize(new Dimension(width, height));
 	}
-	
-	public void clickDetail(int button){
+
+	public void clickDetail(int button,boolean isCtrl,boolean isShift){
 		///パネルをクリックしたときの動きをここに書く、右クリックで削除、左クリックで真ん中に表示
 		if(button == 1){
 			if(source.showBigImageOrMiniList(this)){
 				///既に表示中
 				return;
 			}
-			source.makeBigImageOrMiniList(this);
+			source.makeBigImageOrMiniList(this,isCtrl,isShift);
 		}else if(button == 3){
 			if(title.equals("Problem")||title.equals("Master"))return;
 			source.removeDetailPanel(this);
@@ -112,7 +110,7 @@ public class DetailPanel extends JPanel implements MouseListener{
 	@Override
 	public void mousePressed(MouseEvent event) {
 		if(event.getSource() == this){
-			clickDetail(event.getButton());
+			clickDetail(event.getButton(),event.isControlDown(),event.isShiftDown());
 		}
 	}
 	@Override
@@ -129,18 +127,18 @@ public class DetailPanel extends JPanel implements MouseListener{
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

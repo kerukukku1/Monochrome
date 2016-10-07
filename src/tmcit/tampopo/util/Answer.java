@@ -11,6 +11,7 @@ public class Answer {
 
 	public List<Piece> frames,pieces;
 	public double score = 0.0;
+	public double area = 0.0;
 	public int targetFrameIndex = 0;
 	public int targetVertexIndex = 0;
 
@@ -36,6 +37,16 @@ public class Answer {
 	}
 	public double getScore(){
 		return this.score;
+	}
+	public void calcArea(){
+		if(area != 0.0)return;
+		for(Piece piece : pieces){
+			area += piece.getPolygonArea();
+		}
+	}
+	public double getArea(){
+		if(area == 0.0)calcArea();
+		return area;
 	}
 
 	public Answer getCopy(){

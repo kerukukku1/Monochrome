@@ -5,25 +5,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Piece {
-	
+
 	private int id;
 	private List<Point> points;///座標セット
 	private List<Double> angleSet = null;///角度セット
-	
+
 	private Color pieceColor = null;///描画の際に使う
-	
+
 	private Piece(int id,List<Point> points){
 		this.id = id;
 		this.points = points;
 	}
-	
+
 	public Color getPieceColor(){
 		return pieceColor;
 	}
 	public void setPieceColor(Color color){
 		this.pieceColor = color;
 	}
-	
+
 	public Piece getCopy(){
 		PieceBuilder pieceBuilder = new PieceBuilder();
 		pieceBuilder.setID(id);
@@ -37,7 +37,7 @@ public class Piece {
 			return null;
 		}
 	}
-	
+
 	public Piece getReversePiece(){
 		///頂点の回転方向を反転したピースを返す
 		PieceBuilder pieceBuilder = new PieceBuilder();
@@ -53,37 +53,49 @@ public class Piece {
 			return null;
 		}
 	}
-	
+
 	public int getID(){
 		return id;
 	}
-	
+
 	public Point getPoint(int index){
 		return points.get(index);
 	}
 	public List<Point> getPoints(){
 		return this.points;
 	}
-	
+
 	public int getPointSize(){
 		return points.size();
 	}
-	
+
 	public Segment getSegment(int index){
 		int next = (index+1)%points.size();
 		return new Segment(points.get(index), points.get(next));
 	}
-	
+
 	public double getSegmentLength(int index){
 		Segment ret = getSegment(index);
 		return ret.length;
 	}
-	
+
+
+	public double getPolygonArea(){
+		double ret = 0.0;
+		int n = this.getPointSize();
+		for(int i = 0;i < n;i++){
+			Point p1 = points.get(i);
+			Point p2 = points.get((i+1)%n);
+			ret += (p1.x - p2.x) * (p1.y + p2.y);
+		}
+		return Math.abs(ret / 2.0);
+	}
+
 	public double getAngle(int index){
 		if(angleSet == null)calcAllAngle();
 		return angleSet.get(index);
 	}
-	
+
 	private void calcAllAngle(){
 		AngleUtil angleUtil = new AngleUtil(points);
 		try {
@@ -92,7 +104,7 @@ public class Piece {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static class PieceBuilder{
 		public int id;
 		public List<Point> points;
@@ -100,7 +112,7 @@ public class Piece {
 			id = -1;
 			points = new ArrayList<Point>();
 		}
-		
+
 		public Piece build() throws Exception{
 			if(id == -1 || points.size() <= 2)throw new Exception("PIECE DAME DESU.");
 			Piece ret = new Piece(id, points);
@@ -111,20 +123,20 @@ public class Piece {
 			}
 			return ret;
 		}
-		
+
 		public void setID(int id){
 			this.id = id;
 		}
-		
+
 		public PieceBuilder addPoint(Point point){
 			points.add(point);
 			return this;
 		}
-		
+
 		public PieceBuilder addPoint(double x,double y){
 			return addPoint(new Point(x, y));
 		}
-		
+
 	}
 
 }
