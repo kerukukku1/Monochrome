@@ -303,7 +303,7 @@ public class InputPanel extends JPanel implements ActionListener, ChangeListener
 		consts.lrAddition = 100;
 
 		Constants.clearNoiseThreshold = 1200;
-		Constants.dividePixelLookingForDist = 1;
+		Constants.dividePixelLookingForDist = 20;
 		Constants.modeWaku = true;
 	}
 
