@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class Constants{
 
-	public static final int solveThread = 8;
+	public static final int solveThread = 4;
     public static final int divideImageOffset = 100; //スキャン端の大きな影を省く為のオフセット
     public static final int divideImageGarbageThreshold = 2000; //分割したときの点の数がこれ以下ならゴミとして除去
     public static int dividePixelLookingForDist = 20; //分割するとき幅優先探索で回りを見る距離

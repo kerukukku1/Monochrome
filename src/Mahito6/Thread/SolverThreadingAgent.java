@@ -78,7 +78,7 @@ public class SolverThreadingAgent {
 			split = 1;
 		}
 		int imageCount = 0;
-//		List<Thread> runningThread = new ArrayList<Thread>();
+		List<Thread> runningThread = new ArrayList<Thread>();
 		for(int i = 0;i < threadNum;i++){
 			final List<BufferedImage> target = new ArrayList<BufferedImage>();
 			final List<Integer> ids = new ArrayList<Integer>();
@@ -116,12 +116,12 @@ public class SolverThreadingAgent {
 				}
 			});
 			newThread.start();
-			newThread.join();
-//			runningThread.add(newThread);
+//			newThread.join();
+			runningThread.add(newThread);
 		}
 
-//		for(int i = 0;i < runningThread.size();i++){
-//			runningThread.get(i).join();
-//		}
+		for(int i = 0;i < runningThread.size();i++){
+			runningThread.get(i).join();
+		}
 	}
 }
