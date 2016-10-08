@@ -102,16 +102,16 @@ public class Main {
 //		PieceListView view = new PieceListView(vertex, null, null);
 	}
 	
-	private static String testImagePath = "/Users/fujinomahito/Desktop/_test3/test.JPG";
+	private static String testImagePath = "/Users/fujinomahito/Desktop/1試合目/Frame_300.png";
 	private static void outputImages(){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         Mat src = Highgui.imread(testImagePath, 0);
-        double span = 0.125;
+        double span = 0.25;
         for(int i = 0; i < 10; i++){
         	int blockSize = 21 + (i*2);
-        	double c = blockSize - 5.0;
+        	double c = blockSize - 25.0;
         	while(true){
-        		if((int)c > blockSize + 5)break;
+        		if((int)c > blockSize + 25)break;
         		Mat binImage = src.clone();
             	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, blockSize, c);
             	String head = String.valueOf(blockSize) + "_" + String.valueOf(c);
