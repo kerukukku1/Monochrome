@@ -114,7 +114,12 @@ public class ImageManager{
         if(!Constants.modeWaku){
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 17, 8);
-        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
+        	
+        	
+//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
+        	
+        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 7.5);
+        	
         	//nico nico
 //        	Imgproc.adaptiveThreshold(binImage2, binImage2, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
 //            Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 31, 8);
@@ -127,7 +132,9 @@ public class ImageManager{
         //枠専用
         if(Constants.modeWaku){
 //        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 14);
-        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
+//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 8);
+//        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 61, 14);
+        	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 7.5);
         }
 
         bufBinImage = ImageManager.MatToBufferedImageBGR(binImage);
@@ -342,6 +349,11 @@ public class ImageManager{
 		for(int i = 0; i < coords.size(); i++){
 			Coordinates now = coords.get(i);
 			BFS.clearNoise(Constants.clearNoiseThreshold, now);
+			if(now.size() < Constants.divideImageGarbageThreshold){
+				coords.remove(now);
+				i--;
+				continue;
+			}
 			//now.clearNoise(Constants.clearNoiseThreshold);
 			System.out.println(now.getCount());
 			minx = now.minx;

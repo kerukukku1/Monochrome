@@ -108,8 +108,9 @@ public class PieceListView extends JPanel{
 				pb.add(p);
 				++count;pcount++;
 			}
-			pb.setBounds(0, ypos, (padding + PieceViewPanel.Width)*line + 25, (count / line)*(padding + PieceViewPanel.Height) + border_offset);
 			if(count%line != 0)count += (line - count%line);
+			if(pcount%line != 0)pcount += (line - pcount%line);
+			pb.setBounds(0, ypos, (padding + PieceViewPanel.Width)*line + 25, (pcount / line)*(padding + PieceViewPanel.Height) + border_offset);
 			ypos = ((count / line)*(padding + PieceViewPanel.Height)) + (border_offset * space_counter);
 			paint.add(pb);
 		}

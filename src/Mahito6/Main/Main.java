@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
@@ -48,17 +49,17 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
-		new Main();
-		JFrame debug = new JFrame("debug");
-		debug.add(pieceView);
-		debug.pack();
-		debug.setVisible(true);
-		debug.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		new Main();
+//		JFrame debug = new JFrame("debug");
+//		debug.add(pieceView);
+//		debug.pack();
+//		debug.setVisible(true);
+//		debug.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		debug();
-//		outputImages();
+		outputImages();
 	}
 	
-	private static File debugImage = new File("/Users/fujinomahito/Dropbox/PROCON2016/public/SCAN/08_23_SCAN/t/7_piece1_600.JPG");
+	private static File debugImage = new File("/Users/fujinomahito/Desktop/1試合目/Piece1_300.png");
 	public static void debug(){///EdgeFinderのデバッグ用
 		BufferedImage tarImage = null;
 		new ProblemManager();
@@ -102,17 +103,23 @@ public class Main {
 //		PieceListView view = new PieceListView(vertex, null, null);
 	}
 	
-	private static String testImagePath = "/Users/fujinomahito/Desktop/_test3/test.JPG";
+	private static String testImagePath = "/Users/fujinomahito/Desktop/1試合目/Piece1_300.png";
 	private static void outputImages(){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        Mat src = Highgui.imread(testImagePath, 0);
-        double span = 0.125;
+        Mat source = Highgui.imread(testImagePath, 0);
+		for(int i = 0; i < 3; i++){
+			Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+			Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+			Imgproc.resize(source, source, new Size(), 2.0, 2.0, Imgproc.INTER_LINEAR);
+			Imgproc.resize(source, source, new Size(), 0.50, 0.50, Imgproc.INTER_LINEAR);
+		}
+        double span = 0.5;
         for(int i = 0; i < 10; i++){
         	int blockSize = 21 + (i*2);
-        	double c = blockSize - 5.0;
+        	double c = blockSize - 25.0;
         	while(true){
-        		if((int)c > blockSize + 5)break;
-        		Mat binImage = src.clone();
+        		if((int)c > blockSize + 35)break;
+        		Mat binImage = source.clone();
             	Imgproc.adaptiveThreshold(binImage, binImage, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, blockSize, c);
             	String head = String.valueOf(blockSize) + "_" + String.valueOf(c);
             	Highgui.imwrite(getPath(head), binImage);
