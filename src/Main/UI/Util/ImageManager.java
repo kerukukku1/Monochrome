@@ -77,6 +77,7 @@ public class ImageManager{
 
 	public void runAdaptiveThreshold(){
 		this.source = Highgui.imread(path);
+		if(problem.getType() == Status.Type.FRAME)source = new Mat(source, new Rect(10, 10, source.cols()-30, source.cols()-30));
 		Mat _source = source.clone();
 		if(!Constants.modeWaku)Imgproc.erode(_source, _source, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(4,4)));
 		Imgproc.cvtColor(_source, _source, Imgproc.COLOR_RGB2GRAY);
@@ -95,7 +96,7 @@ public class ImageManager{
 			}
 		}
 
-		if(problem.getType() == Status.Type.FRAME)source = new Mat(source, new Rect(10, 10, source.cols()-100, source.rows()-100));
+//		if(problem.getType() == Status.Type.FRAME)source = new Mat(source, new Rect(10, 10, source.cols()-100, source.rows()-100));
 		Mat binImage = _source.clone();
 //		Mat binImage2 = _source.clone();
         //61 14 太いけど確実param　GAUSSIAN
