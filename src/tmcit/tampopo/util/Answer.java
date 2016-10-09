@@ -3,6 +3,7 @@ package tmcit.tampopo.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import tmcit.tampopo.edgeSolver.solver.util.ConvertToGrid;
 import tmcit.tampopo.geometry.util.Piece;
 import tmcit.tampopo.geometry.util.Piece.PieceBuilder;
 import tmcit.tampopo.geometry.util.Point;
@@ -47,6 +48,66 @@ public class Answer {
 	public double getArea(){
 		if(area == 0.0)calcArea();
 		return area;
+	}
+
+	public Answer convertToGrid(){
+		List<Piece> gridPieces = new ArrayList<Piece>();
+		List<Piece> gridFrames = new ArrayList<Piece>();
+
+		for(Piece piece : pieces){
+			tmcit.tampopo.edgeSolver.solver.util.Piece gp = new tmcit.tampopo.edgeSolver.solver.util.Piece();
+			int n = piece.getPointSize();
+			for(int i = 0;i < n;i++){
+				double x = piece.getPoint(i).x;
+				double y = piece.getPoint(i).y;
+				tmcit.tampopo.edgeSolver.solver.util.Point point = new tmcit.tampopo.edgeSolver.solver.util.Point(x,y);
+				gp.addVertex(point);
+			}
+			ConvertToGrid gridConverter = new ConvertToGrid(gp,5.0);
+			gp = gridConverter.getGridPiece();
+			PieceBuilder pieceBuilder = new PieceBuilder();
+			pieceBuilder.setID(piece.getID());
+			pieceBuilder.setReverse(false);
+			for(int i = 0;i < n;i++){
+				tmcit.tampopo.edgeSolver.solver.util.Point point = gp.getVertex(i);
+				double x = point.x;
+				double y = point.y;
+				pieceBuilder.addPoint(x, y);
+			}
+			try {
+				gridPieces.add(pieceBuilder.build());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		for(Piece frame : frames){
+			tmcit.tampopo.edgeSolver.solver.util.Piece gp = new tmcit.tampopo.edgeSolver.solver.util.Piece();
+			int n = frame.getPointSize();
+			for(int i = 0;i < n;i++){
+				double x = frame.getPoint(i).x;
+				double y = frame.getPoint(i).y;
+				tmcit.tampopo.edgeSolver.solver.util.Point point = new tmcit.tampopo.edgeSolver.solver.util.Point(x,y);
+				gp.addVertex(point);
+			}
+			ConvertToGrid gridConverter = new ConvertToGrid(gp,5.0);
+			gp = gridConverter.getGridPiece();
+			PieceBuilder pieceBuilder = new PieceBuilder();
+			pieceBuilder.setID(frame.getID());
+			pieceBuilder.setReverse(false);
+			for(int i = 0;i < n;i++){
+				tmcit.tampopo.edgeSolver.solver.util.Point point = gp.getVertex(i);
+				double x = point.x;
+				double y = point.y;
+				pieceBuilder.addPoint(x, y);
+			}
+			try {
+				gridFrames.add(pieceBuilder.build());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return new Answer(gridPieces,gridFrames);
+
 	}
 
 	public Answer getCopy(){

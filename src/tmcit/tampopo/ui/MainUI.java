@@ -83,6 +83,9 @@ public class MainUI extends JFrame implements ActionListener{
 		JMenuItem menuitem5 = new JMenuItem("OVERWRITE(TEST)");
 		menuitem5.setAccelerator(KeyStroke.getKeyStroke(
 				  KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+		JMenuItem menuitem10 = new JMenuItem("GRID");
+		menuitem10.setAccelerator(KeyStroke.getKeyStroke(
+				  KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem menuitem6 = new JMenuItem("Load_quest");
 		JMenuItem menuitem7 = new JMenuItem("Send_answer");
 		JMenuItem menuitem1 = new JMenuItem("Exit");
@@ -103,12 +106,14 @@ public class MainUI extends JFrame implements ActionListener{
 		menuitem7.addActionListener(this);
 		menuitem8.addActionListener(this);
 		menuitem9.addActionListener(this);
+		menuitem10.addActionListener(this);
 		menu1.add(menuitem2);
 		menu1.add(menuitem1);
 		menu2.add(menuitem6);
 		menu2.add(menuitem3);
 		menu2.add(menuitem4);
 		menu2.add(menuitem5);
+		menu2.add(menuitem10);
 		menu2.add(menuitem7);
 		menu3.add(menuitem8);
 		menu3.add(menuitem9);
@@ -164,6 +169,15 @@ public class MainUI extends JFrame implements ActionListener{
 			Mahito6.Main.Main.pieceView.callStore();
 		}else if(value.equalsIgnoreCase("EdgeFinder")){
 			Mahito6.Main.Main.pieceView.callRun();
+		}else if(value.equalsIgnoreCase("GRID")){
+			Problem problem = ProblemReader.problem;
+			Answer source = new Answer(problem.frames,problem.pieces);
+			source = source.convertToGrid();
+			Problem newprob = new Problem(source.frames,source.pieces);
+			newprob.setPiece2Image(problem.piece2Image);
+			newprob.setRealPieces(problem.realPieces);
+			ProblemReader.problem = newprob;
+			solverPanel.setProblem(newprob);
 		}
 	}
 }

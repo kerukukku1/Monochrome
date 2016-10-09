@@ -11,18 +11,18 @@ import javax.imageio.ImageIO;
 import tmcit.tampopo.geometry.util.Piece;
 
 public class Problem {
-	
+
 	public List<Piece> frames;
 	public List<Piece> pieces;
-	
+
 	public BufferedImage piece2Image;///クソでかの可能性
 	public List<Piece> realPieces;///現画像上での座標が格納される
-	
+
 	public Problem(List<Piece> pieces,List<Piece> frames){
 		this.frames = frames;
 		this.pieces = pieces;
 	}
-	
+
 	public void setPiece2Image(File file){
 		try {
 			this.piece2Image = ImageIO.read(file);
@@ -30,16 +30,19 @@ public class Problem {
 			e.printStackTrace();
 		}
 	}
+	public void setPiece2Image(BufferedImage image){
+		this.piece2Image = image;
+	}
 	public void setRealPieces(List<Piece> realPieces){
 		this.realPieces = realPieces;
 	}
-	
+
 	public Answer getEmptyAnswer(){
 		List<Piece> newFrames = new ArrayList<Piece>();
 		for(Piece frame : frames)newFrames.add(frame.getCopy());
 		return new Answer(newFrames, new ArrayList<Piece>());
 	}
-	
+
 	public List<Answer> convertAllAnswerList(){
 		List<Answer> ret = new ArrayList<Answer>();
 		for(Piece frame : frames){
